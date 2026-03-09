@@ -9,8 +9,8 @@ function W34_StackViz() {
   const [flash, setFlash] = useState(null);
 
   const push = () => {
-    const v = parseInt(input);
-    if (isNaN(v)) return;
+    const v = Number.parseInt(input, 10);
+    if (Number.isNaN(v)) return;
     setStack(s => [...s, v]);
     setMsg(`push(${v}) → 스택 맨 위에 추가`);
     setFlash("push");
@@ -33,48 +33,42 @@ function W34_StackViz() {
   };
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 32, alignItems: "flex-end", flexWrap: "wrap" }}>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-8 items-end flex-wrap">
         {/* Stack diagram */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, minWidth: 120 }}>
-          <div style={{ color: W34_T.muted, fontSize: 12, marginBottom: 4 }}>← TOP</div>
+        <div className="flex flex-col items-center gap-1" style={{ minWidth: 120 }}>
+          <div className="text-[#5a6e50] text-[12px] mb-1">← TOP</div>
           {stack.length === 0
-            ? <div style={{ color: W34_T.muted, padding: 12, border: `1px dashed ${W34_T.border}`, borderRadius: 6 }}>비어있음</div>
+            ? <div className="text-[#5a6e50] p-3 border border-dashed border-[#2a3325] rounded-[6px]">비어있음</div>
             : [...stack].reverse().map((v, i) => (
-              <div key={i} style={{
-                width: 100, height: 38, display: "flex", alignItems: "center", justifyContent: "center",
-                background: i === 0 && flash === "push" ? W34_T.accent + "44"
-                          : i === 0 && flash === "pop" ? W34_T.danger + "44"
-                          : W34_T.card,
-                border: `2px solid ${i === 0 ? W34_T.accent : W34_T.border}`,
-                borderRadius: 6, color: W34_T.text, fontWeight: i === 0 ? 700 : 400,
-                transition: "all 0.3s", fontFamily: "monospace", fontSize: 16
-              }}>{v}</div>
+              <div key={`stack-item-${v}-${i}`} className="w-[100px] h-[38px] flex items-center justify-center rounded-[6px] transition-all duration-300 font-mono text-[16px] text-[#dde8d6] border-2"
+                style={{
+                  background: i === 0 && flash === "push" ? "#7eff6a44"
+                            : i === 0 && flash === "pop" ? "#ff4f4f44"
+                            : W34_T.card,
+                  borderColor: i === 0 ? W34_T.accent : W34_T.border,
+                  fontWeight: i === 0 ? 700 : 400,
+                }}>{v}</div>
             ))}
-          <div style={{ width: 100, height: 6, background: W34_T.border, borderRadius: 3, marginTop: 4 }} />
-          <div style={{ color: W34_T.muted, fontSize: 11 }}>BOTTOM</div>
+          <div className="w-[100px] h-[6px] bg-[#2a3325] rounded-[3px] mt-1" />
+          <div className="text-[#5a6e50] text-[11px]">BOTTOM</div>
         </div>
         {/* Controls */}
-        <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+        <div className="flex-1" style={{ minWidth: 200 }}>
+          <div className="flex gap-2 mb-3 flex-wrap">
             <input value={input} onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && push()}
               placeholder="숫자 입력"
-              style={{ padding: "8px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                color: W34_T.text, borderRadius: 8, width: 100, fontFamily: "monospace" }} />
-            <button onClick={push}
-              style={{ padding: "8px 16px", background: W34_T.accent, border: "none", color: "#000",
-                borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>push</button>
-            <button onClick={pop}
-              style={{ padding: "8px 16px", background: W34_T.danger, border: "none", color: "#fff",
-                borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>pop</button>
-            <button onClick={peek}
-              style={{ padding: "8px 16px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                color: W34_T.text, borderRadius: 8, cursor: "pointer" }}>peek</button>
+              className="px-3 py-2 bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[8px] w-[100px] font-mono" />
+            <button type="button" onClick={push}
+              className="px-4 py-2 bg-[#7eff6a] border-none text-black rounded-[8px] cursor-pointer font-bold">push</button>
+            <button type="button" onClick={pop}
+              className="px-4 py-2 bg-[#ff4f4f] border-none text-white rounded-[8px] cursor-pointer font-bold">pop</button>
+            <button type="button" onClick={peek}
+              className="px-4 py-2 bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[8px] cursor-pointer">peek</button>
           </div>
-          {msg && <div style={{ color: W34_T.accent, background: W34_T.accent + "15", border: `1px solid ${W34_T.accent}33`,
-            padding: "8px 14px", borderRadius: 8, fontSize: 13, fontFamily: "monospace" }}>{msg}</div>}
-          <div style={{ marginTop: 12, color: W34_T.muted, fontSize: 12 }}>
+          {msg && <div className="text-[#7eff6a] bg-[#7eff6a15] border border-[#7eff6a33] px-[14px] py-2 rounded-[8px] text-[13px] font-mono">{msg}</div>}
+          <div className="mt-3 text-[#5a6e50] text-[12px]">
             크기: {stack.length} | LIFO (Last In First Out)
           </div>
         </div>
@@ -90,8 +84,8 @@ function W34_QueueViz() {
   const [msg, setMsg] = useState("");
 
   const enqueue = () => {
-    const v = parseInt(input);
-    if (isNaN(v)) return;
+    const v = Number.parseInt(input, 10);
+    if (Number.isNaN(v)) return;
     setQueue(q => [...q, v]);
     setMsg(`enqueue(${v}) → 맨 뒤에 추가`);
     setInput("");
@@ -104,38 +98,36 @@ function W34_QueueViz() {
   };
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ marginBottom: 12, display: "flex", justifyContent: "space-between" }}>
-        <span style={{ color: W34_T.accent3, fontSize: 12 }}>← dequeue (앞)</span>
-        <span style={{ color: W34_T.accent2, fontSize: 12 }}>enqueue (뒤) →</span>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="mb-3 flex justify-between">
+        <span className="text-[#42c9ff] text-[12px]">← dequeue (앞)</span>
+        <span className="text-[#ff8c42] text-[12px]">enqueue (뒤) →</span>
       </div>
-      <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 16, overflowX: "auto", paddingBottom: 4 }}>
-        <div style={{ color: W34_T.accent3, fontSize: 20, marginRight: 4 }}>▶</div>
+      <div className="flex gap-1 items-center mb-4 overflow-x-auto pb-1">
+        <div className="text-[#42c9ff] text-[20px] mr-1">▶</div>
         {queue.length === 0
-          ? <div style={{ color: W34_T.muted, padding: "12px 24px", border: `1px dashed ${W34_T.border}`, borderRadius: 8 }}>비어있음</div>
+          ? <div className="text-[#5a6e50] px-6 py-3 border border-dashed border-[#2a3325] rounded-[8px]">비어있음</div>
           : queue.map((v, i) => (
-            <div key={i} style={{
-              minWidth: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center",
-              background: i === 0 ? W34_T.accent3 + "33" : W34_T.card,
-              border: `2px solid ${i === 0 ? W34_T.accent3 : i === queue.length - 1 ? W34_T.accent2 : W34_T.border}`,
-              borderRadius: 8, color: W34_T.text, fontWeight: 700, fontFamily: "monospace", fontSize: 16
-            }}>{v}</div>
+            <div key={`queue-item-${v}-${i}`} className="flex items-center justify-center rounded-[8px] text-[#dde8d6] font-bold font-mono text-[16px] border-2"
+              style={{
+                minWidth: 52,
+                height: 52,
+                background: i === 0 ? "#42c9ff33" : W34_T.card,
+                borderColor: i === 0 ? W34_T.accent3 : i === queue.length - 1 ? W34_T.accent2 : W34_T.border,
+              }}>{v}</div>
           ))}
-        <div style={{ color: W34_T.accent2, fontSize: 20, marginLeft: 4 }}>▶</div>
+        <div className="text-[#ff8c42] text-[20px] ml-1">▶</div>
       </div>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="flex gap-2 flex-wrap">
         <input value={input} onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && enqueue()}
           placeholder="숫자"
-          style={{ padding: "8px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            color: W34_T.text, borderRadius: 8, width: 80, fontFamily: "monospace" }} />
-        <button onClick={enqueue}
-          style={{ padding: "8px 16px", background: W34_T.accent2, border: "none", color: "#000",
-            borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>enqueue</button>
-        <button onClick={dequeue}
-          style={{ padding: "8px 16px", background: W34_T.accent3, border: "none", color: "#000",
-            borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>dequeue</button>
-        {msg && <span style={{ color: W34_T.accent, fontSize: 13, padding: "8px 0", fontFamily: "monospace" }}>{msg}</span>}
+          className="px-3 py-2 bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[8px] w-[80px] font-mono" />
+        <button type="button" onClick={enqueue}
+          className="px-4 py-2 bg-[#ff8c42] border-none text-black rounded-[8px] cursor-pointer font-bold">enqueue</button>
+        <button type="button" onClick={dequeue}
+          className="px-4 py-2 bg-[#42c9ff] border-none text-black rounded-[8px] cursor-pointer font-bold">dequeue</button>
+        {msg && <span className="text-[#7eff6a] text-[13px] py-2 font-mono">{msg}</span>}
       </div>
     </div>
   );
@@ -147,35 +139,58 @@ function W34_DequeViz() {
   const [input, setInput] = useState("");
   const [msg, setMsg] = useState("");
 
-  const appendleft = () => { const v = parseInt(input); if (isNaN(v)) return; setDeque(d => [v, ...d]); setMsg(`appendleft(${v})`); setInput(""); };
-  const append = () => { const v = parseInt(input); if (isNaN(v)) return; setDeque(d => [...d, v]); setMsg(`append(${v})`); setInput(""); };
-  const popleft = () => { if (!deque.length) return; setMsg(`popleft() → ${deque[0]}`); setDeque(d => d.slice(1)); };
-  const pop = () => { if (!deque.length) return; setMsg(`pop() → ${deque[deque.length - 1]}`); setDeque(d => d.slice(0, -1)); };
+  const appendleft = () => {
+    const v = Number.parseInt(input, 10);
+    if (Number.isNaN(v)) return;
+    setDeque(d => [v, ...d]);
+    setMsg(`appendleft(${v})`);
+    setInput("");
+  };
+
+  const append = () => {
+    const v = Number.parseInt(input, 10);
+    if (Number.isNaN(v)) return;
+    setDeque(d => [...d, v]);
+    setMsg(`append(${v})`);
+    setInput("");
+  };
+
+  const popleft = () => {
+    if (!deque.length) return;
+    setMsg(`popleft() → ${deque[0]}`);
+    setDeque(d => d.slice(1));
+  };
+
+  const pop = () => {
+    if (!deque.length) return;
+    setMsg(`pop() → ${deque[deque.length - 1]}`);
+    setDeque(d => d.slice(0, -1));
+  };
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 14, overflowX: "auto" }}>
-        <div style={{ color: W34_T.accent4, fontSize: 14 }}>⟵ 앞</div>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-1 items-center mb-[14px] overflow-x-auto">
+        <div className="text-[#ff4f8b] text-[14px]">⟵ 앞</div>
         {deque.map((v, i) => (
-          <div key={i} style={{
-            minWidth: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center",
-            background: W34_T.card, border: `2px solid ${i === 0 ? W34_T.accent4 : i === deque.length - 1 ? W34_T.purple : W34_T.border}`,
-            borderRadius: 8, color: W34_T.text, fontWeight: 700, fontFamily: "monospace", fontSize: 16
-          }}>{v}</div>
+          <div key={`deque-item-${v}-${i}`} className="flex items-center justify-center rounded-[8px] text-[#dde8d6] font-bold font-mono text-[16px] border-2 bg-[#1a1f16]"
+            style={{
+              minWidth: 52,
+              height: 52,
+              borderColor: i === 0 ? W34_T.accent4 : i === deque.length - 1 ? W34_T.purple : W34_T.border,
+            }}>{v}</div>
         ))}
-        <div style={{ color: W34_T.purple, fontSize: 14 }}>뒤 ⟶</div>
+        <div className="text-[#b57fff] text-[14px]">뒤 ⟶</div>
       </div>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+      <div className="flex gap-2 flex-wrap items-center">
         <input value={input} onChange={e => setInput(e.target.value)}
           placeholder="숫자"
-          style={{ padding: "8px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            color: W34_T.text, borderRadius: 8, width: 80, fontFamily: "monospace" }} />
-        <button onClick={appendleft} style={{ padding: "6px 12px", background: W34_T.accent4 + "cc", border: "none", color: "#fff", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 700 }}>appendleft</button>
-        <button onClick={popleft} style={{ padding: "6px 12px", background: W34_T.accent4 + "44", border: `1px solid ${W34_T.accent4}`, color: W34_T.accent4, borderRadius: 8, cursor: "pointer", fontSize: 12 }}>popleft</button>
-        <button onClick={append} style={{ padding: "6px 12px", background: W34_T.purple + "cc", border: "none", color: "#fff", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 700 }}>append</button>
-        <button onClick={pop} style={{ padding: "6px 12px", background: W34_T.purple + "44", border: `1px solid ${W34_T.purple}`, color: W34_T.purple, borderRadius: 8, cursor: "pointer", fontSize: 12 }}>pop</button>
+          className="px-3 py-2 bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[8px] w-[80px] font-mono" />
+        <button type="button" onClick={appendleft} className="px-3 py-[6px] bg-[#ff4f8bcc] border-none text-white rounded-[8px] cursor-pointer text-[12px] font-bold">appendleft</button>
+        <button type="button" onClick={popleft} className="px-3 py-[6px] bg-[#ff4f8b44] border border-[#ff4f8b] text-[#ff4f8b] rounded-[8px] cursor-pointer text-[12px]">popleft</button>
+        <button type="button" onClick={append} className="px-3 py-[6px] bg-[#b57fffcc] border-none text-white rounded-[8px] cursor-pointer text-[12px] font-bold">append</button>
+        <button type="button" onClick={pop} className="px-3 py-[6px] bg-[#b57fff44] border border-[#b57fff] text-[#b57fff] rounded-[8px] cursor-pointer text-[12px]">pop</button>
       </div>
-      {msg && <div style={{ marginTop: 10, color: W34_T.accent, fontFamily: "monospace", fontSize: 13 }}>{msg}</div>}
+      {msg && <div className="mt-[10px] text-[#7eff6a] font-mono text-[13px]">{msg}</div>}
     </div>
   );
 }
@@ -187,8 +202,8 @@ function W34_HeapViz() {
   const [msg, setMsg] = useState("");
 
   const push = () => {
-    const v = parseInt(input);
-    if (isNaN(v)) return;
+    const v = Number.parseInt(input, 10);
+    if (Number.isNaN(v)) return;
     const h = [...heap, v];
     // bubble up
     let i = h.length - 1;
@@ -211,7 +226,8 @@ function W34_HeapViz() {
     let i = 0;
     while (true) {
       let smallest = i;
-      const l = 2 * i + 1, r = 2 * i + 2;
+      const l = 2 * i + 1;
+      const r = 2 * i + 2;
       if (l < h.length && h[l] < h[smallest]) smallest = l;
       if (r < h.length && h[r] < h[smallest]) smallest = r;
       if (smallest !== i) { [h[smallest], h[i]] = [h[i], h[smallest]]; i = smallest; }
@@ -221,10 +237,10 @@ function W34_HeapViz() {
     setMsg(`heappop() → ${min} 꺼냄, 새 최솟값: ${h[0] ?? "없음"}`);
   };
 
-  const getPos = (i, n) => {
+  const getPos = (i) => {
     const level = Math.floor(Math.log2(i + 1));
-    const posInLevel = i - (Math.pow(2, level) - 1);
-    const totalInLevel = Math.pow(2, level);
+    const posInLevel = i - (2 ** level - 1);
+    const totalInLevel = 2 ** level;
     const x = ((posInLevel + 0.5) / totalInLevel) * 300;
     const y = level * 54 + 20;
     return { x, y };
@@ -233,16 +249,16 @@ function W34_HeapViz() {
   const lines = heap.map((_, i) => {
     if (i === 0) return null;
     const parent = Math.floor((i - 1) / 2);
-    const p1 = getPos(parent, heap.length);
-    const p2 = getPos(i, heap.length);
-    return <line key={`l${i}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={W34_T.border} strokeWidth={2} />;
+    const p1 = getPos(parent);
+    const p2 = getPos(i);
+    return <line key={`heap-line-${i}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={W34_T.border} strokeWidth={2} />;
   });
 
   const nodes = heap.map((v, i) => {
-    const { x, y } = getPos(i, heap.length);
+    const { x, y } = getPos(i);
     return (
-      <g key={`n${i}`}>
-        <circle cx={x} cy={y} r={18} fill={i === 0 ? W34_T.accent + "33" : W34_T.card} stroke={i === 0 ? W34_T.accent : W34_T.border} strokeWidth={2} />
+      <g key={`heap-node-${i}`}>
+        <circle cx={x} cy={y} r={18} fill={i === 0 ? `${W34_T.accent}33` : W34_T.card} stroke={i === 0 ? W34_T.accent : W34_T.border} strokeWidth={2} />
         <text x={x} y={y + 5} textAnchor="middle" fill={W34_T.text} fontSize={13} fontWeight={i === 0 ? 700 : 400} fontFamily="monospace">{v}</text>
       </g>
     );
@@ -251,20 +267,19 @@ function W34_HeapViz() {
   const svgHeight = heap.length > 0 ? Math.floor(Math.log2(heap.length)) * 54 + 60 : 60;
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <svg width="300" height={svgHeight} style={{ display: "block", margin: "0 auto 12px" }}>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <svg width="300" height={svgHeight} aria-label="힙 트리 시각화" className="block mx-auto mb-3">
         {lines}
         {nodes}
       </svg>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+      <div className="flex gap-2 flex-wrap items-center">
         <input value={input} onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && push()}
           placeholder="숫자"
-          style={{ padding: "8px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            color: W34_T.text, borderRadius: 8, width: 80, fontFamily: "monospace" }} />
-        <button onClick={push} style={{ padding: "8px 16px", background: W34_T.accent, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>heappush</button>
-        <button onClick={pop} style={{ padding: "8px 16px", background: W34_T.danger, border: "none", color: "#fff", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>heappop</button>
-        {msg && <span style={{ color: W34_T.accent, fontSize: 13, fontFamily: "monospace" }}>{msg}</span>}
+          className="px-3 py-2 bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[8px] w-[80px] font-mono" />
+        <button type="button" onClick={push} className="px-4 py-2 bg-[#7eff6a] border-none text-black rounded-[8px] cursor-pointer font-bold">heappush</button>
+        <button type="button" onClick={pop} className="px-4 py-2 bg-[#ff4f4f] border-none text-white rounded-[8px] cursor-pointer font-bold">heappop</button>
+        {msg && <span className="text-[#7eff6a] text-[13px] font-mono">{msg}</span>}
       </div>
     </div>
   );
@@ -284,7 +299,9 @@ function W34_HashMapViz() {
       const filtered = e.filter(([k]) => k !== key);
       return [...filtered, [key, val]];
     });
-    setKey(""); setVal(""); setFound(null);
+    setKey("");
+    setVal("");
+    setFound(null);
   };
 
   const search = () => {
@@ -297,47 +314,38 @@ function W34_HashMapViz() {
   const buckets = Array.from({ length: bucketSize }, (_, i) => entries.filter(([k]) => hash(k) === i));
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-5 flex-wrap">
         {/* Buckets */}
-        <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ color: W34_T.muted, fontSize: 12, marginBottom: 8 }}>해시 버킷 (크기 {bucketSize})</div>
+        <div className="flex-1" style={{ minWidth: 200 }}>
+          <div className="text-[#5a6e50] text-[12px] mb-2">해시 버킷 (크기 {bucketSize})</div>
           {buckets.map((bucket, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-              <div style={{ width: 28, height: 34, background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
-                color: W34_T.muted, fontSize: 11, fontFamily: "monospace" }}>{i}</div>
+            <div key={`bucket-${i}`} className="flex items-center gap-2 mb-1">
+              <div className="w-[28px] h-[34px] bg-[#1a1f16] border border-[#2a3325] rounded-[4px] flex items-center justify-center text-[#5a6e50] text-[11px] font-mono">{i}</div>
               {bucket.map(([k, v]) => (
-                <div key={k} style={{ padding: "4px 10px", background: W34_T.accent + "22",
-                  border: `1px solid ${W34_T.accent}55`, borderRadius: 6, fontSize: 12, color: W34_T.accent,
-                  fontFamily: "monospace" }}>{k}: {v}</div>
+                <div key={k} className="px-[10px] py-1 bg-[#7eff6a22] border border-[#7eff6a55] rounded-[6px] text-[12px] text-[#7eff6a] font-mono">{k}: {v}</div>
               ))}
-              {bucket.length === 0 && <div style={{ color: W34_T.muted, fontSize: 12 }}>—</div>}
+              {bucket.length === 0 && <div className="text-[#5a6e50] text-[12px]">—</div>}
             </div>
           ))}
         </div>
         {/* Controls */}
-        <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ color: W34_T.muted, fontSize: 12, marginBottom: 8 }}>추가</div>
-          <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+        <div className="flex-1" style={{ minWidth: 180 }}>
+          <div className="text-[#5a6e50] text-[12px] mb-2">추가</div>
+          <div className="flex gap-[6px] mb-3 flex-wrap">
             <input value={key} onChange={e => setKey(e.target.value)} placeholder="key"
-              style={{ width: 80, padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                color: W34_T.text, borderRadius: 6, fontFamily: "monospace", fontSize: 12 }} />
+              className="w-[80px] px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] font-mono text-[12px]" />
             <input value={val} onChange={e => setVal(e.target.value)} placeholder="value"
-              style={{ width: 60, padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                color: W34_T.text, borderRadius: 6, fontFamily: "monospace", fontSize: 12 }} />
-            <button onClick={add} style={{ padding: "6px 12px", background: W34_T.accent2, border: "none",
-              color: "#000", borderRadius: 6, cursor: "pointer", fontWeight: 700, fontSize: 12 }}>추가</button>
+              className="w-[60px] px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] font-mono text-[12px]" />
+            <button type="button" onClick={add} className="px-3 py-[6px] bg-[#ff8c42] border-none text-black rounded-[6px] cursor-pointer font-bold text-[12px]">추가</button>
           </div>
-          <div style={{ color: W34_T.muted, fontSize: 12, marginBottom: 8 }}>탐색 O(1)</div>
-          <div style={{ display: "flex", gap: 6 }}>
+          <div className="text-[#5a6e50] text-[12px] mb-2">탐색 O(1)</div>
+          <div className="flex gap-[6px]">
             <input value={searchKey} onChange={e => setSearchKey(e.target.value)} placeholder="key"
-              style={{ width: 100, padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-                color: W34_T.text, borderRadius: 6, fontFamily: "monospace", fontSize: 12 }} />
-            <button onClick={search} style={{ padding: "6px 12px", background: W34_T.accent3, border: "none",
-              color: "#000", borderRadius: 6, cursor: "pointer", fontWeight: 700, fontSize: 12 }}>탐색</button>
+              className="w-[100px] px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] font-mono text-[12px]" />
+            <button type="button" onClick={search} className="px-3 py-[6px] bg-[#42c9ff] border-none text-black rounded-[6px] cursor-pointer font-bold text-[12px]">탐색</button>
           </div>
-          {found !== null && <div style={{ marginTop: 10, color: W34_T.accent, fontFamily: "monospace", fontSize: 13 }}>
+          {found !== null && <div className="mt-[10px] text-[#7eff6a] font-mono text-[13px]">
             → {found}
           </div>}
         </div>
@@ -356,12 +364,13 @@ function W34_TwoPtrViz() {
 
   const run = () => {
     const s = [];
-    let l = 0, r = arr.length - 1;
+    let l = 0;
+    let r = arr.length - 1;
     while (l < r) {
       const sum = arr[l] + arr[r];
       s.push({ l, r, sum, found: sum === target });
       if (sum === target) break;
-      else if (sum < target) l++;
+      if (sum < target) l++;
       else r--;
     }
     setSteps(s);
@@ -382,46 +391,48 @@ function W34_TwoPtrViz() {
   };
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14, flexWrap: "wrap" }}>
-        <span style={{ color: W34_T.text, fontSize: 13 }}>합 = <strong style={{ color: W34_T.accent }}>{target}</strong> 인 쌍 찾기:</span>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-[10px] items-center mb-[14px] flex-wrap">
+        <span className="text-[#dde8d6] text-[13px]">합 = <strong className="text-[#7eff6a]">{target}</strong> 인 쌍 찾기:</span>
         <select value={target} onChange={e => { setTarget(Number(e.target.value)); setSteps([]); setIdx(-1); setStep(null); }}
-          style={{ padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`, color: W34_T.text, borderRadius: 6 }}>
+          className="px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px]">
           {[7, 9, 11, 13, 15, 17].map(v => <option key={v} value={v}>{v}</option>)}
         </select>
-        <button onClick={run} style={{ padding: "6px 16px", background: W34_T.accent, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>실행</button>
+        <button type="button" onClick={run} className="px-4 py-[6px] bg-[#7eff6a] border-none text-black rounded-[8px] cursor-pointer font-bold">실행</button>
         {steps.length > 0 && <>
-          <button onClick={prev} style={{ padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`, color: W34_T.text, borderRadius: 6, cursor: "pointer" }}>◀</button>
-          <button onClick={next} style={{ padding: "6px 10px", background: W34_T.card, border: `1px solid ${W34_T.border}`, color: W34_T.text, borderRadius: 6, cursor: "pointer" }}>▶</button>
-          <span style={{ color: W34_T.muted, fontSize: 12 }}>{idx + 1}/{steps.length}</span>
+          <button type="button" onClick={prev} className="px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] cursor-pointer">◀</button>
+          <button type="button" onClick={next} className="px-[10px] py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] cursor-pointer">▶</button>
+          <span className="text-[#5a6e50] text-[12px]">{idx + 1}/{steps.length}</span>
         </>}
       </div>
-      <div style={{ display: "flex", gap: 5, marginBottom: 14 }}>
+      <div className="flex gap-[5px] mb-[14px]">
         {arr.map((v, i) => {
           const isL = step && i === step.l;
           const isR = step && i === step.r;
-          const bg = isL ? W34_T.accent3 + "44" : isR ? W34_T.accent4 + "44" : W34_T.card;
-          const border = isL ? W34_T.accent3 : isR ? W34_T.accent4 : W34_T.border;
+          const bg = isL ? "#42c9ff44" : isR ? "#ff4f8b44" : W34_T.card;
+          const borderColor = isL ? W34_T.accent3 : isR ? W34_T.accent4 : W34_T.border;
           return (
-            <div key={i} style={{ width: 44, height: 44, display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", background: bg,
-              border: `2px solid ${border}`, borderRadius: 8, transition: "all 0.25s" }}>
-              <div style={{ color: W34_T.text, fontWeight: 700, fontFamily: "monospace" }}>{v}</div>
-              {isL && <div style={{ fontSize: 9, color: W34_T.accent3 }}>L</div>}
-              {isR && <div style={{ fontSize: 9, color: W34_T.accent4 }}>R</div>}
+            <div key={`twoptr-${v}-${i}`} className="flex flex-col items-center justify-center rounded-[8px] transition-all duration-[250ms] border-2"
+              style={{ width: 44, height: 44, background: bg, borderColor }}>
+              <div className="text-[#dde8d6] font-bold font-mono">{v}</div>
+              {isL && <div className="text-[9px] text-[#42c9ff]">L</div>}
+              {isR && <div className="text-[9px] text-[#ff4f8b]">R</div>}
             </div>
           );
         })}
       </div>
       {step && (
-        <div style={{ padding: "10px 14px", background: step.found ? W34_T.accent + "15" : W34_T.card,
-          border: `1px solid ${step.found ? W34_T.accent : W34_T.border}`, borderRadius: 8, fontSize: 13, fontFamily: "monospace" }}>
+        <div className="px-[14px] py-[10px] rounded-[8px] text-[13px] font-mono border"
+          style={{
+            background: step.found ? "#7eff6a15" : W34_T.card,
+            borderColor: step.found ? W34_T.accent : W34_T.border,
+          }}>
           arr[{step.l}]({arr[step.l]}) + arr[{step.r}]({arr[step.r]}) = {step.sum}
           {step.found
-            ? <span style={{ color: W34_T.accent, marginLeft: 10 }}>✅ 발견!</span>
+            ? <span className="text-[#7eff6a] ml-[10px]">✅ 발견!</span>
             : step.sum < target
-              ? <span style={{ color: W34_T.muted, marginLeft: 10 }}>→ 합이 작음, L++</span>
-              : <span style={{ color: W34_T.muted, marginLeft: 10 }}>→ 합이 큼, R--</span>}
+              ? <span className="text-[#5a6e50] ml-[10px]">→ 합이 작음, L++</span>
+              : <span className="text-[#5a6e50] ml-[10px]">→ 합이 큼, R--</span>}
         </div>
       )}
     </div>
@@ -441,37 +452,40 @@ function W34_SlidingWindowViz() {
   const curSum = arr.slice(winIdx, winIdx + k).reduce((a, b) => a + b, 0);
 
   return (
-    <div style={{ background: "#080b07", border: `1px solid ${W34_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14, flexWrap: "wrap" }}>
-        <span style={{ color: W34_T.text, fontSize: 13 }}>윈도우 크기 k =</span>
+    <div className="bg-[#080b07] border border-[#2a3325] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-[10px] items-center mb-[14px] flex-wrap">
+        <span className="text-[#dde8d6] text-[13px]">윈도우 크기 k =</span>
         <input type="range" min={1} max={5} value={k} onChange={e => { setK(Number(e.target.value)); setWinIdx(0); }}
-          style={{ width: 100, accentColor: W34_T.accent2 }} />
-        <span style={{ color: W34_T.accent2, fontWeight: 700 }}>{k}</span>
+          className="w-[100px]" style={{ accentColor: W34_T.accent2 }} />
+        <span className="text-[#ff8c42] font-bold">{k}</span>
       </div>
-      <div style={{ display: "flex", gap: 5, marginBottom: 14 }}>
+      <div className="flex gap-[5px] mb-[14px]">
         {arr.map((v, i) => {
           const inWin = i >= winIdx && i < winIdx + k;
           return (
-            <div key={i} style={{ width: 40, height: 48, display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", background: inWin ? W34_T.accent2 + "33" : W34_T.card,
-              border: `2px solid ${inWin ? W34_T.accent2 : W34_T.border}`, borderRadius: 8,
-              transition: "all 0.25s", gap: 2 }}>
-              <div style={{ color: W34_T.text, fontWeight: inWin ? 700 : 400, fontFamily: "monospace" }}>{v}</div>
-              <div style={{ fontSize: 9, color: W34_T.muted }}>{i}</div>
+            <div key={`slide-${i}`} className="flex flex-col items-center justify-center rounded-[8px] transition-all duration-[250ms] gap-[2px] border-2"
+              style={{
+                width: 40,
+                height: 48,
+                background: inWin ? "#ff8c4233" : W34_T.card,
+                borderColor: inWin ? W34_T.accent2 : W34_T.border,
+              }}>
+              <div className="text-[#dde8d6] font-mono" style={{ fontWeight: inWin ? 700 : 400 }}>{v}</div>
+              <div className="text-[9px] text-[#5a6e50]">{i}</div>
             </div>
           );
         })}
       </div>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
-        <button onClick={() => setWinIdx(Math.max(0, winIdx - 1))}
-          style={{ padding: "6px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`, color: W34_T.text, borderRadius: 6, cursor: "pointer" }}>◀</button>
-        <button onClick={() => setWinIdx(Math.min(maxStart, winIdx + 1))}
-          style={{ padding: "6px 12px", background: W34_T.card, border: `1px solid ${W34_T.border}`, color: W34_T.text, borderRadius: 6, cursor: "pointer" }}>▶</button>
-        <span style={{ color: W34_T.muted, fontSize: 12 }}>시작 인덱스: {winIdx}</span>
+      <div className="flex gap-2 items-center mb-3">
+        <button type="button" onClick={() => setWinIdx(Math.max(0, winIdx - 1))}
+          className="px-3 py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] cursor-pointer">◀</button>
+        <button type="button" onClick={() => setWinIdx(Math.min(maxStart, winIdx + 1))}
+          className="px-3 py-[6px] bg-[#1a1f16] border border-[#2a3325] text-[#dde8d6] rounded-[6px] cursor-pointer">▶</button>
+        <span className="text-[#5a6e50] text-[12px]">시작 인덱스: {winIdx}</span>
       </div>
-      <div style={{ display: "flex", gap: 16, fontSize: 13, fontFamily: "monospace" }}>
-        <span>현재 합: <strong style={{ color: W34_T.accent2 }}>{curSum}</strong></span>
-        <span>최대 합: <strong style={{ color: W34_T.accent }}>{maxSum}</strong> {curSum === maxSum && "← ✅ 최대!"}</span>
+      <div className="flex gap-4 text-[13px] font-mono">
+        <span>현재 합: <strong className="text-[#ff8c42]">{curSum}</strong></span>
+        <span>최대 합: <strong className="text-[#7eff6a]">{maxSum}</strong> {curSum === maxSum && "← ✅ 최대!"}</span>
       </div>
     </div>
   );

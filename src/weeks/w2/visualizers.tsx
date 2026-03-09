@@ -1,19 +1,23 @@
 // @ts-nocheck
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { W2_COLORS } from './theme';
 
+const INITIAL_ARR = [64, 34, 25, 12, 22, 11, 90, 45];
+const INITIAL_IDS = INITIAL_ARR.map((_, i) => `slot-${i}`);
+
 function W2_SortVisualizer({ algorithm }) {
-  const [arr, setArr] = useState([64, 34, 25, 12, 22, 11, 90, 45]);
+  const [arr, setArr] = useState(INITIAL_ARR);
+  const [ids] = useState(INITIAL_IDS);
   const [steps, setSteps] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const intervalRef = useRef(null);
 
-  const generateSteps = (algorithm) => {
+  const generateSteps = useCallback((alg) => {
     const a = [...arr];
     const s = [{ arr: [...a], comparing: [], swapping: [], sorted: [] }];
 
-    if (algorithm === "bubble") {
+    if (alg === "bubble") {
       for (let i = 0; i < a.length; i++) {
         for (let j = 0; j < a.length - i - 1; j++) {
           s.push({ arr: [...a], comparing: [j, j + 1], swapping: [], sorted: Array.from({ length: i }, (_, k) => a.length - 1 - k) });
@@ -23,7 +27,7 @@ function W2_SortVisualizer({ algorithm }) {
           }
         }
       }
-    } else if (algorithm === "selection") {
+    } else if (alg === "selection") {
       for (let i = 0; i < a.length; i++) {
         let minIdx = i;
         for (let j = i + 1; j < a.length; j++) {
@@ -33,7 +37,7 @@ function W2_SortVisualizer({ algorithm }) {
         [a[i], a[minIdx]] = [a[minIdx], a[i]];
         s.push({ arr: [...a], comparing: [], swapping: [i, minIdx], sorted: Array.from({ length: i + 1 }, (_, k) => k) });
       }
-    } else if (algorithm === "insertion") {
+    } else if (alg === "insertion") {
       for (let i = 1; i < a.length; i++) {
         let j = i;
         while (j > 0 && a[j - 1] > a[j]) {
@@ -46,13 +50,13 @@ function W2_SortVisualizer({ algorithm }) {
     }
     s.push({ arr: [...a], comparing: [], swapping: [], sorted: a.map((_, i) => i) });
     return s;
-  };
+  }, [arr]);
 
   useEffect(() => {
     setSteps(generateSteps(algorithm));
     setCurrentStep(0);
     setIsPlaying(false);
-  }, [algorithm, arr]);
+  }, [algorithm, generateSteps]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -77,45 +81,46 @@ function W2_SortVisualizer({ algorithm }) {
   };
 
   const reset = () => {
-    setArr([64, 34, 25, 12, 22, 11, 90, 45]);
+    setArr(INITIAL_ARR);
     setCurrentStep(0);
     setIsPlaying(false);
   };
 
   return (
-    <div style={{ background: "#0d1117", border: `1px solid ${W2_COLORS.border}`, borderRadius: 12, padding: 20, margin: "16px 0" }}>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 120, marginBottom: 16 }}>
+    <div className="bg-[#0d1117] border border-[#1e2d45] rounded-[12px] p-5 my-4">
+      <div className="flex items-end gap-[6px] h-[120px] mb-4">
         {step.arr.map((val, i) => (
-          <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-            <span style={{ color: W2_COLORS.text, fontSize: 11 }}>{val}</span>
+          <div key={ids[i]} className="flex-1 flex flex-col items-center gap-1">
+            <span className="text-[#e2e8f0] text-[11px]">{val}</span>
             <div style={{
-              width: "100%", height: `${(val / maxVal) * 90}px`,
+              width: "100%",
+              height: `${(val / maxVal) * 90}px`,
               background: getColor(i),
               borderRadius: "4px 4px 0 0",
-              transition: "all 0.3s ease",
               boxShadow: step.swapping.includes(i) ? `0 0 12px ${W2_COLORS.danger}` : step.comparing.includes(i) ? `0 0 8px ${W2_COLORS.warn}` : "none"
-            }} />
+            }} className="transition-all duration-300" />
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-        <button onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-          style={{ padding: "6px 14px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.text, borderRadius: 6, cursor: "pointer" }}>◀ 이전</button>
-        <button onClick={() => setIsPlaying(!isPlaying)}
-          style={{ padding: "6px 18px", background: isPlaying ? W2_COLORS.danger : W2_COLORS.accent, border: "none", color: "#000", borderRadius: 6, cursor: "pointer", fontWeight: "bold" }}>
+      <div className="flex gap-3 items-center flex-wrap">
+        <button type="button" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+          className="px-[14px] py-[6px] bg-[#111827] border border-[#1e2d45] text-[#e2e8f0] rounded-[6px] cursor-pointer">◀ 이전</button>
+        <button type="button" onClick={() => setIsPlaying(!isPlaying)}
+          className="px-[18px] py-[6px] border-none text-black rounded-[6px] cursor-pointer font-bold"
+          style={{ background: isPlaying ? W2_COLORS.danger : W2_COLORS.accent }}>
           {isPlaying ? "⏸ 멈춤" : "▶ 재생"}
         </button>
-        <button onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
-          style={{ padding: "6px 14px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.text, borderRadius: 6, cursor: "pointer" }}>다음 ▶</button>
-        <button onClick={reset}
-          style={{ padding: "6px 14px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.muted, borderRadius: 6, cursor: "pointer" }}>🔄 리셋</button>
-        <span style={{ color: W2_COLORS.muted, fontSize: 12 }}>단계 {currentStep + 1} / {steps.length}</span>
+        <button type="button" onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+          className="px-[14px] py-[6px] bg-[#111827] border border-[#1e2d45] text-[#e2e8f0] rounded-[6px] cursor-pointer">다음 ▶</button>
+        <button type="button" onClick={reset}
+          className="px-[14px] py-[6px] bg-[#111827] border border-[#1e2d45] text-[#64748b] rounded-[6px] cursor-pointer">🔄 리셋</button>
+        <span className="text-[#64748b] text-[12px]">단계 {currentStep + 1} / {steps.length}</span>
       </div>
-      <div style={{ display: "flex", gap: 16, marginTop: 12, fontSize: 12 }}>
-        <span><span style={{ color: W2_COLORS.warn }}>●</span> 비교 중</span>
-        <span><span style={{ color: W2_COLORS.danger }}>●</span> 교환 중</span>
-        <span><span style={{ color: W2_COLORS.accent3 }}>●</span> 정렬 완료</span>
-        <span><span style={{ color: W2_COLORS.accent }}>●</span> 미정렬</span>
+      <div className="flex gap-4 mt-3 text-[12px]">
+        <span><span className="text-[#f59e0b]">●</span> 비교 중</span>
+        <span><span className="text-[#ef4444]">●</span> 교환 중</span>
+        <span><span className="text-[#10b981]">●</span> 정렬 완료</span>
+        <span><span className="text-[#00d4ff]">●</span> 미정렬</span>
       </div>
     </div>
   );
@@ -129,7 +134,8 @@ function W2_BinarySearchViz() {
 
   const runSearch = () => {
     const s = [];
-    let left = 0, right = arr.length - 1;
+    let left = 0;
+    let right = arr.length - 1;
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
       s.push({ left, right, mid, found: arr[mid] === target, tooSmall: arr[mid] < target });
@@ -144,28 +150,30 @@ function W2_BinarySearchViz() {
   const step = steps[currentStep];
 
   return (
-    <div style={{ background: "#0d1117", border: `1px solid ${W2_COLORS.border}`, borderRadius: 12, padding: 20, margin: "16px 0" }}>
-      <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ color: W2_COLORS.text }}>찾을 값:</span>
+    <div className="bg-[#0d1117] border border-[#1e2d45] rounded-[12px] p-5 my-4">
+      <div className="flex gap-3 mb-5 items-center flex-wrap">
+        <span className="text-[#e2e8f0]">찾을 값:</span>
         <select value={target} onChange={e => { setTarget(Number(e.target.value)); setSteps([]); setCurrentStep(-1); }}
-          style={{ padding: "6px 12px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.text, borderRadius: 6 }}>
+          className="px-3 py-[6px] bg-[#111827] border border-[#1e2d45] text-[#e2e8f0] rounded-[6px]">
           {arr.map(v => <option key={v} value={v}>{v}</option>)}
         </select>
-        <button onClick={runSearch}
-          style={{ padding: "6px 18px", background: W2_COLORS.accent, border: "none", color: "#000", borderRadius: 6, cursor: "pointer", fontWeight: "bold" }}>🔍 탐색 시작</button>
+        <button type="button" onClick={runSearch}
+          className="px-[18px] py-[6px] bg-[#00d4ff] border-none text-black rounded-[6px] cursor-pointer font-bold">🔍 탐색 시작</button>
         {steps.length > 0 && (
           <>
-            <button onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-              style={{ padding: "6px 12px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.text, borderRadius: 6, cursor: "pointer" }}>◀</button>
-            <button onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
-              style={{ padding: "6px 12px", background: W2_COLORS.card, border: `1px solid ${W2_COLORS.border}`, color: W2_COLORS.text, borderRadius: 6, cursor: "pointer" }}>▶</button>
-            <span style={{ color: W2_COLORS.muted, fontSize: 12 }}>{currentStep + 1} / {steps.length}단계</span>
+            <button type="button" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+              className="px-3 py-[6px] bg-[#111827] border border-[#1e2d45] text-[#e2e8f0] rounded-[6px] cursor-pointer">◀</button>
+            <button type="button" onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+              className="px-3 py-[6px] bg-[#111827] border border-[#1e2d45] text-[#e2e8f0] rounded-[6px] cursor-pointer">▶</button>
+            <span className="text-[#64748b] text-[12px]">{currentStep + 1} / {steps.length}단계</span>
           </>
         )}
       </div>
-      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+      <div className="flex gap-1 flex-wrap">
         {arr.map((val, i) => {
-          let bg = W2_COLORS.card, border = W2_COLORS.border, color = W2_COLORS.text;
+          let bg = W2_COLORS.card;
+          let border = W2_COLORS.border;
+          let color = W2_COLORS.text;
           if (step) {
             if (i === step.mid) { bg = step.found ? W2_COLORS.accent3 : W2_COLORS.warn; color = "#000"; }
             else if (i === step.left) { border = W2_COLORS.accent; }
@@ -173,20 +181,22 @@ function W2_BinarySearchViz() {
             else if (i < step.left || i > step.right) { color = W2_COLORS.muted; bg = "#0a0e1a"; }
           }
           return (
-            <div key={i} style={{ width: 50, height: 50, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: bg, border: `2px solid ${border}`, borderRadius: 8, color, fontSize: 14, fontWeight: "bold", transition: "all 0.3s" }}>
+            <div key={val} className="w-[50px] h-[50px] flex flex-col items-center justify-center rounded-[8px] text-[14px] font-bold transition-all duration-300"
+              style={{ background: bg, border: `2px solid ${border}`, color }}>
               <div>{val}</div>
-              <div style={{ fontSize: 9, color: i === step?.mid ? "#000" : W2_COLORS.muted }}>[{i}]</div>
+              <div className="text-[9px]" style={{ color: i === step?.mid ? "#000" : W2_COLORS.muted }}>[{i}]</div>
             </div>
           );
         })}
       </div>
       {step && (
-        <div style={{ marginTop: 16, padding: "12px 16px", background: W2_COLORS.card, borderRadius: 8, borderLeft: `3px solid ${step.found ? W2_COLORS.accent3 : W2_COLORS.warn}` }}>
-          <div style={{ color: W2_COLORS.text, fontSize: 13 }}>
-            <span style={{ color: W2_COLORS.accent }}>left={step.left}</span>, <span style={{ color: W2_COLORS.accent2 }}>right={step.right}</span>, <span style={{ color: W2_COLORS.warn }}>mid={step.mid}</span> → arr[{step.mid}]={arr[step.mid]}
-            {step.found ? <span style={{ color: W2_COLORS.accent3, marginLeft: 8 }}>✅ 찾았습니다!</span>
-              : step.tooSmall ? <span style={{ color: W2_COLORS.muted, marginLeft: 8 }}>→ 목표값이 더 크므로 left = mid+1</span>
-                : <span style={{ color: W2_COLORS.muted, marginLeft: 8 }}>→ 목표값이 더 작으므로 right = mid-1</span>}
+        <div className="mt-4 px-4 py-3 bg-[#111827] rounded-[8px]"
+          style={{ borderLeft: `3px solid ${step.found ? W2_COLORS.accent3 : W2_COLORS.warn}` }}>
+          <div className="text-[#e2e8f0] text-[13px]">
+            <span className="text-[#00d4ff]">left={step.left}</span>, <span className="text-[#7c3aed]">right={step.right}</span>, <span className="text-[#f59e0b]">mid={step.mid}</span> → arr[{step.mid}]={arr[step.mid]}
+            {step.found ? <span className="text-[#10b981] ml-2">✅ 찾았습니다!</span>
+              : step.tooSmall ? <span className="text-[#64748b] ml-2">→ 목표값이 더 크므로 left = mid+1</span>
+                : <span className="text-[#64748b] ml-2">→ 목표값이 더 작으므로 right = mid-1</span>}
           </div>
         </div>
       )}
@@ -194,37 +204,46 @@ function W2_BinarySearchViz() {
   );
 }
 
+const TREES = [
+  { id: "t0", h: 3 }, { id: "t1", h: 5 }, { id: "t2", h: 6 },
+  { id: "t3", h: 1 }, { id: "t4", h: 8 }, { id: "t5", h: 3 },
+  { id: "t6", h: 7 }, { id: "t7", h: 4 }, { id: "t8", h: 2 },
+  { id: "t9", h: 6 },
+];
+
 function W2_ParametricViz() {
   const [mid, setMid] = useState(3);
-  const trees = [3, 5, 6, 1, 8, 3, 7, 4, 2, 6];
+  const trees = TREES;
   const needed = 7;
 
-  const calc = (height) => trees.reduce((sum, t) => sum + Math.max(0, t - height), 0);
+  const calc = (height) => trees.reduce((sum, t) => sum + Math.max(0, t.h - height), 0);
 
   return (
-    <div style={{ background: "#0d1117", border: `1px solid ${W2_COLORS.border}`, borderRadius: 12, padding: 20, margin: "16px 0" }}>
-      <p style={{ color: W2_COLORS.text, fontSize: 13, marginTop: 0 }}>🌲 나무 절단기 높이를 정해 {needed}m 이상 얻기 (백준 2805)</p>
-      <div style={{ display: "flex", gap: 4, alignItems: "flex-end", height: 100, marginBottom: 12 }}>
-        {trees.map((h, i) => (
-          <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ width: "100%", height: `${(Math.min(h, mid) / 8) * 80}px`, background: W2_COLORS.accent3, borderRadius: "3px 3px 0 0", transition: "all 0.3s" }} />
-            {h > mid && <div style={{ width: "100%", height: `${((h - mid) / 8) * 80}px`, background: W2_COLORS.warn, borderRadius: "3px 3px 0 0" }} />}
+    <div className="bg-[#0d1117] border border-[#1e2d45] rounded-[12px] p-5 my-4">
+      <p className="text-[#e2e8f0] text-[13px] mt-0">🌲 나무 절단기 높이를 정해 {needed}m 이상 얻기 (백준 2805)</p>
+      <div className="flex gap-1 items-end h-[100px] mb-3">
+        {trees.map(({ id, h }) => (
+          <div key={id} className="flex-1 flex flex-col items-center">
+            <div className="w-full rounded-t-[3px] transition-all duration-300"
+              style={{ height: `${(Math.min(h, mid) / 8) * 80}px`, background: W2_COLORS.accent3 }} />
+            {h > mid && <div className="w-full rounded-t-[3px]"
+              style={{ height: `${((h - mid) / 8) * 80}px`, background: W2_COLORS.warn }} />}
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 6, marginBottom: 8, fontSize: 12 }}>
-        <span><span style={{ color: W2_COLORS.accent3 }}>●</span> 남은 나무</span>
-        <span><span style={{ color: W2_COLORS.warn }}>●</span> 잘린 나무 (획득)</span>
+      <div className="flex gap-[6px] mb-2 text-[12px]">
+        <span><span className="text-[#10b981]">●</span> 남은 나무</span>
+        <span><span className="text-[#f59e0b]">●</span> 잘린 나무 (획득)</span>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ color: W2_COLORS.text, fontSize: 13 }}>절단 높이:</span>
+      <div className="flex items-center gap-3">
+        <span className="text-[#e2e8f0] text-[13px]">절단 높이:</span>
         <input type="range" min={0} max={8} value={mid} onChange={e => setMid(Number(e.target.value))}
-          style={{ flex: 1, accentColor: W2_COLORS.accent }} />
-        <span style={{ color: W2_COLORS.accent, fontWeight: "bold", minWidth: 20 }}>{mid}</span>
+          className="flex-1" style={{ accentColor: W2_COLORS.accent }} />
+        <span className="text-[#00d4ff] font-bold min-w-[20px]">{mid}</span>
       </div>
-      <div style={{ marginTop: 12, padding: "10px 14px", background: W2_COLORS.card, borderRadius: 8, fontSize: 13 }}>
-        획득량: <span style={{ color: calc(mid) >= needed ? W2_COLORS.accent3 : W2_COLORS.danger, fontWeight: "bold" }}>{calc(mid)}m</span>
-        <span style={{ color: W2_COLORS.muted, marginLeft: 8 }}>(필요: {needed}m → {calc(mid) >= needed ? "✅ 가능!" : "❌ 부족"})</span>
+      <div className="mt-3 px-[14px] py-[10px] bg-[#111827] rounded-[8px] text-[13px]">
+        획득량: <span className="font-bold" style={{ color: calc(mid) >= needed ? W2_COLORS.accent3 : W2_COLORS.danger }}>{calc(mid)}m</span>
+        <span className="text-[#64748b] ml-2">(필요: {needed}m → {calc(mid) >= needed ? "✅ 가능!" : "❌ 부족"})</span>
       </div>
     </div>
   );
@@ -232,9 +251,9 @@ function W2_ParametricViz() {
 
 function W2_ComplexityBadge({ time, space }) {
   return (
-    <span style={{ display: "inline-flex", gap: 8, fontSize: 12 }}>
-      <span style={{ background: "#1a2744", border: `1px solid ${W2_COLORS.accent}`, color: W2_COLORS.accent, padding: "2px 8px", borderRadius: 20 }}>시간 {time}</span>
-      <span style={{ background: "#1a1744", border: `1px solid ${W2_COLORS.accent2}`, color: W2_COLORS.accent2, padding: "2px 8px", borderRadius: 20 }}>공간 {space}</span>
+    <span className="inline-flex gap-2 text-[12px]">
+      <span className="bg-[#1a2744] border border-[#00d4ff] text-[#00d4ff] px-2 py-[2px] rounded-[20px]">시간 {time}</span>
+      <span className="bg-[#1a1744] border border-[#7c3aed] text-[#7c3aed] px-2 py-[2px] rounded-[20px]">공간 {space}</span>
     </span>
   );
 }

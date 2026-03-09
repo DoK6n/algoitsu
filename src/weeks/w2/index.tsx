@@ -1,10 +1,8 @@
 import { useState } from 'react'
+import { tv } from 'tailwind-variants'
 import { PageLayout } from '../../components/PageLayout'
 import { W2_COLORS } from './theme'
-import { W2_chapters as _W2_chapters, W2_sectionData } from './sections'
-
-// W2 원본은 title 키를 사용 → PageLayout의 label로 매핑
-const W2_chapters = _W2_chapters.map((ch: any) => ({ ...ch, label: ch.title ?? ch.label }))
+import { W2_chapters, W2_sectionData } from './sections'
 
 const theme = {
   bg: W2_COLORS.bg,
@@ -14,15 +12,18 @@ const theme = {
   muted: W2_COLORS.muted,
 }
 
-const headerStyles = {
-  iconWrap: 'rounded-lg w-9 h-9 flex items-center justify-center text-lg shrink-0',
-  title: 'font-bold text-[15px]',
-  subtitle: 'text-[11px] font-mono',
-}
+const header = tv({
+  slots: {
+    iconWrap: 'rounded-lg w-9 h-9 flex items-center justify-center text-lg shrink-0',
+    title: 'font-bold text-[15px]',
+    subtitle: 'text-[11px] font-mono',
+  },
+})
 
 export function W2Page() {
   const [active, setActive] = useState('intro')
   const Content = W2_sectionData[active] || W2_sectionData.intro
+  const { iconWrap, title, subtitle } = header()
 
   return (
     <PageLayout
@@ -33,14 +34,14 @@ export function W2Page() {
       header={
         <>
           <div
-            className={headerStyles.iconWrap}
+            className={iconWrap()}
             style={{ background: `linear-gradient(135deg, ${W2_COLORS.accent}, ${W2_COLORS.accent2})` }}
           >
             📚
           </div>
           <div>
-            <div className={headerStyles.title}>코테 커리큘럼</div>
-            <div className={headerStyles.subtitle} style={{ color: W2_COLORS.muted }}>
+            <div className={title()}>코테 커리큘럼</div>
+            <div className={subtitle()} style={{ color: W2_COLORS.muted }}>
               Week 2: 정렬 &amp; 탐색 알고리즘 — Python3
             </div>
           </div>

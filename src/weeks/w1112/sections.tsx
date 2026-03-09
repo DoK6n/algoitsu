@@ -18,8 +18,10 @@ export const W1112_chapters = [
 /* ══════════════════════════════ SHARED UI ══════════════════════════════ */
 function W1112_Badge({ children, color = W1112_T.w11 }) {
   return (
-    <span style={{ background:color+"22", border:`1px solid ${color}55`, color,
-      padding:"2px 10px", borderRadius:20, fontSize:12, fontWeight:600, display:"inline-block" }}>
+    <span
+      className="inline-block rounded-[20px] text-[12px] font-semibold px-[10px] py-[2px]"
+      style={{ background: `${color}22`, border: `1px solid ${color}55`, color }}
+    >
       {children}
     </span>
   );
@@ -27,22 +29,34 @@ function W1112_Badge({ children, color = W1112_T.w11 }) {
 
 function W1112_Callout({ color = W1112_T.w11, icon = "💡", title, children }) {
   return (
-    <div style={{ background:color+"0e", border:`1px solid ${color}40`,
-      borderLeft:`4px solid ${color}`, borderRadius:10, padding:"14px 18px", margin:"14px 0" }}>
-      {title && <div style={{ color, fontWeight:700, marginBottom:8, fontSize:14 }}>{icon} {title}</div>}
-      <div style={{ color:W1112_T.text, lineHeight:1.9, fontSize:13.5 }}>{children}</div>
+    <div
+      className="rounded-[10px] px-[18px] py-[14px] my-[14px]"
+      style={{
+        background: `${color}0e`,
+        border: `1px solid ${color}40`,
+        borderLeft: `4px solid ${color}`,
+      }}
+    >
+      {title && (
+        <div className="font-bold mb-[8px] text-[14px]" style={{ color }}>
+          {icon} {title}
+        </div>
+      )}
+      <div className="text-[#e8f4fd] leading-[1.9] text-[13.5px]">{children}</div>
     </div>
   );
 }
 
 function W1112_SectionTitle({ children, sub, color = W1112_T.w11 }) {
   return (
-    <div style={{ marginBottom:24 }}>
-      <h2 style={{ color, margin:0, fontSize:22, fontWeight:800, fontFamily:"'Fira Code',monospace",
-        textShadow:`0 0 30px ${color}44` }}>
+    <div className="mb-[24px]">
+      <h2
+        className="m-0 text-[22px] font-extrabold font-mono"
+        style={{ color, textShadow: `0 0 30px ${color}44` }}
+      >
         {children}
       </h2>
-      {sub && <p style={{ color:W1112_T.muted, margin:"6px 0 0", fontSize:14 }}>{sub}</p>}
+      {sub && <p className="text-[#3a6080] mt-[6px] mb-0 text-[14px]">{sub}</p>}
     </div>
   );
 }
@@ -57,32 +71,40 @@ function W1112_CodeBlock({ code }) {
     const src = ci !== -1 ? line.slice(0, ci) : line;
     const cmt = ci !== -1 ? line.slice(ci) : "";
     const tokens = src.split(/(\b\w+\b|[^\w\s]|\s+)/g).filter(Boolean).map((t, i) => {
-      if (kw.has(t)) return <span key={i} style={{ color:"#c084fc", fontWeight:700 }}>{t}</span>;
-      if (bi.has(t)) return <span key={i} style={{ color:"#67e8f9" }}>{t}</span>;
-      if (/^\d+$/.test(t)) return <span key={i} style={{ color:"#fbbf24" }}>{t}</span>;
-      if (/^["']/.test(t)) return <span key={i} style={{ color:"#86efac" }}>{t}</span>;
-      return <span key={i}>{t}</span>;
+      const k = `${i}-${t}`;
+      if (kw.has(t)) return <span key={k} className="text-[#c084fc] font-bold">{t}</span>;
+      if (bi.has(t)) return <span key={k} className="text-[#67e8f9]">{t}</span>;
+      if (/^\d+$/.test(t)) return <span key={k} className="text-[#fbbf24]">{t}</span>;
+      if (/^["']/.test(t)) return <span key={k} className="text-[#86efac]">{t}</span>;
+      return <span key={k}>{t}</span>;
     });
-    return [...tokens, cmt && <span key="c" style={{ color:"#1e3a5f", fontStyle:"italic" }}>{cmt}</span>];
+    return [...tokens, cmt && <span key="c" className="text-[#1e3a5f] italic">{cmt}</span>];
   };
 
   return (
-    <div style={{ background:"#010610", border:`1px solid ${W1112_T.border}`, borderRadius:12, overflow:"hidden", margin:"12px 0" }}>
-      <div style={{ background:"#040d1a", borderBottom:`1px solid ${W1112_T.border}`, display:"flex", justifyContent:"space-between", padding:"6px 14px" }}>
-        <span style={{ color:W1112_T.muted, fontSize:11, fontFamily:"monospace" }}>python3</span>
-        <button onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(()=>setCopied(false),1500); }}
-          style={{ background:"none", border:"none", color:copied?W1112_T.green:W1112_T.muted, cursor:"pointer", fontSize:12 }}>
+    <div
+      className="bg-[#010610] border border-[#102040] rounded-[12px] overflow-hidden my-[12px]"
+    >
+      <div className="bg-[#040d1a] border-b border-[#102040] flex justify-between px-[14px] py-[6px]">
+        <span className="text-[#3a6080] text-[11px] font-mono">python3</span>
+        <button
+          type="button"
+          onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(()=>setCopied(false),1500); }}
+          className={`bg-transparent border-none cursor-pointer text-[12px] ${copied ? "text-[#00ff88]" : "text-[#3a6080]"}`}
+        >
           {copied ? "✅ 복사됨" : "📋 복사"}
         </button>
       </div>
-      <pre style={{ padding:16, margin:0, overflowX:"auto", fontFamily:"'Fira Code','Courier New',monospace",
-        fontSize:13, lineHeight:1.75, color:W1112_T.text }}>
-        {code.split("\n").map((line, i) => (
-          <div key={i} style={{ display:"flex" }}>
-            <span style={{ color:W1112_T.muted, userSelect:"none", minWidth:30, fontSize:11, paddingTop:2 }}>{i+1}</span>
-            <span>{renderLine(line)}</span>
-          </div>
-        ))}
+      <pre className="p-[16px] m-0 overflow-x-auto font-mono text-[13px] leading-[1.75] text-[#e8f4fd]">
+        {code.split("\n").map((line, i) => {
+          const lineNum = i + 1;
+          return (
+            <div key={`${lineNum}-${line.trimStart().slice(0,12)}`} className="flex">
+              <span className="text-[#3a6080] select-none min-w-[30px] text-[11px] pt-[2px]">{lineNum}</span>
+              <span>{renderLine(line)}</span>
+            </div>
+          );
+        })}
       </pre>
     </div>
   );
@@ -94,15 +116,20 @@ export const W1112_sections = {
 intro: () => (
   <div>
     <W1112_SectionTitle color={W1112_T.text}>🗺️ 5단계 Week 11 + 6단계 Week 12 — 마지막!</W1112_SectionTitle>
-    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:12, marginBottom:24 }}>
+    <div className="grid gap-[12px] mb-[24px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
       {[
         { week:"Week 11", title:"기타 알고리즘", items:["유니온 파인드","위상 정렬","세그먼트 트리"], color:W1112_T.w11 },
         { week:"Week 12", title:"실전 대비", items:["기업별 전략","시간 최적화","디버깅 패턴"], color:W1112_T.w12 },
       ].map(({week,title,items,color}) => (
-        <div key={week} style={{ background:W1112_T.card, border:`1px solid ${W1112_T.border}`, borderRadius:12, padding:18, borderTop:`3px solid ${color}` }}>
-          <div style={{ color, fontSize:11, fontWeight:700, fontFamily:"monospace", marginBottom:4 }}>{week}</div>
-          <div style={{ color:W1112_T.text, fontWeight:700, fontSize:15, marginBottom:12 }}>{title}</div>
-          {items.map(i => <div key={i} style={{ color:W1112_T.muted, fontSize:13, padding:"4px 0", borderBottom:`1px solid ${W1112_T.border}` }}>• {i}</div>)}
+        <div key={week}
+          className="bg-[#0a1628] border border-[#102040] rounded-[12px] p-[18px]"
+          style={{ borderTop:`3px solid ${color}` }}
+        >
+          <div className="text-[11px] font-bold font-mono mb-[4px]" style={{ color }}>{week}</div>
+          <div className="text-[#e8f4fd] font-bold text-[15px] mb-[12px]">{title}</div>
+          {items.map(i => (
+            <div key={i} className="text-[#3a6080] text-[13px] py-[4px] border-b border-[#102040]">• {i}</div>
+          ))}
         </div>
       ))}
     </div>
@@ -110,16 +137,19 @@ intro: () => (
       여기까지 왔다면 <strong>유니콘·대기업 코딩테스트</strong>를 충분히 도전할 수 있는 실력입니다.<br />
       마지막 두 주는 나머지 핵심 알고리즘을 마무리하고, 실전 감각을 극대화합니다.
     </W1112_Callout>
-    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))", gap:10 }}>
+    <div className="grid gap-[10px] grid-cols-[repeat(auto-fill,minmax(170px,1fr))]">
       {[
         { name:"유니온 파인드", use:"연결 요소, MST", time:"O(α(N))≈O(1)", color:W1112_T.w11 },
         { name:"크루스칼 MST", use:"최소 신장 트리", time:"O(E log E)", color:W1112_T.w11 },
         { name:"위상 정렬", use:"의존관계, 순서", time:"O(V+E)", color:W1112_T.w11 },
         { name:"세그먼트 트리", use:"구간 쿼리/업데이트", time:"O(log N)", color:W1112_T.w11 },
       ].map(item => (
-        <div key={item.name} style={{ background:W1112_T.card, border:`1px solid ${W1112_T.border}`, borderRadius:10, padding:"12px 14px", borderLeft:`3px solid ${item.color}` }}>
-          <div style={{ color:W1112_T.text, fontWeight:700, fontSize:13 }}>{item.name}</div>
-          <div style={{ color:W1112_T.muted, fontSize:11, margin:"4px 0" }}>{item.use}</div>
+        <div key={item.name}
+          className="bg-[#0a1628] border border-[#102040] rounded-[10px] px-[14px] py-[12px]"
+          style={{ borderLeft:`3px solid ${item.color}` }}
+        >
+          <div className="text-[#e8f4fd] font-bold text-[13px]">{item.name}</div>
+          <div className="text-[#3a6080] text-[11px] my-[4px]">{item.use}</div>
           <W1112_Badge color={item.color}>{item.time}</W1112_Badge>
         </div>
       ))}
@@ -130,7 +160,7 @@ intro: () => (
 uf: () => (
   <div>
     <W1112_SectionTitle sub="서로소 집합 — 합치기(Union)와 찾기(Find)" color={W1112_T.w11}>🔗 유니온 파인드 (Union-Find)</W1112_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-[8px] mb-[16px] flex-wrap">
       <W1112_Badge color={W1112_T.w11}>Find O(α(N)) ≈ O(1)</W1112_Badge>
       <W1112_Badge color={W1112_T.w11}>Union O(α(N)) ≈ O(1)</W1112_Badge>
       <W1112_Badge color={W1112_T.green}>경로 압축 + 랭크 최적화</W1112_Badge>
@@ -141,17 +171,17 @@ class W1112_UnionFind:
     def __init__(self, n):
         self.parent = list(range(n))  # 초기: 자기 자신이 루트
         self.rank = [0] * n           # 트리 높이
-    
+
     def find(self, x):
         # 경로 압축 (Path Compression): 루트까지 직접 연결!
         if self.parent[x] != x:
             self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
-    
+
     def union(self, x, y):
         rx, ry = self.find(x), self.find(y)
         if rx == ry: return False  # 이미 같은 집합
-        
+
         # 랭크 기반 합치기 (Union by Rank): 작은 트리를 큰 트리 밑에
         if self.rank[rx] < self.rank[ry]:
             self.parent[rx] = ry
@@ -161,7 +191,7 @@ class W1112_UnionFind:
             self.parent[ry] = rx
             self.rank[rx] += 1
         return True
-    
+
     def connected(self, x, y):
         return self.find(x) == self.find(y)
 
@@ -172,7 +202,7 @@ sys.setrecursionlimit(10**6)
 def solve():
     n, m = map(int, input().split())
     uf = W1112_UnionFind(n + 1)
-    
+
     for _ in range(m):
         op, a, b = map(int, input().split())
         if op == 0:
@@ -185,7 +215,7 @@ def solve():
 kruskal: () => (
   <div>
     <W1112_SectionTitle sub="유니온 파인드 응용 — 최소 신장 트리(MST)" color={W1112_T.w11}>🌲 크루스칼 알고리즘 (Kruskal MST)</W1112_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-[8px] mb-[16px] flex-wrap">
       <W1112_Badge color={W1112_T.w11}>O(E log E)</W1112_Badge>
       <W1112_Badge color={W1112_T.green}>간선 정렬 + 유니온파인드</W1112_Badge>
     </div>
@@ -200,42 +230,42 @@ def kruskal(n, edges):
     edges: [(가중치, u, v), ...]
     """
     edges.sort()  # 가중치 기준 정렬
-    
+
     parent = list(range(n + 1))
-    
+
     def find(x):
         if parent[x] != x:
             parent[x] = find(parent[x])
         return parent[x]
-    
+
     def union(x, y):
         rx, ry = find(x), find(y)
         if rx == ry: return False
         parent[ry] = rx
         return True
-    
+
     total_cost = 0
     mst_edges = []
-    
+
     for w, u, v in edges:
         if union(u, v):           # 사이클이 생기지 않으면
             total_cost += w
             mst_edges.append((u, v, w))
             if len(mst_edges) == n - 1:  # n-1개 간선이면 완성
                 break
-    
+
     return total_cost, mst_edges
 
 # ─── 프로그래머스: 섬 연결하기 ───
 def solution(n, costs):
     costs.sort(key=lambda x: x[2])
     parent = list(range(n))
-    
+
     def find(x):
         if parent[x] != x:
             parent[x] = find(parent[x])
         return parent[x]
-    
+
     answer = 0
     for a, b, c in costs:
         ra, rb = find(a), find(b)
@@ -243,7 +273,7 @@ def solution(n, costs):
             parent[rb] = ra
             answer += c
     return answer`} />
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+    <div className="grid grid-cols-2 gap-[12px]">
       <W1112_Callout color={W1112_T.w11} icon="🌲" title="크루스칼 vs 프림">
         <strong>크루스칼</strong>: 간선 중심, 희소 그래프 유리, O(E log E)<br />
         <strong>프림</strong>: 노드 중심, 밀집 그래프 유리, O(V²) 또는 O(E log V)
@@ -258,7 +288,7 @@ def solution(n, costs):
 topo: () => (
   <div>
     <W1112_SectionTitle sub="의존 관계가 있는 순서 결정 — BFS(Kahn) 방식" color={W1112_T.w11}>📐 위상 정렬 (Topological Sort)</W1112_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-[8px] mb-[16px] flex-wrap">
       <W1112_Badge color={W1112_T.w11}>시간 O(V+E)</W1112_Badge>
       <W1112_Badge color={W1112_T.orange}>방향 비순환 그래프(DAG)에서만</W1112_Badge>
     </div>
@@ -269,24 +299,24 @@ topo: () => (
 def topological_sort(n, edges):
     graph = [[] for _ in range(n + 1)]
     in_degree = [0] * (n + 1)
-    
+
     for u, v in edges:
         graph[u].append(v)
         in_degree[v] += 1
-    
+
     # 진입 차수 0인 노드부터 시작
     queue = deque([i for i in range(1, n+1) if in_degree[i] == 0])
     result = []
-    
+
     while queue:
         node = queue.popleft()
         result.append(node)
-        
+
         for neighbor in graph[node]:
             in_degree[neighbor] -= 1
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
-    
+
     # 모든 노드를 처리했는지 확인 (사이클 감지)
     if len(result) != n:
         return None  # 사이클 존재!
@@ -296,18 +326,18 @@ def topological_sort(n, edges):
 def topological_sort_dfs(n, graph):
     visited = [False] * (n + 1)
     stack = []
-    
+
     def dfs(v):
         visited[v] = True
         for nb in graph[v]:
             if not visited[nb]:
                 dfs(nb)
         stack.append(v)  # 후위 순서로 스택에 추가
-    
+
     for i in range(1, n + 1):
         if not visited[i]:
             dfs(i)
-    
+
     return stack[::-1]  # 역순이 위상 정렬`} />
     <W1112_CodeBlock code={`# ─── 실전: BOJ 1005 ACM Craft (위상 정렬 + DP) ───
 # 건물 짓는 순서에 맞게 최소 완료 시간 계산
@@ -319,18 +349,18 @@ def acm_craft():
     for _ in range(W1112_T):
         n, k = map(int, input().split())
         cost = [0] + list(map(int, input().split()))
-        
+
         graph = [[] for _ in range(n+1)]
         in_deg = [0] * (n+1)
         for _ in range(k):
             x, y = map(int, input().split())
             graph[x].append(y)
             in_deg[y] += 1
-        
+
         target = int(input())
         dp = cost[:]  # dp[i] = i번 건물 완료 시간
         queue = deque([i for i in range(1,n+1) if in_deg[i]==0])
-        
+
         while queue:
             node = queue.popleft()
             for nb in graph[node]:
@@ -338,7 +368,7 @@ def acm_craft():
                 in_deg[nb] -= 1
                 if in_deg[nb] == 0:
                     queue.append(nb)
-        
+
         print(dp[target])`} />
   </div>
 ),
@@ -346,7 +376,7 @@ def acm_craft():
 segtree: () => (
   <div>
     <W1112_SectionTitle sub="구간 합/최솟값을 O(log N)에 — 배열 업데이트도 O(log N)" color={W1112_T.w11}>📊 세그먼트 트리 (Segment Tree)</W1112_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-[8px] mb-[16px] flex-wrap">
       <W1112_Badge color={W1112_T.w11}>구간 쿼리 O(log N)</W1112_Badge>
       <W1112_Badge color={W1112_T.w11}>업데이트 O(log N)</W1112_Badge>
       <W1112_Badge color={W1112_T.orange}>누적합보다 동적 업데이트에 강함</W1112_Badge>
@@ -363,7 +393,7 @@ class W1112_SegTree:
         self.n = len(arr)
         self.tree = [0] * (4 * self.n)
         self.build(arr, 1, 0, self.n - 1)
-    
+
     def build(self, arr, node, s, e):
         if s == e:
             self.tree[node] = arr[s]
@@ -372,7 +402,7 @@ class W1112_SegTree:
         self.build(arr, 2*node, s, m)
         self.build(arr, 2*node+1, m+1, e)
         self.tree[node] = self.tree[2*node] + self.tree[2*node+1]
-    
+
     def query(self, l, r, node=1, s=None, e=None):
         if s is None: s, e = 0, self.n - 1
         if r < s or e < l: return 0          # 범위 밖
@@ -380,7 +410,7 @@ class W1112_SegTree:
         m = (s + e) // 2
         return (self.query(l, r, 2*node, s, m) +
                 self.query(l, r, 2*node+1, m+1, e))
-    
+
     def update(self, idx, val, node=1, s=None, e=None):
         if s is None: s, e = 0, self.n - 1
         if s == e:
@@ -402,19 +432,19 @@ class W1112_BIT:
     def __init__(self, n):
         self.n = n
         self.tree = [0] * (n + 1)
-    
+
     def update(self, i, delta):
         while i <= self.n:
             self.tree[i] += delta
             i += i & (-i)  # 최하위 비트 더하기
-    
+
     def query(self, i):  # 1부터 i까지 합
         s = 0
         while i > 0:
             s += self.tree[i]
             i -= i & (-i)  # 최하위 비트 빼기
         return s
-    
+
     def range_query(self, l, r):
         return self.query(r) - self.query(l - 1)`} />
   </div>
@@ -423,7 +453,7 @@ class W1112_BIT:
 final: () => (
   <div>
     <W1112_SectionTitle sub="실전에서 이기는 전략 — 시간 배분, 접근법, 최적화" color={W1112_T.w12}>🎯 Week 12: 실전 전략</W1112_SectionTitle>
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:16 }}>
+    <div className="grid grid-cols-2 gap-[12px] mb-[16px]">
       {[
         {
           title:"⏱️ 시간 배분 전략",
@@ -446,12 +476,11 @@ final: () => (
           ]
         },
       ].map(({title,color,items}) => (
-        <div key={title} style={{ background:W1112_T.card, border:`1px solid ${W1112_T.border}`, borderRadius:10, padding:16 }}>
-          <div style={{ color, fontWeight:700, marginBottom:10, fontSize:14 }}>{title}</div>
-          {items.map((item,i) => (
-            <div key={i} style={{ color:W1112_T.muted, fontSize:12, padding:"4px 0", borderBottom:`1px solid ${W1112_T.border}`,
-              display:"flex", gap:8 }}>
-              <span style={{ color:color, flexShrink:0 }}>→</span>
+        <div key={title} className="bg-[#0a1628] border border-[#102040] rounded-[10px] p-[16px]">
+          <div className="font-bold mb-[10px] text-[14px]" style={{ color }}>{title}</div>
+          {items.map((item) => (
+            <div key={item} className="text-[#3a6080] text-[12px] py-[4px] border-b border-[#102040] flex gap-[8px]">
+              <span style={{ color, flexShrink:0 }}>→</span>
               {item}
             </div>
           ))}
@@ -524,7 +553,7 @@ big = 10**18 * 10**18  # 아무 문제 없음`} />
 company: () => (
   <div>
     <W1112_SectionTitle sub="기업마다 선호 알고리즘이 다릅니다" color={W1112_T.w12}>🏢 기업별 출제 경향</W1112_SectionTitle>
-    <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+    <div className="flex flex-col gap-[12px]">
       {[
         {
           name:"🟡 카카오",
@@ -555,23 +584,29 @@ company: () => (
           problems:["LeetCode", "HackerRank", "CodeSignal"],
         },
       ].map(co => (
-        <div key={co.name} style={{ background:W1112_T.card, border:`1px solid ${W1112_T.border}`, borderRadius:12, padding:16,
-          borderLeft:`4px solid ${co.color}` }}>
-          <div style={{ color:co.color, fontWeight:700, fontSize:16, marginBottom:10 }}>{co.name}</div>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+        <div key={co.name}
+          className="bg-[#0a1628] border border-[#102040] rounded-[12px] p-[16px]"
+          style={{ borderLeft:`4px solid ${co.color}` }}
+        >
+          <div className="font-bold text-[16px] mb-[10px]" style={{ color:co.color }}>{co.name}</div>
+          <div className="grid grid-cols-2 gap-[10px]">
             <div>
-              <div style={{ color:W1112_T.muted, fontSize:11, marginBottom:6 }}>출제 특징</div>
+              <div className="text-[#3a6080] text-[11px] mb-[6px]">출제 특징</div>
               {co.features.map(f => (
-                <div key={f} style={{ color:W1112_T.text, fontSize:12, padding:"2px 0" }}>• {f}</div>
+                <div key={f} className="text-[#e8f4fd] text-[12px] py-[2px]">• {f}</div>
               ))}
             </div>
             <div>
-              <div style={{ color:W1112_T.muted, fontSize:11, marginBottom:6 }}>추천 플랫폼</div>
+              <div className="text-[#3a6080] text-[11px] mb-[6px]">추천 플랫폼</div>
               {co.problems.map(p => (
-                <div key={p} style={{ color:W1112_T.muted, fontSize:12, padding:"2px 0" }}>📌 {p}</div>
+                <div key={p} className="text-[#3a6080] text-[12px] py-[2px]">📌 {p}</div>
               ))}
-              <div style={{ marginTop:8, padding:"6px 10px", background:co.color+"15",
-                borderRadius:6, color:co.color, fontSize:11 }}>💡 {co.tip}</div>
+              <div
+                className="mt-[8px] px-[10px] py-[6px] rounded-[6px] text-[11px]"
+                style={{ background: `${co.color}15`, color: co.color }}
+              >
+                💡 {co.tip}
+              </div>
             </div>
           </div>
         </div>
@@ -622,15 +657,19 @@ checklist: () => (
         ],
       },
     ].map(section => (
-      <div key={section.title} style={{ marginBottom:16, background:W1112_T.card, border:`1px solid ${W1112_T.border}`, borderRadius:12, padding:16 }}>
-        <div style={{ color:section.color, fontWeight:700, marginBottom:10, fontSize:14 }}>{section.title}</div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:6 }}>
+      <div key={section.title} className="mb-[16px] bg-[#0a1628] border border-[#102040] rounded-[12px] p-[16px]">
+        <div className="font-bold mb-[10px] text-[14px]" style={{ color:section.color }}>{section.title}</div>
+        <div className="grid gap-[6px] grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
           {section.items.map(item => (
-            <div key={item} style={{ display:"flex", gap:8, alignItems:"flex-start",
-              padding:"6px 10px", background:section.color+"0a",
-              border:`1px solid ${section.color}22`, borderRadius:8 }}>
-              <span style={{ color:section.color, flexShrink:0, fontSize:13 }}>□</span>
-              <span style={{ color:W1112_T.muted, fontSize:12 }}>{item}</span>
+            <div key={item}
+              className="flex gap-[8px] items-start px-[10px] py-[6px] rounded-[8px]"
+              style={{
+                background: `${section.color}0a`,
+                border: `1px solid ${section.color}22`,
+              }}
+            >
+              <span className="text-[13px]" style={{ color:section.color, flexShrink:0 }}>□</span>
+              <span className="text-[#3a6080] text-[12px]">{item}</span>
             </div>
           ))}
         </div>
@@ -640,16 +679,17 @@ checklist: () => (
 ),
 
 complete: () => (
-  <div style={{ textAlign:"center", padding:"20px 0" }}>
-    <div style={{ fontSize:72, marginBottom:24 }}>🏆</div>
-    <h1 style={{ color:W1112_T.w12, fontSize:32, fontWeight:900, fontFamily:"'Fira Code',monospace",
-      textShadow:`0 0 40px ${W1112_T.w12}88`, marginBottom:8 }}>
+  <div className="text-center py-[20px]">
+    <div className="text-[72px] mb-[24px]">🏆</div>
+    <h1
+      className="text-[#ffd700] text-[32px] font-black font-mono mb-[8px] [text-shadow:0_0_40px_#ffd70088]"
+    >
       12주 커리큘럼 완주!
     </h1>
-    <p style={{ color:W1112_T.muted, fontSize:16, marginBottom:32 }}>
+    <p className="text-[#3a6080] text-[16px] mb-[32px]">
       유니콘 · 대기업 코딩테스트 준비 완료
     </p>
-    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:12, maxWidth:800, margin:"0 auto 32px", textAlign:"left" }}>
+    <div className="grid gap-[12px] max-w-[800px] mx-auto mb-[32px] text-left grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
       {[
         { icon:"📚", week:"Week 1-2", title:"기초 & 정렬/탐색", color:W1112_T.w11 },
         { icon:"🧱", week:"Week 3-4", title:"자료구조 완전정복", color:"#7eff6a" },
@@ -657,24 +697,25 @@ complete: () => (
         { icon:"🧩", week:"Week 8-10", title:"DP & 그리디", color:"#bd93f9" },
         { icon:"⚡", week:"Week 11-12", title:"고급 알고리즘 & 실전", color:W1112_T.w12 },
       ].map(item => (
-        <div key={item.week} style={{ background:W1112_T.card, border:`1px solid ${item.color}44`,
-          borderRadius:12, padding:"14px 16px", borderTop:`3px solid ${item.color}` }}>
-          <div style={{ fontSize:24, marginBottom:6 }}>{item.icon}</div>
-          <div style={{ color:item.color, fontSize:11, fontFamily:"monospace" }}>{item.week}</div>
-          <div style={{ color:W1112_T.text, fontWeight:700, fontSize:13, marginTop:2 }}>{item.title}</div>
+        <div key={item.week}
+          className="bg-[#0a1628] rounded-[12px] px-[16px] py-[14px]"
+          style={{ border:`1px solid ${item.color}44`, borderTop:`3px solid ${item.color}` }}
+        >
+          <div className="text-[24px] mb-[6px]">{item.icon}</div>
+          <div className="text-[11px] font-mono" style={{ color:item.color }}>{item.week}</div>
+          <div className="text-[#e8f4fd] font-bold text-[13px] mt-[2px]">{item.title}</div>
         </div>
       ))}
     </div>
-    <div style={{ maxWidth:600, margin:"0 auto" }}>
+    <div className="max-w-[600px] mx-auto">
       <W1112_Callout color={W1112_T.w12} icon="🚀" title="다음 단계">
         <strong>1단계</strong>: 프로그래머스 레벨 3 문제 20개 풀기<br />
         <strong>2단계</strong>: 목표 기업 기출 5년치 전부 풀기<br />
         <strong>3단계</strong>: 주 2회 모의 코딩테스트 (시간 제한 엄수)<br />
         <strong>4단계</strong>: 틀린 문제 오답노트 → 패턴 체화
       </W1112_Callout>
-      <div style={{ marginTop:24, padding:"20px", background:W1112_T.card, border:`1px solid ${W1112_T.w12}44`,
-        borderRadius:12, display:"flex", flexDirection:"column", gap:8 }}>
-        <div style={{ color:W1112_T.w12, fontWeight:700 }}>📚 마지막 추천 자료</div>
+      <div className="mt-[24px] p-[20px] bg-[#0a1628] rounded-[12px] flex flex-col gap-[8px] border border-[#ffd70044]">
+        <div className="text-[#ffd700] font-bold">📚 마지막 추천 자료</div>
         {[
           { name:"이것이 코딩 테스트다", desc:"나동빈 저 — 이 커리큘럼의 바이블" },
           { name:"파이썬 알고리즘 인터뷰", desc:"박상길 저 — 심화 학습용" },
@@ -682,11 +723,11 @@ complete: () => (
           { name:"프로그래머스", desc:"기업 기출 및 모의고사" },
           { name:"LeetCode", desc:"토스/당근 등 스타트업 준비" },
         ].map(r => (
-          <div key={r.name} style={{ display:"flex", gap:10, padding:"8px 0", borderBottom:`1px solid ${W1112_T.border}` }}>
-            <span style={{ color:W1112_T.w12, fontSize:14 }}>→</span>
+          <div key={r.name} className="flex gap-[10px] py-[8px] border-b border-[#102040]">
+            <span className="text-[#ffd700] text-[14px]">→</span>
             <div>
-              <span style={{ color:W1112_T.text, fontWeight:600, fontSize:13 }}>{r.name}</span>
-              <span style={{ color:W1112_T.muted, fontSize:12, marginLeft:8 }}>{r.desc}</span>
+              <span className="text-[#e8f4fd] font-semibold text-[13px]">{r.name}</span>
+              <span className="text-[#3a6080] text-[12px] ml-[8px]">{r.desc}</span>
             </div>
           </div>
         ))}
@@ -698,62 +739,54 @@ complete: () => (
 problems: () => (
   <div>
     <W1112_SectionTitle color={W1112_T.text}>📝 Week 11 연습 문제</W1112_SectionTitle>
-    <div style={{ marginBottom:24 }}>
-      <div style={{ color:W1112_T.w11, fontWeight:700, marginBottom:12, fontSize:15 }}>유니온 파인드 / MST</div>
+    <div className="mb-[24px]">
+      <div className="text-[#00e5ff] font-bold mb-[12px] text-[15px]">유니온 파인드 / MST</div>
       {[
         { id:"1717", title:"집합의 표현", level:"🟡", tip:"유니온 파인드 기본" },
         { id:"1976", title:"여행 가자", level:"🟡", tip:"유니온 파인드 연결 여부" },
         { id:"1197", title:"최소 스패닝 트리", level:"🟠", tip:"크루스칼 기본" },
       ].map(p => (
-        <div key={p.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-          padding:"10px 16px", background:W1112_T.card, border:`1px solid ${W1112_T.border}`,
-          borderRadius:10, marginBottom:6, borderLeft:`3px solid ${W1112_T.w11}` }}>
+        <div key={p.id} className="flex justify-between items-center px-[16px] py-[10px] bg-[#0a1628] border border-[#102040] rounded-[10px] mb-[6px] border-l-[3px] border-l-[#00e5ff]">
           <div>
-            <span style={{color:W1112_T.muted,fontSize:12,fontFamily:"monospace"}}>BOJ {p.id}</span>
-            <span style={{color:W1112_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-            <span style={{color:W1112_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+            <span className="text-[#3a6080] text-[12px] font-mono">BOJ {p.id}</span>
+            <span className="text-[#e8f4fd] font-bold ml-[10px]">{p.title}</span>
+            <span className="text-[#3a6080] text-[12px] ml-[10px]">{p.tip}</span>
           </div>
           <span>{p.level}</span>
         </div>
       ))}
       {[{title:"섬 연결하기",tip:"크루스칼 MST"}].map(p => (
-        <div key={p.title} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-          padding:"10px 16px", background:W1112_T.card, border:`1px solid ${W1112_T.border}`,
-          borderRadius:10, marginBottom:6, borderLeft:`3px solid ${W1112_T.w11}88` }}>
+        <div key={p.title} className="flex justify-between items-center px-[16px] py-[10px] bg-[#0a1628] border border-[#102040] rounded-[10px] mb-[6px] border-l-[3px] border-l-[#00e5ff88]">
           <div>
-            <span style={{color:W1112_T.muted,fontSize:12}}>프로그래머스</span>
-            <span style={{color:W1112_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-            <span style={{color:W1112_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+            <span className="text-[#3a6080] text-[12px]">프로그래머스</span>
+            <span className="text-[#e8f4fd] font-bold ml-[10px]">{p.title}</span>
+            <span className="text-[#3a6080] text-[12px] ml-[10px]">{p.tip}</span>
           </div>
           <W1112_Badge color={W1112_T.w11}>Lv.3</W1112_Badge>
         </div>
       ))}
     </div>
-    <div style={{ marginBottom:24 }}>
-      <div style={{ color:W1112_T.orange, fontWeight:700, marginBottom:12, fontSize:15 }}>위상 정렬</div>
+    <div className="mb-[24px]">
+      <div className="text-[#ff8c00] font-bold mb-[12px] text-[15px]">위상 정렬</div>
       {[
         { id:"2252", title:"줄 세우기", level:"🟡", tip:"위상 정렬 기본" },
         { id:"1005", title:"ACM Craft", level:"🔴", tip:"위상 정렬 + DP" },
       ].map(p => (
-        <div key={p.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-          padding:"10px 16px", background:W1112_T.card, border:`1px solid ${W1112_T.border}`,
-          borderRadius:10, marginBottom:6, borderLeft:`3px solid ${W1112_T.orange}` }}>
+        <div key={p.id} className="flex justify-between items-center px-[16px] py-[10px] bg-[#0a1628] border border-[#102040] rounded-[10px] mb-[6px] border-l-[3px] border-l-[#ff8c00]">
           <div>
-            <span style={{color:W1112_T.muted,fontSize:12,fontFamily:"monospace"}}>BOJ {p.id}</span>
-            <span style={{color:W1112_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-            <span style={{color:W1112_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+            <span className="text-[#3a6080] text-[12px] font-mono">BOJ {p.id}</span>
+            <span className="text-[#e8f4fd] font-bold ml-[10px]">{p.title}</span>
+            <span className="text-[#3a6080] text-[12px] ml-[10px]">{p.tip}</span>
           </div>
           <span>{p.level}</span>
         </div>
       ))}
       {[{title:"순위",tip:"플로이드-워셜 or 위상 정렬"}].map(p => (
-        <div key={p.title} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-          padding:"10px 16px", background:W1112_T.card, border:`1px solid ${W1112_T.border}`,
-          borderRadius:10, marginBottom:6, borderLeft:`3px solid ${W1112_T.orange}88` }}>
+        <div key={p.title} className="flex justify-between items-center px-[16px] py-[10px] bg-[#0a1628] border border-[#102040] rounded-[10px] mb-[6px] border-l-[3px] border-l-[#ff8c0088]">
           <div>
-            <span style={{color:W1112_T.muted,fontSize:12}}>프로그래머스</span>
-            <span style={{color:W1112_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-            <span style={{color:W1112_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+            <span className="text-[#3a6080] text-[12px]">프로그래머스</span>
+            <span className="text-[#e8f4fd] font-bold ml-[10px]">{p.title}</span>
+            <span className="text-[#3a6080] text-[12px] ml-[10px]">{p.tip}</span>
           </div>
           <W1112_Badge color={W1112_T.orange}>Lv.3</W1112_Badge>
         </div>
@@ -771,4 +804,5 @@ problems: () => (
 };
 
 /* ══════════════════════════════ APP ══════════════════════════════ */
+
 

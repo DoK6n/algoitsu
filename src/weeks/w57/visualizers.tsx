@@ -23,7 +23,7 @@ function W57_GraphSVG({ visited = [], current = null, queue = [], path = [], nod
   };
 
   return (
-    <svg viewBox="0 0 300 330" style={{ width: "100%", maxWidth: 300, display: "block", margin: "0 auto" }}>
+    <svg viewBox="0 0 300 330" className="w-full max-w-[300px] block mx-auto">
       {W57_GRAPH_EDGES.map(([a, b], i) => {
         const bothVisited = visited.includes(a) && visited.includes(b);
         const inPath = path.some(([x,y]) => (x===a&&y===b)||(x===b&&y===a));
@@ -31,7 +31,7 @@ function W57_GraphSVG({ visited = [], current = null, queue = [], path = [], nod
           <line key={i}
             x1={W57_GRAPH_NODES[a].x} y1={W57_GRAPH_NODES[a].y}
             x2={W57_GRAPH_NODES[b].x} y2={W57_GRAPH_NODES[b].y}
-            stroke={inPath ? W57_T.accent : bothVisited ? W57_T.green + "88" : W57_T.border}
+            stroke={inPath ? W57_T.accent : bothVisited ? `${W57_T.green}88` : W57_T.border}
             strokeWidth={inPath ? 3 : 2}
           />
         );
@@ -41,7 +41,7 @@ function W57_GraphSVG({ visited = [], current = null, queue = [], path = [], nod
         return (
           <g key={n}>
             <circle cx={x} cy={y} r={22}
-              fill={nc === W57_T.nodeBorder ? W57_T.node : nc + "33"}
+              fill={nc === W57_T.nodeBorder ? W57_T.node : `${nc}33`}
               stroke={nc} strokeWidth={2.5}
               style={{ transition: "all 0.35s" }}
             />
@@ -98,58 +98,62 @@ function W57_DFSViz() {
   }, [running, steps]);
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <div style={{ flex: "0 0 auto" }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-none">
           <W57_GraphSVG visited={step.visited} current={step.current} />
         </div>
-        <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 4 }}>스택 (LIFO)</div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+        <div className="flex-1 min-w-[200px]">
+          <div className="mb-[10px]">
+            <div className="text-[#4a5070] text-[12px] mb-1">스택 (LIFO)</div>
+            <div className="flex gap-1 flex-wrap">
               {step.stack.length === 0
-                ? <span style={{ color: W57_T.muted, fontSize: 12 }}>비어있음</span>
+                ? <span className="text-[#4a5070] text-[12px]">비어있음</span>
                 : [...step.stack].reverse().map((n, i) => (
-                  <div key={i} style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center",
-                    background: i === 0 ? W57_T.accent + "33" : W57_T.card, border: `2px solid ${i === 0 ? W57_T.accent : W57_T.border}`,
-                    borderRadius: 6, color: W57_T.text, fontWeight: 700, fontFamily: "monospace", fontSize: 13 }}>{n}</div>
+                  <div key={i}
+                    className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-bold font-mono text-[13px] border-2"
+                    style={{
+                      background: i === 0 ? `${W57_T.accent}33` : W57_T.card,
+                      borderColor: i === 0 ? W57_T.accent : W57_T.border,
+                    }}
+                  >{n}</div>
                 ))}
             </div>
           </div>
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 4 }}>방문 순서</div>
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          <div className="mb-[10px]">
+            <div className="text-[#4a5070] text-[12px] mb-1">방문 순서</div>
+            <div className="flex gap-1 flex-wrap">
               {step.visited.map((n, i) => (
-                <span key={i} style={{ color: W57_T.green, fontFamily: "monospace", fontSize: 13 }}>
+                <span key={i} className="text-[#52d68a] font-mono text-[13px]">
                   {i > 0 && "→"} {n}
                 </span>
               ))}
             </div>
           </div>
           {step.msg && (
-            <div style={{ padding: "8px 12px", background: W57_T.card, borderLeft: `3px solid ${W57_T.accent}`,
-              borderRadius: "0 8px 8px 0", fontSize: 13, color: W57_T.text, fontFamily: "monospace" }}>
+            <div className="py-2 px-3 bg-[#13151f] border-l-[3px] border-l-[#e8645a] rounded-[0_8px_8px_0] text-[13px] text-[#dde2f0] font-mono">
               {step.msg}
             </div>
           )}
         </div>
       </div>
-      <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-        <button onClick={start} style={{ padding: "7px 16px", background: W57_T.accent, border: "none", color: "#fff", borderRadius: 8, cursor: "pointer", fontWeight: 700, fontSize: 13 }}>🔴 시작</button>
-        <button onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
-          style={{ padding: "7px 12px", background: W57_T.card, border: `1px solid ${W57_T.border}`, color: W57_T.text, borderRadius: 8, cursor: "pointer" }}>◀</button>
-        <button onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
-          style={{ padding: "7px 12px", background: W57_T.card, border: `1px solid ${W57_T.border}`, color: W57_T.text, borderRadius: 8, cursor: "pointer" }}>▶</button>
-        <button onClick={() => setRunning(r => !r)} disabled={!steps.length}
-          style={{ padding: "7px 14px", background: running ? W57_T.danger : W57_T.green, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>
+      <div className="flex gap-2 mt-[14px] flex-wrap">
+        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#e8645a] border-none text-white rounded-[8px] cursor-pointer font-bold text-[13px]">🔴 시작</button>
+        <button type="button" onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
+        <button type="button" onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
+        <button type="button" onClick={() => setRunning(r => !r)} disabled={!steps.length}
+          className="py-[7px] px-[14px] border-none text-black rounded-[8px] cursor-pointer font-bold"
+          style={{ background: running ? W57_T.danger : W57_T.green }}>
           {running ? "⏸" : "▶ 자동"}
         </button>
-        {steps.length > 0 && <span style={{ color: W57_T.muted, fontSize: 12, alignSelf: "center" }}>{idx + 1}/{steps.length}</span>}
+        {steps.length > 0 && <span className="text-[#4a5070] text-[12px] self-center">{idx + 1}/{steps.length}</span>}
       </div>
-      <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 12 }}>
-        <span><span style={{ color: W57_T.accent }}>●</span> 현재</span>
-        <span><span style={{ color: W57_T.green }}>●</span> 방문</span>
-        <span><span style={{ color: W57_T.warn }}>●</span> 큐/스택</span>
+      <div className="flex gap-4 mt-[10px] text-[12px]">
+        <span><span className="text-[#e8645a]">●</span> 현재</span>
+        <span><span className="text-[#52d68a]">●</span> 방문</span>
+        <span><span className="text-[#ffd166]">●</span> 큐/스택</span>
       </div>
     </div>
   );
@@ -198,9 +202,9 @@ function W57_BFSViz() {
   const levelColors = ["#e8645a", "#f0a500", "#4fc4cf", "#52d68a"];
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <div style={{ flex: "0 0 auto" }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-none">
           <W57_GraphSVG
             visited={step.visited}
             current={step.current}
@@ -208,51 +212,58 @@ function W57_BFSViz() {
             nodeColor={Object.fromEntries(Object.entries(step.level || {}).map(([n, l]) => [n, step.visited.includes(Number(n)) ? levelColors[l] || W57_T.green : W57_T.nodeBorder]))}
           />
         </div>
-        <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 4 }}>큐 (FIFO) — 앞 ← 뒤</div>
-            <div style={{ display: "flex", gap: 4 }}>
+        <div className="flex-1 min-w-[200px]">
+          <div className="mb-[10px]">
+            <div className="text-[#4a5070] text-[12px] mb-1">큐 (FIFO) — 앞 ← 뒤</div>
+            <div className="flex gap-1">
               {step.queue.length === 0
-                ? <span style={{ color: W57_T.muted, fontSize: 12 }}>비어있음</span>
+                ? <span className="text-[#4a5070] text-[12px]">비어있음</span>
                 : step.queue.map((n, i) => (
-                  <div key={i} style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center",
-                    background: i === 0 ? W57_T.warn + "33" : W57_T.card,
-                    border: `2px solid ${i === 0 ? W57_T.warn : W57_T.border}`,
-                    borderRadius: 6, color: W57_T.text, fontWeight: 700, fontFamily: "monospace", fontSize: 13 }}>{n}</div>
+                  <div key={i}
+                    className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-bold font-mono text-[13px] border-2"
+                    style={{
+                      background: i === 0 ? `${W57_T.warn}33` : W57_T.card,
+                      borderColor: i === 0 ? W57_T.warn : W57_T.border,
+                    }}
+                  >{n}</div>
                 ))}
             </div>
           </div>
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 4 }}>레벨별 탐색</div>
+          <div className="mb-[10px]">
+            <div className="text-[#4a5070] text-[12px] mb-1">레벨별 탐색</div>
             {[0,1,2].map(l => {
               const nodes = Object.entries(step.level || {}).filter(([,lv]) => lv === l).map(([n]) => Number(n));
               return nodes.length ? (
-                <div key={l} style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
-                  <span style={{ color: levelColors[l], fontSize: 11, minWidth: 50 }}>레벨 {l}:</span>
-                  {nodes.map(n => <span key={n} style={{ color: step.visited.includes(n) ? levelColors[l] : W57_T.muted, fontFamily: "monospace", fontSize: 13 }}>{n}</span>)}
+                <div key={l} className="flex gap-[6px] items-center mb-1">
+                  <span className="text-[11px] min-w-[50px]" style={{ color: levelColors[l] }}>레벨 {l}:</span>
+                  {nodes.map(n => (
+                    <span key={n} className="font-mono text-[13px]"
+                      style={{ color: step.visited.includes(n) ? levelColors[l] : W57_T.muted }}
+                    >{n}</span>
+                  ))}
                 </div>
               ) : null;
             })}
           </div>
           {step.msg && (
-            <div style={{ padding: "8px 12px", background: W57_T.card, borderLeft: `3px solid ${W57_T.w6}`,
-              borderRadius: "0 8px 8px 0", fontSize: 13, color: W57_T.text, fontFamily: "monospace" }}>
+            <div className="py-2 px-3 bg-[#13151f] border-l-[3px] border-l-[#f0a500] rounded-[0_8px_8px_0] text-[13px] text-[#dde2f0] font-mono">
               {step.msg}
             </div>
           )}
         </div>
       </div>
-      <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-        <button onClick={start} style={{ padding: "7px 16px", background: W57_T.w6, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700, fontSize: 13 }}>🟠 시작</button>
-        <button onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
-          style={{ padding: "7px 12px", background: W57_T.card, border: `1px solid ${W57_T.border}`, color: W57_T.text, borderRadius: 8, cursor: "pointer" }}>◀</button>
-        <button onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
-          style={{ padding: "7px 12px", background: W57_T.card, border: `1px solid ${W57_T.border}`, color: W57_T.text, borderRadius: 8, cursor: "pointer" }}>▶</button>
-        <button onClick={() => setRunning(r => !r)} disabled={!steps.length}
-          style={{ padding: "7px 14px", background: running ? W57_T.danger : W57_T.green, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>
+      <div className="flex gap-2 mt-[14px] flex-wrap">
+        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]">🟠 시작</button>
+        <button type="button" onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
+        <button type="button" onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
+        <button type="button" onClick={() => setRunning(r => !r)} disabled={!steps.length}
+          className="py-[7px] px-[14px] border-none text-black rounded-[8px] cursor-pointer font-bold"
+          style={{ background: running ? W57_T.danger : W57_T.green }}>
           {running ? "⏸" : "▶ 자동"}
         </button>
-        {steps.length > 0 && <span style={{ color: W57_T.muted, fontSize: 12, alignSelf: "center" }}>{idx + 1}/{steps.length}</span>}
+        {steps.length > 0 && <span className="text-[#4a5070] text-[12px] self-center">{idx + 1}/{steps.length}</span>}
       </div>
     </div>
   );
@@ -277,7 +288,6 @@ function W57_DijkstraViz() {
     const s = [{ dist:{...dist}, visited:[], current:null, msg:"초기화: dist[1]=0, 나머지=∞" }];
 
     for (let iter = 0; iter < 6; iter++) {
-      // pick min dist unvisited
       let u = null;
       for (const [n, d] of Object.entries(dist)) {
         if (!visited.has(Number(n)) && (u === null || d < dist[u])) u = Number(n);
@@ -309,9 +319,9 @@ function W57_DijkstraViz() {
   };
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <svg viewBox="0 0 310 300" style={{ width: "100%", maxWidth: 310, flex: "0 0 auto" }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-4 flex-wrap">
+        <svg viewBox="0 0 310 300" className="w-full max-w-[310px] flex-none">
           {W57_DJ_EDGES.map(([a,b,w], i) => {
             const ax = W57_DJ_NODES[a].x, ay = W57_DJ_NODES[a].y;
             const bx = W57_DJ_NODES[b].x, by = W57_DJ_NODES[b].y;
@@ -329,7 +339,7 @@ function W57_DijkstraViz() {
             const d = step.dist[Number(n)];
             return (
               <g key={n}>
-                <circle cx={x} cy={y} r={22} fill={nc===W57_T.nodeBorder ? W57_T.node : nc+"33"} stroke={nc} strokeWidth={2.5} style={{transition:"all 0.3s"}} />
+                <circle cx={x} cy={y} r={22} fill={nc===W57_T.nodeBorder ? W57_T.node : `${nc}33`} stroke={nc} strokeWidth={2.5} style={{transition:"all 0.3s"}} />
                 <text x={x} y={y+1} textAnchor="middle" fill={W57_T.text} fontSize={13} fontWeight={700} fontFamily="monospace">{n}</text>
                 {d !== undefined && (
                   <text x={x} y={y+14} textAnchor="middle" fill={nc===W57_T.nodeBorder?W57_T.muted:nc} fontSize={10} fontFamily="monospace">
@@ -340,41 +350,42 @@ function W57_DijkstraViz() {
             );
           })}
         </svg>
-        <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 8 }}>최단 거리 테이블 (노드 1 기준)</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <div className="flex-1 min-w-[180px]">
+          <div className="text-[#4a5070] text-[12px] mb-2">최단 거리 테이블 (노드 1 기준)</div>
+          <div className="flex flex-col gap-1">
             {[1,2,3,4,5,6].map(n => {
               const d = step.dist[n];
               const isVisited = step.visited && step.visited.includes(n);
               return (
-                <div key={n} style={{ display:"flex", gap:8, alignItems:"center",
-                  padding:"4px 10px", background: n===step.current ? W57_T.accent+"22" : isVisited ? W57_T.green+"11" : W57_T.card,
-                  borderRadius:6, border:`1px solid ${n===step.current?W57_T.accent:isVisited?W57_T.green:W57_T.border}`,
-                  transition:"all 0.3s" }}>
-                  <span style={{ color:W57_T.text, fontFamily:"monospace", minWidth:40 }}>노드 {n}</span>
-                  <span style={{ color: d===Infinity?W57_T.muted:W57_T.w6, fontFamily:"monospace", fontWeight:700 }}>
+                <div key={n}
+                  className="flex gap-2 items-center py-1 px-[10px] rounded-[6px] border transition-all duration-300"
+                  style={{
+                    background: n===step.current ? `${W57_T.accent}22` : isVisited ? `${W57_T.green}11` : W57_T.card,
+                    borderColor: n===step.current ? W57_T.accent : isVisited ? W57_T.green : W57_T.border,
+                  }}>
+                  <span className="text-[#dde2f0] font-mono min-w-[40px]">노드 {n}</span>
+                  <span className="font-mono font-bold" style={{ color: d===Infinity ? W57_T.muted : W57_T.w6 }}>
                     {d===undefined||d===Infinity ? "∞" : d}
                   </span>
-                  {isVisited && <span style={{color:W57_T.green,fontSize:11}}>✓ 확정</span>}
+                  {isVisited && <span className="text-[#52d68a] text-[11px]">✓ 확정</span>}
                 </div>
               );
             })}
           </div>
           {step.msg && (
-            <div style={{ marginTop:10, padding:"8px 12px", background:W57_T.card, borderLeft:`3px solid ${W57_T.w6}`,
-              borderRadius:"0 8px 8px 0", fontSize:12, color:W57_T.text, fontFamily:"monospace" }}>
+            <div className="mt-[10px] py-2 px-3 bg-[#13151f] border-l-[3px] border-l-[#f0a500] rounded-[0_8px_8px_0] text-[12px] text-[#dde2f0] font-mono">
               {step.msg}
             </div>
           )}
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, marginTop:14, flexWrap:"wrap" }}>
-        <button onClick={start} style={{padding:"7px 16px",background:W57_T.w6,border:"none",color:"#000",borderRadius:8,cursor:"pointer",fontWeight:700,fontSize:13}}>⚡ 시작</button>
-        <button onClick={() => setIdx(p => Math.max(0,p-1))} disabled={idx<=0}
-          style={{padding:"7px 12px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.text,borderRadius:8,cursor:"pointer"}}>◀</button>
-        <button onClick={() => setIdx(p => Math.min(steps.length-1,p+1))} disabled={idx>=steps.length-1}
-          style={{padding:"7px 12px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.text,borderRadius:8,cursor:"pointer"}}>▶</button>
-        {steps.length>0 && <span style={{color:W57_T.muted,fontSize:12,alignSelf:"center"}}>{idx+1}/{steps.length}</span>}
+      <div className="flex gap-2 mt-[14px] flex-wrap">
+        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]">⚡ 시작</button>
+        <button type="button" onClick={() => setIdx(p => Math.max(0,p-1))} disabled={idx<=0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
+        <button type="button" onClick={() => setIdx(p => Math.min(steps.length-1,p+1))} disabled={idx>=steps.length-1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
+        {steps.length>0 && <span className="text-[#4a5070] text-[12px] self-center">{idx+1}/{steps.length}</span>}
       </div>
     </div>
   );
@@ -421,15 +432,19 @@ function W57_FloydViz() {
   const cell = (v) => v === INF ? "∞" : v;
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", fontFamily: "monospace", fontSize: 14 }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="overflow-x-auto">
+        <table className="border-collapse font-mono text-[14px]">
           <thead>
             <tr>
-              <th style={{ padding: "6px 12px", color: W57_T.muted, border: `1px solid ${W57_T.border}` }}>i\j</th>
+              <th className="py-[6px] px-3 text-[#4a5070] border border-[#1e2235]">i\j</th>
               {[1,2,3,4].map(j => (
-                <th key={j} style={{ padding: "6px 12px", color: j-1===highlight ? W57_T.w6 : W57_T.text,
-                  border: `1px solid ${W57_T.border}`, background: j-1===highlight ? W57_T.w6+"22" : "transparent" }}>
+                <th key={j}
+                  className="py-[6px] px-3 border border-[#1e2235]"
+                  style={{
+                    color: j-1===highlight ? W57_T.w6 : W57_T.text,
+                    background: j-1===highlight ? `${W57_T.w6}22` : "transparent",
+                  }}>
                   {j}
                 </th>
               ))}
@@ -438,16 +453,22 @@ function W57_FloydViz() {
           <tbody>
             {dist.map((row, i) => (
               <tr key={i}>
-                <td style={{ padding: "6px 12px", color: i===highlight ? W57_T.w6 : W57_T.text,
-                  border: `1px solid ${W57_T.border}`, background: i===highlight ? W57_T.w6+"22" : "transparent", fontWeight: 700 }}>
+                <td
+                  className="py-[6px] px-3 border border-[#1e2235] font-bold"
+                  style={{
+                    color: i===highlight ? W57_T.w6 : W57_T.text,
+                    background: i===highlight ? `${W57_T.w6}22` : "transparent",
+                  }}>
                   {i+1}
                 </td>
                 {row.map((v, j) => (
-                  <td key={j} style={{ padding: "6px 14px", textAlign: "center",
-                    border: `1px solid ${W57_T.border}`,
-                    background: (i===highlight||j===highlight) && i!==j ? W57_T.w6+"11" : "transparent",
-                    color: v === 0 ? W57_T.muted : v === INF ? W57_T.muted+"88" : W57_T.green,
-                    fontWeight: v===0 ? 400 : 700, transition: "all 0.3s" }}>
+                  <td key={j}
+                    className="py-[6px] px-[14px] text-center border border-[#1e2235] transition-all duration-300"
+                    style={{
+                      background: (i===highlight||j===highlight) && i!==j ? `${W57_T.w6}11` : "transparent",
+                      color: v === 0 ? W57_T.muted : v === INF ? `${W57_T.muted}88` : W57_T.green,
+                      fontWeight: v===0 ? 400 : 700,
+                    }}>
                     {cell(v)}
                   </td>
                 ))}
@@ -456,16 +477,16 @@ function W57_FloydViz() {
           </tbody>
         </table>
       </div>
-      <div style={{ display:"flex", gap:8, marginTop:12, alignItems:"center", flexWrap:"wrap" }}>
-        <button onClick={nextK} disabled={done}
-          style={{padding:"7px 16px",background:W57_T.w6,border:"none",color:"#000",borderRadius:8,cursor:"pointer",fontWeight:700}}>
+      <div className="flex gap-2 mt-3 items-center flex-wrap">
+        <button type="button" onClick={nextK} disabled={done}
+          className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold">
           다음 k ({k+2 <= n ? `k=${k+2}` : "끝"})
         </button>
-        <button onClick={reset}
-          style={{padding:"7px 14px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.muted,borderRadius:8,cursor:"pointer"}}>
+        <button type="button" onClick={reset}
+          className="py-[7px] px-[14px] bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer">
           🔄 리셋
         </button>
-        <span style={{color: done ? W57_T.green : W57_T.w6, fontSize:13, fontFamily:"monospace"}}>{msg}</span>
+        <span className="text-[13px] font-mono" style={{ color: done ? W57_T.green : W57_T.w6 }}>{msg}</span>
       </div>
     </div>
   );
@@ -511,49 +532,54 @@ function W57_TreeViz() {
   const typeLabel = { pre: "전위 (Pre-order): 루트→왼→오", in: "중위 (In-order): 왼→루트→오", post: "후위 (Post-order): 왼→오→루트" };
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="flex gap-2 mb-[14px] flex-wrap">
         {["pre","in","post"].map(t => (
-          <button key={t} onClick={() => { setType(t); setStep(-1); }}
-            style={{ padding: "6px 14px", background: type===t ? W57_T.w7 : W57_T.card,
-              border: `1px solid ${type===t ? W57_T.w7 : W57_T.border}`,
-              color: type===t ? "#000" : W57_T.muted, borderRadius: 8, cursor: "pointer", fontWeight: type===t ? 700 : 400, fontSize: 13 }}>
+          <button key={t} type="button" onClick={() => { setType(t); setStep(-1); }}
+            className="py-[6px] px-[14px] rounded-[8px] cursor-pointer text-[13px] border"
+            style={{
+              background: type===t ? W57_T.w7 : W57_T.card,
+              borderColor: type===t ? W57_T.w7 : W57_T.border,
+              color: type===t ? "#000" : W57_T.muted,
+              fontWeight: type===t ? 700 : 400,
+            }}>
             {t === "pre" ? "전위" : t === "in" ? "중위" : "후위"}
           </button>
         ))}
-        <span style={{ color: W57_T.muted, fontSize: 12, alignSelf: "center" }}>{typeLabel[type]}</span>
+        <span className="text-[#4a5070] text-[12px] self-center">{typeLabel[type]}</span>
       </div>
-      <svg viewBox="0 0 310 200" style={{ width: "100%", maxWidth: 310, display: "block", margin: "0 auto 10px" }}>
+      <svg viewBox="0 0 310 200" className="w-full max-w-[310px] block mx-auto mb-[10px]">
         {items.filter(i => i.type === "edge").map((e, i) => (
           <line key={i} x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} stroke={W57_T.border} strokeWidth={2} />
         ))}
         {items.filter(i => !i.type).map((n, i) => (
           <g key={i}>
             <circle cx={n.x} cy={n.y} r={20}
-              fill={n.val === currentVal ? W57_T.w7 + "55" : activeVals.includes(n.val) ? W57_T.green + "33" : W57_T.node}
+              fill={n.val === currentVal ? `${W57_T.w7}55` : activeVals.includes(n.val) ? `${W57_T.green}33` : W57_T.node}
               stroke={n.val === currentVal ? W57_T.w7 : activeVals.includes(n.val) ? W57_T.green : W57_T.nodeBorder}
               strokeWidth={2.5} style={{ transition: "all 0.3s" }} />
             <text x={n.x} y={n.y+5} textAnchor="middle" fill={W57_T.text} fontSize={14} fontWeight={700} fontFamily="monospace">{n.val}</text>
           </g>
         ))}
       </svg>
-      <div style={{ display: "flex", gap: 4, marginBottom: 12, flexWrap: "wrap" }}>
+      <div className="flex gap-1 mb-3 flex-wrap">
         {trav.map((v, i) => (
-          <div key={i} style={{ width: 32, height: 32, display:"flex", alignItems:"center", justifyContent:"center",
-            background: i === step ? W57_T.w7+"44" : i < step ? W57_T.green+"33" : W57_T.card,
-            border: `2px solid ${i === step ? W57_T.w7 : i < step ? W57_T.green : W57_T.border}`,
-            borderRadius: 6, color: W57_T.text, fontFamily:"monospace", fontWeight:700, fontSize:13,
-            transition:"all 0.3s" }}>{v}</div>
+          <div key={i}
+            className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-mono font-bold text-[13px] border-2 transition-all duration-300"
+            style={{
+              background: i === step ? `${W57_T.w7}44` : i < step ? `${W57_T.green}33` : W57_T.card,
+              borderColor: i === step ? W57_T.w7 : i < step ? W57_T.green : W57_T.border,
+            }}>{v}</div>
         ))}
       </div>
-      <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-        <button onClick={() => setStep(-1)}
-          style={{padding:"6px 12px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.muted,borderRadius:8,cursor:"pointer",fontSize:12}}>초기화</button>
-        <button onClick={() => setStep(p => Math.max(-1, p-1))}
-          style={{padding:"6px 10px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.text,borderRadius:8,cursor:"pointer"}}>◀</button>
-        <button onClick={() => setStep(p => Math.min(trav.length-1, p+1))}
-          style={{padding:"6px 10px",background:W57_T.card,border:`1px solid ${W57_T.border}`,color:W57_T.text,borderRadius:8,cursor:"pointer"}}>▶</button>
-        <span style={{color:W57_T.muted,fontSize:12,alignSelf:"center"}}>{step+1}/{trav.length}</span>
+      <div className="flex gap-2 flex-wrap">
+        <button type="button" onClick={() => setStep(-1)}
+          className="py-[6px] px-3 bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer text-[12px]">초기화</button>
+        <button type="button" onClick={() => setStep(p => Math.max(-1, p-1))}
+          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
+        <button type="button" onClick={() => setStep(p => Math.min(trav.length-1, p+1))}
+          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
+        <span className="text-[#4a5070] text-[12px] self-center">{step+1}/{trav.length}</span>
       </div>
     </div>
   );
@@ -564,6 +590,14 @@ function W57_TrieViz() {
   const [words] = useState(["apple", "app", "apt", "banana", "band"]);
   const [search, setSearch] = useState("");
   const [result, setResult] = useState(null);
+
+  // Import W57_Badge locally since it lives in sections.tsx — inline the badge here
+  const Badge = ({ children, color }) => (
+    <span
+      className="inline-block px-[10px] py-[2px] rounded-[20px] text-[12px] font-semibold border"
+      style={{ background: `${color}22`, borderColor: `${color}55`, color }}
+    >{children}</span>
+  );
 
   const buildTrie = (ws) => {
     const root = { children: {}, isEnd: false };
@@ -600,7 +634,7 @@ function W57_TrieViz() {
     items.push(
       <g key={`n${prefix}`}>
         <circle cx={x} cy={y} r={16}
-          fill={isHighlight ? W57_T.w7+"44" : isEnd ? W57_T.green+"33" : W57_T.node}
+          fill={isHighlight ? `${W57_T.w7}44` : isEnd ? `${W57_T.green}33` : W57_T.node}
           stroke={isHighlight ? W57_T.w7 : isEnd ? W57_T.green : W57_T.nodeBorder} strokeWidth={2} />
         <text x={x} y={y+5} textAnchor="middle" fill={W57_T.text} fontSize={11} fontFamily="monospace">
           {prefix.slice(-1) || "·"}
@@ -620,27 +654,30 @@ function W57_TrieViz() {
   };
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, padding: 20, margin: "14px 0" }}>
-      <div style={{ marginBottom: 12 }}>
-        <div style={{ color: W57_T.muted, fontSize: 12, marginBottom: 6 }}>
-          삽입된 단어: {words.map(w => <W57_Badge key={w} color={W57_T.w7}>{w}</W57_Badge>).reduce((a,b) => [a," ",b])}
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
+      <div className="mb-3">
+        <div className="text-[#4a5070] text-[12px] mb-[6px]">
+          삽입된 단어: {words.map(w => <Badge key={w} color={W57_T.w7}>{w}</Badge>).reduce((a,b) => [a," ",b])}
         </div>
       </div>
-      <svg viewBox="0 0 310 230" style={{ width: "100%", maxWidth: 310, display: "block", margin: "0 auto 12px" }}>
+      <svg viewBox="0 0 310 230" className="w-full max-w-[310px] block mx-auto mb-3">
         {renderTrie(trie)}
       </svg>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <input value={search} onChange={e => { setSearch(e.target.value); setResult(null); }}
+      <div className="flex gap-2 items-center flex-wrap">
+        <input
+          value={search}
+          onChange={e => { setSearch(e.target.value); setResult(null); }}
           onKeyDown={e => e.key === "Enter" && doSearch()}
           placeholder="검색어 입력"
-          style={{ padding: "8px 12px", background: W57_T.card, border: `1px solid ${W57_T.border}`,
-            color: W57_T.text, borderRadius: 8, fontFamily: "monospace", width: 140 }} />
-        <button onClick={doSearch}
-          style={{ padding: "8px 14px", background: W57_T.w7, border: "none", color: "#000", borderRadius: 8, cursor: "pointer", fontWeight: 700 }}>
+          className="py-2 px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] font-mono w-[140px]"
+        />
+        <button type="button" onClick={doSearch}
+          className="py-2 px-[14px] bg-[#4fc4cf] border-none text-black rounded-[8px] cursor-pointer font-bold">
           탐색
         </button>
         {result && (
-          <span style={{ color: result.found === true ? W57_T.green : result.found === "prefix" ? W57_T.warn : W57_T.danger, fontSize: 13, fontFamily: "monospace" }}>
+          <span className="text-[13px] font-mono"
+            style={{ color: result.found === true ? W57_T.green : result.found === "prefix" ? W57_T.warn : W57_T.danger }}>
             {result.msg}
           </span>
         )}

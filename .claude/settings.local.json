@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun add tailwind-variants)",
+      "Bash(sort -t: -k2 -rn)",
+      "Bash(bun run build)"
+    ]
+  }
+}

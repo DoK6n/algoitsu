@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { tv } from 'tailwind-variants'
 import { PageLayout } from '../../components/PageLayout'
 import { W57_T } from './theme'
 import { W57_chapters, W57_sections } from './sections'
@@ -12,9 +13,18 @@ const theme = {
   muted: W57_T.muted,
 }
 
+const header = tv({
+  slots: {
+    iconWrap: 'rounded-lg w-[34px] h-[34px] flex items-center justify-center text-lg shrink-0',
+    title: 'font-extrabold text-[15px]',
+    subtitle: 'text-[11px] font-mono',
+  },
+})
+
 export function W57Page() {
   const [active, setActive] = useState('intro')
   const Content = W57_sections[active] || W57_sections.intro
+  const { iconWrap, title, subtitle } = header()
 
   return (
     <PageLayout
@@ -25,14 +35,14 @@ export function W57Page() {
       header={
         <>
           <div
-            className="rounded-lg w-[34px] h-[34px] flex items-center justify-center text-lg shrink-0"
+            className={iconWrap()}
             style={{ background: `linear-gradient(135deg, ${W57_T.w5}, ${W57_T.w7})` }}
           >
             🕸️
           </div>
           <div>
-            <div className="font-extrabold text-[15px]">코테 커리큘럼</div>
-            <div className="text-[11px] font-mono" style={{ color: W57_T.muted }}>
+            <div className={title()}>코테 커리큘럼</div>
+            <div className={subtitle()} style={{ color: W57_T.muted }}>
               Week 5 그래프탐색 &nbsp;|&nbsp; Week 6 최단경로 &nbsp;|&nbsp; Week 7 트리
             </div>
           </div>

@@ -20,34 +20,36 @@ export const W57_chapters = [
 /* ══════════════════════════════ SHARED UI ══════════════════════════════ */
 function W57_Badge({ children, color = W57_T.accent }) {
   return (
-    <span style={{
-      background: color + "22", border: `1px solid ${color}55`,
-      color, padding: "2px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600,
-      display:"inline-block",
-    }}>{children}</span>
+    <span
+      className="inline-block px-[10px] py-[2px] rounded-[20px] text-[12px] font-semibold border"
+      style={{ background: `${color}22`, borderColor: `${color}55`, color }}
+    >{children}</span>
   );
 }
 
 function W57_Callout({ color = W57_T.accent, icon = "💡", title, children }) {
   return (
-    <div style={{
-      background: color + "10", border: `1px solid ${color}40`,
-      borderLeft: `4px solid ${color}`, borderRadius: 10,
-      padding: "14px 18px", margin: "14px 0",
-    }}>
-      {title && <div style={{ color, fontWeight: 700, marginBottom: 8, fontSize: 14 }}>{icon} {title}</div>}
-      <div style={{ color: W57_T.text, lineHeight: 1.9, fontSize: 13.5 }}>{children}</div>
+    <div
+      className="rounded-[10px] py-[14px] px-[18px] my-[14px] border border-l-4"
+      style={{ background: `${color}10`, borderColor: `${color}40`, borderLeftColor: color }}
+    >
+      {title && (
+        <div className="font-bold mb-2 text-[14px]" style={{ color }}>
+          {icon} {title}
+        </div>
+      )}
+      <div className="text-[#dde2f0] leading-[1.9] text-[13.5px]">{children}</div>
     </div>
   );
 }
 
 function W57_SectionTitle({ children, sub, color = W57_T.accent }) {
   return (
-    <div style={{ marginBottom: 24 }}>
-      <h2 style={{ color, margin: 0, fontSize: 22, fontWeight: 800, fontFamily: "'Fira Code', monospace" }}>
+    <div className="mb-6">
+      <h2 className="m-0 text-[22px] font-extrabold font-mono" style={{ color }}>
         {children}
       </h2>
-      {sub && <p style={{ color: W57_T.muted, margin: "6px 0 0", fontSize: 14 }}>{sub}</p>}
+      {sub && <p className="text-[#4a5070] mt-[6px] mb-0 text-[14px]">{sub}</p>}
     </div>
   );
 }
@@ -62,28 +64,31 @@ function W57_CodeBlock({ code }) {
     const code = ci !== -1 ? line.slice(0, ci) : line;
     const comment = ci !== -1 ? line.slice(ci) : "";
     const tokens = code.split(/(\b\w+\b|[^\w\s]|\s+)/g).filter(Boolean).map((t, i) => {
-      if (kw.has(t)) return <span key={i} style={{ color: "#c084fc", fontWeight: 700 }}>{t}</span>;
-      if (bi.has(t)) return <span key={i} style={{ color: "#67e8f9" }}>{t}</span>;
-      if (/^\d+$/.test(t)) return <span key={i} style={{ color: "#fbbf24" }}>{t}</span>;
-      if (/^["']/.test(t)) return <span key={i} style={{ color: "#86efac" }}>{t}</span>;
+      if (kw.has(t)) return <span key={i} className="text-[#c084fc] font-bold">{t}</span>;
+      if (bi.has(t)) return <span key={i} className="text-[#67e8f9]">{t}</span>;
+      if (/^\d+$/.test(t)) return <span key={i} className="text-[#fbbf24]">{t}</span>;
+      if (/^["']/.test(t)) return <span key={i} className="text-[#86efac]">{t}</span>;
       return <span key={i}>{t}</span>;
     });
-    return [...tokens, comment && <span key="c" style={{ color: "#4a5568", fontStyle: "italic" }}>{comment}</span>];
+    return [...tokens, comment && <span key="c" className="text-[#4a5568] italic">{comment}</span>];
   };
 
   return (
-    <div style={{ background: "#07080e", border: `1px solid ${W57_T.border}`, borderRadius: 12, overflow: "hidden", margin: "12px 0" }}>
-      <div style={{ background: "#0b0c14", borderBottom: `1px solid ${W57_T.border}`, display: "flex", justifyContent: "space-between", padding: "6px 14px" }}>
-        <span style={{ color: W57_T.muted, fontSize: 11, fontFamily: "monospace" }}>python3</span>
-        <button onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          style={{ background: "none", border: "none", color: copied ? W57_T.green : W57_T.muted, cursor: "pointer", fontSize: 12 }}>
+    <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] overflow-hidden my-3">
+      <div className="bg-[#0b0c14] border-b border-[#1e2235] flex justify-between px-[14px] py-[6px]">
+        <span className="text-[#4a5070] text-[11px] font-mono">python3</span>
+        <button
+          type="button"
+          onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+          className={`bg-transparent border-none cursor-pointer text-[12px] ${copied ? "text-[#52d68a]" : "text-[#4a5070]"}`}
+        >
           {copied ? "✅ 복사됨" : "📋 복사"}
         </button>
       </div>
-      <pre style={{ padding: 16, margin: 0, overflowX: "auto", fontFamily: "'Fira Code','Courier New',monospace", fontSize: 13, lineHeight: 1.75, color: W57_T.text }}>
+      <pre className="p-4 m-0 overflow-x-auto font-mono text-[13px] leading-[1.75] text-[#dde2f0]">
         {code.split("\n").map((line, i) => (
-          <div key={i} style={{ display: "flex" }}>
-            <span style={{ color: W57_T.muted, userSelect: "none", minWidth: 30, fontSize: 11, paddingTop: 2 }}>{i + 1}</span>
+          <div key={i} className="flex">
+            <span className="text-[#4a5070] select-none min-w-[30px] text-[11px] pt-[2px]">{i + 1}</span>
             <span>{renderLine(line)}</span>
           </div>
         ))}
@@ -100,16 +105,21 @@ export const W57_sections = {
 intro: () => (
   <div>
     <W57_SectionTitle color={W57_T.text}>🗺️ 3단계: 그래프 & 트리 (Week 5–7)</W57_SectionTitle>
-    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(200px,1fr))", gap:12, marginBottom:24 }}>
+    <div className="grid gap-3 mb-6 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
       {[
         { week:"Week 5", title:"DFS & BFS", items:["그래프 표현","DFS (깊이우선)","BFS (너비우선)"], color:W57_T.w5 },
         { week:"Week 6", title:"최단 경로", items:["다익스트라","벨만-포드","플로이드-워셜"], color:W57_T.w6 },
         { week:"Week 7", title:"트리", items:["트리 순회","이진 탐색 트리","트라이"], color:W57_T.w7 },
       ].map(({ week, title, items, color }) => (
-        <div key={week} style={{ background:W57_T.card, border:`1px solid ${W57_T.border}`, borderRadius:12, padding:18, borderTop:`3px solid ${color}` }}>
-          <div style={{ color, fontSize:11, fontWeight:700, fontFamily:"monospace", marginBottom:4 }}>{week}</div>
-          <div style={{ color:W57_T.text, fontWeight:700, fontSize:15, marginBottom:12 }}>{title}</div>
-          {items.map(i => <div key={i} style={{ color:W57_T.muted, fontSize:13, padding:"4px 0", borderBottom:`1px solid ${W57_T.border}` }}>• {i}</div>)}
+        <div key={week}
+          className="bg-[#13151f] border border-[#1e2235] rounded-[12px] p-[18px]"
+          style={{ borderTop: `3px solid ${color}` }}
+        >
+          <div className="text-[11px] font-bold font-mono mb-1" style={{ color }}>{week}</div>
+          <div className="text-[#dde2f0] font-bold text-[15px] mb-3">{title}</div>
+          {items.map(i => (
+            <div key={i} className="text-[#4a5070] text-[13px] py-1 border-b border-[#1e2235]">• {i}</div>
+          ))}
         </div>
       ))}
     </div>
@@ -118,7 +128,7 @@ intro: () => (
       DFS/BFS만 완벽히 이해해도 <strong>골드 4~5 수준</strong>의 문제 상당수를 풀 수 있습니다.<br />
       최단경로 알고리즘은 <strong>카카오·삼성 기출</strong>에 단골로 등장합니다.
     </W57_Callout>
-    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(160px,1fr))", gap:10 }}>
+    <div className="grid gap-[10px] grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
       {[
         { name:"DFS", best:"경로 탐색, 사이클 감지", time:"O(V+E)", color:W57_T.w5 },
         { name:"BFS", best:"최단 거리(가중치 없음)", time:"O(V+E)", color:W57_T.w5 },
@@ -127,10 +137,12 @@ intro: () => (
         { name:"플로이드", best:"모든 쌍 최단경로", time:"O(V³)", color:W57_T.w6 },
         { name:"트라이", best:"문자열 검색/접두어", time:"O(L)", color:W57_T.w7 },
       ].map(item => (
-        <div key={item.name} style={{ background:W57_T.card, border:`1px solid ${W57_T.border}`,
-          borderRadius:10, padding:"12px 14px", borderLeft:`3px solid ${item.color}` }}>
-          <div style={{ color:W57_T.text, fontWeight:700, fontSize:13 }}>{item.name}</div>
-          <div style={{ color:W57_T.muted, fontSize:11, margin:"4px 0" }}>{item.best}</div>
+        <div key={item.name}
+          className="bg-[#13151f] border border-[#1e2235] rounded-[10px] py-3 px-[14px] border-l-[3px]"
+          style={{ borderLeftColor: item.color }}
+        >
+          <div className="text-[#dde2f0] font-bold text-[13px]">{item.name}</div>
+          <div className="text-[#4a5070] text-[11px] my-1">{item.best}</div>
           <W57_Badge color={item.color}>{item.time}</W57_Badge>
         </div>
       ))}
@@ -141,16 +153,16 @@ intro: () => (
 graph: () => (
   <div>
     <W57_SectionTitle sub="인접 리스트 vs 인접 행렬 — 대부분의 경우 인접 리스트 사용" color={W57_T.w5}>🕸️ 그래프 표현 방법</W57_SectionTitle>
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:16 }}>
+    <div className="grid grid-cols-2 gap-4 mb-4">
       {[
         { name:"인접 리스트", pros:["공간 O(V+E) — 희소 그래프에 유리","순회 빠름"], cons:["특정 간선 존재 확인 O(E)"], use:"코딩테스트 대부분의 경우", color:W57_T.green },
         { name:"인접 행렬", pros:["간선 존재 확인 O(1)","구현 단순"], cons:["공간 O(V²) — 밀집 그래프 아니면 낭비"], use:"플로이드-워셜, 노드 수 적을 때", color:W57_T.w6 },
       ].map(g => (
-        <div key={g.name} style={{ background:W57_T.card, border:`1px solid ${W57_T.border}`, borderRadius:10, padding:16 }}>
-          <div style={{ color:g.color, fontWeight:700, marginBottom:8 }}>{g.name}</div>
-          {g.pros.map(p => <div key={p} style={{ color:W57_T.green, fontSize:12, marginBottom:2 }}>✅ {p}</div>)}
-          {g.cons.map(c => <div key={c} style={{ color:W57_T.danger, fontSize:12, marginBottom:2 }}>❌ {c}</div>)}
-          <div style={{ color:W57_T.muted, fontSize:11, marginTop:8, borderTop:`1px solid ${W57_T.border}`, paddingTop:6 }}>💡 {g.use}</div>
+        <div key={g.name} className="bg-[#13151f] border border-[#1e2235] rounded-[10px] p-4">
+          <div className="font-bold mb-2" style={{ color: g.color }}>{g.name}</div>
+          {g.pros.map(p => <div key={p} className="text-[#52d68a] text-[12px] mb-[2px]">✅ {p}</div>)}
+          {g.cons.map(c => <div key={c} className="text-[#ff5566] text-[12px] mb-[2px]">❌ {c}</div>)}
+          <div className="text-[#4a5070] text-[11px] mt-2 border-t border-[#1e2235] pt-[6px]">💡 {g.use}</div>
         </div>
       ))}
     </div>
@@ -207,7 +219,7 @@ for _ in range(m):
 dfs: () => (
   <div>
     <W57_SectionTitle sub="스택(재귀) 기반 — 깊게 파고드는 탐색" color={W57_T.w5}>🔴 DFS (깊이 우선 탐색)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w5}>시간 O(V+E)</W57_Badge>
       <W57_Badge color={W57_T.w5}>공간 O(V)</W57_Badge>
       <W57_Badge color={W57_T.warn}>재귀 or 스택 사용</W57_Badge>
@@ -231,7 +243,7 @@ def dfs_iterative(graph, start):
     visited = set()
     stack = [start]
     order = []
-    
+
     while stack:
         node = stack.pop()       # LIFO
         if node in visited:
@@ -248,7 +260,7 @@ def dfs_grid(grid, r, c, visited):
     if r < 0 or r >= len(grid): return
     if c < 0 or c >= len(grid[0]): return
     if visited[r][c] or grid[r][c] == 0: return
-    
+
     visited[r][c] = True
     for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:  # 4방향
         dfs_grid(grid, r+dr, c+dc, visited)`} />
@@ -260,26 +272,26 @@ def count_clusters():
     grid = [list(map(int, list(input().strip()))) for _ in range(n)]
     visited = [[False]*n for _ in range(n)]
     clusters = []
-    
+
     def dfs(r, c):
         if r<0 or r>=n or c<0 or c>=n: return 0
         if visited[r][c] or grid[r][c]==0: return 0
         visited[r][c] = True
         return 1 + dfs(r+1,c) + dfs(r-1,c) + dfs(r,c+1) + dfs(r,c-1)
-    
+
     for r in range(n):
         for c in range(n):
             if not visited[r][c] and grid[r][c] == 1:
                 size = dfs(r, c)
                 clusters.append(size)
-    
+
     clusters.sort()
     print(len(clusters))
     for s in clusters:
         print(s)`} />
     <W57_Callout color={W57_T.danger} icon="⚠️" title="재귀 깊이 제한 주의!">
       파이썬 기본 재귀 깊이는 <strong>1000</strong>입니다.<br />
-      노드가 많으면 <code style={{color:W57_T.warn}}>sys.setrecursionlimit(10**6)</code> 추가 또는 스택 방식 사용!
+      노드가 많으면 <code className="text-[#ffd166]">sys.setrecursionlimit(10**6)</code> 추가 또는 스택 방식 사용!
     </W57_Callout>
   </div>
 ),
@@ -287,7 +299,7 @@ def count_clusters():
 bfs: () => (
   <div>
     <W57_SectionTitle sub="큐 기반 — 최단 거리(가중치 없음)에 강력" color={W57_T.w5}>🟠 BFS (너비 우선 탐색)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w6}>시간 O(V+E)</W57_Badge>
       <W57_Badge color={W57_T.w6}>공간 O(V)</W57_Badge>
       <W57_Badge color={W57_T.green}>최단 거리 보장!</W57_Badge>
@@ -300,7 +312,7 @@ def bfs(graph, start):
     visited = {start}
     queue = deque([start])
     order = []
-    
+
     while queue:
         node = queue.popleft()   # FIFO — 반드시 popleft!
         order.append(node)
@@ -314,7 +326,7 @@ def bfs(graph, start):
 def bfs_shortest(graph, start, end):
     visited = {start}
     queue = deque([(start, 0)])  # (노드, 거리)
-    
+
     while queue:
         node, dist = queue.popleft()
         if node == end:
@@ -332,13 +344,13 @@ input = sys.stdin.readline
 def tomato():
     m, n = map(int, input().split())
     grid = [list(map(int, input().split())) for _ in range(n)]
-    
+
     queue = deque()
     for r in range(n):
         for c in range(m):
             if grid[r][c] == 1:
                 queue.append((r, c, 0))  # 모든 익은 토마토 동시 시작!
-    
+
     max_day = 0
     while queue:
         r, c, day = queue.popleft()
@@ -348,7 +360,7 @@ def tomato():
             if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] == 0:
                 grid[nr][nc] = 1
                 queue.append((nr, nc, day+1))
-    
+
     # 안 익은 토마토 확인
     if any(grid[r][c] == 0 for r in range(n) for c in range(m)):
         print(-1)
@@ -357,9 +369,9 @@ def tomato():
 
 # 핵심: 여러 시작점에서 동시 BFS = "멀티 소스 BFS"`} />
     <W57_Callout color={W57_T.green} icon="✅" title="DFS vs BFS 선택 기준">
-      <strong style={{color:W57_T.green}}>BFS 선택:</strong> 최단 거리/최소 이동횟수, 레벨 단위 탐색<br />
-      <strong style={{color:W57_T.w5}}>DFS 선택:</strong> 경로 존재 여부, 모든 경로 탐색, 위상정렬, 사이클 감지<br />
-      <strong style={{color:W57_T.warn}}>둘 다 됨:</strong> 연결 요소 개수, 방문 여부 체크
+      <strong className="text-[#52d68a]">BFS 선택:</strong> 최단 거리/최소 이동횟수, 레벨 단위 탐색<br />
+      <strong className="text-[#e8645a]">DFS 선택:</strong> 경로 존재 여부, 모든 경로 탐색, 위상정렬, 사이클 감지<br />
+      <strong className="text-[#ffd166]">둘 다 됨:</strong> 연결 요소 개수, 방문 여부 체크
     </W57_Callout>
   </div>
 ),
@@ -367,7 +379,7 @@ def tomato():
 dijkstra: () => (
   <div>
     <W57_SectionTitle sub="양수 가중치 그래프의 단일 출발 최단경로 — 그리디 + 우선순위 큐" color={W57_T.w6}>⚡ 다익스트라 (Dijkstra)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w6}>O((V+E) log V)</W57_Badge>
       <W57_Badge color={W57_T.green}>양수 가중치만 가능</W57_Badge>
       <W57_Badge color={W57_T.purple}>heapq 필수!</W57_Badge>
@@ -380,23 +392,23 @@ def dijkstra(graph, start, n):
     # 거리 초기화
     dist = [float('inf')] * (n + 1)
     dist[start] = 0
-    
+
     # (거리, 노드) 형태로 힙에 삽입
     heap = [(0, start)]
-    
+
     while heap:
         d, u = heapq.heappop(heap)
-        
+
         # 이미 더 짧은 경로로 방문된 경우 스킵 ← 핵심!
         if d > dist[u]:
             continue
-        
+
         for v, w in graph[u]:
             new_dist = dist[u] + w
             if new_dist < dist[v]:
                 dist[v] = new_dist
                 heapq.heappush(heap, (new_dist, v))
-    
+
     return dist
 
 # ─── 사용 예시 ───
@@ -414,7 +426,7 @@ dist = dijkstra(graph, start, n)
 for i in range(1, n+1):
     print(dist[i] if dist[i] != float('inf') else "INF")`} />
     <W57_Callout color={W57_T.w6} icon="🔑" title="다익스트라 핵심 패턴">
-      <code style={{color:W57_T.warn}}>if d &gt; dist[u]: continue</code> — 이미 확정된 노드 스킵<br />
+      <code className="text-[#ffd166]">if d &gt; dist[u]: continue</code> — 이미 확정된 노드 스킵<br />
       힙에는 <strong>(거리, 노드)</strong> 튜플로 저장 (거리 기준 정렬)<br />
       음수 가중치가 있으면 <strong>벨만-포드</strong> 사용!
     </W57_Callout>
@@ -424,7 +436,7 @@ for i in range(1, n+1):
 bellman: () => (
   <div>
     <W57_SectionTitle sub="음수 가중치 허용 — 음수 사이클 감지 가능" color={W57_T.w6}>🛡️ 벨만-포드 (Bellman-Ford)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w6}>O(VE)</W57_Badge>
       <W57_Badge color={W57_T.green}>음수 가중치 OK</W57_Badge>
       <W57_Badge color={W57_T.accent}>음수 사이클 감지</W57_Badge>
@@ -440,18 +452,18 @@ bellman: () => (
     """
     dist = [float('inf')] * (n + 1)
     dist[start] = 0
-    
+
     # V-1번 모든 간선 완화
     for i in range(n - 1):
         for u, v, w in edges:
             if dist[u] != float('inf') and dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
-    
+
     # V번째 완화 시도 → 음수 사이클 감지
     for u, v, w in edges:
         if dist[u] != float('inf') and dist[u] + w < dist[v]:
             return None  # 음수 사이클 존재!
-    
+
     return dist
 
 # ─── 사용 예시 ───
@@ -467,7 +479,7 @@ if result is None:
 else:
     for i in range(1, 5):
         print(f"1→{i}: {result[i]}")`} />
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+    <div className="grid grid-cols-2 gap-3">
       <W57_Callout color={W57_T.green} icon="✅" title="벨만-포드 장점">
         음수 가중치 간선 허용<br />음수 사이클 감지 가능<br />구현 단순
       </W57_Callout>
@@ -481,7 +493,7 @@ else:
 floyd: () => (
   <div>
     <W57_SectionTitle sub="DP로 모든 쌍 최단경로 — 코드 3줄!" color={W57_T.w6}>🌐 플로이드-워셜 (Floyd-Warshall)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w6}>O(V³)</W57_Badge>
       <W57_Badge color={W57_T.green}>모든 쌍 최단경로</W57_Badge>
       <W57_Badge color={W57_T.purple}>DP 기반</W57_Badge>
@@ -502,19 +514,19 @@ def floyd_warshall(n, edges):
     for u, v, w in edges:
         dist[u][v] = w          # 방향 그래프
         # dist[v][u] = w        # 무방향이면 이것도 추가
-    
+
     # 핵심: 3중 for문 (순서 중요: k가 바깥!)
     for k in range(1, n+1):         # 경유 노드
         for i in range(1, n+1):     # 출발 노드
             for j in range(1, n+1): # 도착 노드
                 if dist[i][k] + dist[k][j] < dist[i][j]:
                     dist[i][j] = dist[i][k] + dist[k][j]
-    
+
     # 음수 사이클 감지: dist[i][i] < 0인 노드 존재
     for i in range(1, n+1):
         if dist[i][i] < 0:
             return None  # 음수 사이클!
-    
+
     return dist
 
 # ─── 실전: 순위 문제 (프로그래머스) ───
@@ -526,13 +538,13 @@ def solution(n, results):
     win = [[INF]*(n+1) for _ in range(n+1)]
     for i in range(n+1): win[i][i] = 0
     for a, b in results: win[a][b] = 1
-    
+
     for k in range(1, n+1):
         for i in range(1, n+1):
             for j in range(1, n+1):
                 if win[i][k] != INF and win[k][j] != INF:
                     win[i][j] = min(win[i][j], win[i][k] + win[k][j])
-    
+
     count = 0
     for i in range(1, n+1):
         known = sum(1 for j in range(1, n+1) if i!=j and (win[i][j]!=INF or win[j][i]!=INF))
@@ -545,7 +557,7 @@ def solution(n, results):
 tree: () => (
   <div>
     <W57_SectionTitle sub="전위 / 중위 / 후위 순회 — 재귀의 아름다움" color={W57_T.w7}>🌲 트리 순회 (Tree Traversal)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w7}>시간 O(N)</W57_Badge>
       <W57_Badge color={W57_T.w7}>공간 O(H) — 트리 높이</W57_Badge>
     </div>
@@ -573,9 +585,9 @@ def postorder(node):
     return postorder(node.left) + postorder(node.right) + [node.val]
 
 # 예시 트리:       1
-#               /   \
+#               /   \\
 #              2     3
-#             / \   / \
+#             / \\   / \\
 #            4   5 6   7
 # 전위: [1, 2, 4, 5, 3, 6, 7]
 # 중위: [4, 2, 5, 1, 6, 3, 7]
@@ -590,7 +602,7 @@ sys.setrecursionlimit(10**6)
 def tree_diameter():
     v = int(input())
     graph = defaultdict(list)
-    
+
     for _ in range(v):
         line = list(map(int, input().split()))
         node = line[0]
@@ -598,7 +610,7 @@ def tree_diameter():
         while line[i] != -1:
             graph[node].append((line[i], line[i+1]))
             i += 2
-    
+
     def dfs(start):
         visited = [-1] * (v + 1)
         visited[start] = 0
@@ -614,7 +626,7 @@ def tree_diameter():
                         far_node = nb
                     stack.append(nb)
         return far_node, max_dist
-    
+
     a, _ = dfs(1)          # 1번에서 가장 먼 노드 a
     _, diameter = dfs(a)   # a에서 가장 먼 거리 = 지름
     print(diameter)`} />
@@ -624,7 +636,7 @@ def tree_diameter():
 bst: () => (
   <div>
     <W57_SectionTitle sub="이진 탐색 트리 — 정렬된 데이터의 효율적 관리" color={W57_T.w7}>🔍 이진 탐색 트리 (BST)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w7}>탐색 O(log N) 평균</W57_Badge>
       <W57_Badge color={W57_T.danger}>O(N) 최악 (편향)</W57_Badge>
     </div>
@@ -637,10 +649,10 @@ bst: () => (
         def __init__(self, val):
             self.val = val
             self.left = self.right = None
-    
+
     def __init__(self):
         self.root = None
-    
+
     def insert(self, val):
         def _insert(node, val):
             if not node: return self.Node(val)
@@ -648,7 +660,7 @@ bst: () => (
             elif val > node.val: node.right = _insert(node.right, val)
             return node
         self.root = _insert(self.root, val)
-    
+
     def search(self, val):
         def _search(node, val):
             if not node: return False
@@ -656,7 +668,7 @@ bst: () => (
             if val < node.val: return _search(node.left, val)
             return _search(node.right, val)
         return _search(self.root, val)
-    
+
     def inorder(self):           # 정렬된 순서로 출력!
         result = []
         def _inorder(node):
@@ -675,8 +687,8 @@ print(bst.inorder())    # [1, 3, 4, 5, 6, 7, 8] ← 항상 정렬!
 print(bst.search(4))    # True`} />
     <W57_Callout color={W57_T.warn} icon="⚠️" title="파이썬에서 BST 대신 이것!">
       코딩테스트에서 BST를 직접 구현하는 일은 드뭅니다.<br />
-      <code style={{color:W57_T.accent}}>from sortedcontainers import SortedList</code> 또는<br />
-      <code style={{color:W57_T.accent}}>bisect</code> 모듈로 정렬된 리스트를 유지하는 패턴을 주로 사용합니다.
+      <code className="text-[#e8645a]">from sortedcontainers import SortedList</code> 또는<br />
+      <code className="text-[#e8645a]">bisect</code> 모듈로 정렬된 리스트를 유지하는 패턴을 주로 사용합니다.
     </W57_Callout>
   </div>
 ),
@@ -684,7 +696,7 @@ print(bst.search(4))    # True`} />
 trie: () => (
   <div>
     <W57_SectionTitle sub="문자열 검색 특화 트리 — 접두어 탐색 O(L)" color={W57_T.w7}>📖 트라이 (W57_Trie)</W57_SectionTitle>
-    <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+    <div className="flex gap-2 mb-4 flex-wrap">
       <W57_Badge color={W57_T.w7}>탐색 O(L) — 문자열 길이</W57_Badge>
       <W57_Badge color={W57_T.purple}>공간 O(알파벳수 × L × N)</W57_Badge>
     </div>
@@ -698,7 +710,7 @@ class W57_TrieNode:
 class W57_Trie:
     def __init__(self):
         self.root = W57_TrieNode()
-    
+
     def insert(self, word):
         node = self.root
         for c in word:
@@ -706,7 +718,7 @@ class W57_Trie:
                 node.children[c] = W57_TrieNode()
             node = node.children[c]
         node.is_end = True
-    
+
     def search(self, word):
         """단어 존재 여부"""
         node = self.root
@@ -715,7 +727,7 @@ class W57_Trie:
                 return False
             node = node.children[c]
         return node.is_end
-    
+
     def starts_with(self, prefix):
         """접두어 존재 여부"""
         node = self.root
@@ -724,14 +736,14 @@ class W57_Trie:
                 return False
             node = node.children[c]
         return True
-    
+
     def count_with_prefix(self, prefix):
         """접두어로 시작하는 단어 수 (DFS)"""
         node = self.root
         for c in prefix:
             if c not in node.children: return 0
             node = node.children[c]
-        
+
         count = 0
         stack = [node]
         while stack:
@@ -820,28 +832,30 @@ problems: () => (
         ]
       },
     ].map(section => (
-      <div key={section.week} style={{ marginBottom: 28 }}>
-        <div style={{ color: section.color, fontWeight: 700, marginBottom: 12, fontSize: 15 }}>{section.week}</div>
+      <div key={section.week} className="mb-7">
+        <div className="font-bold mb-3 text-[15px]" style={{ color: section.color }}>{section.week}</div>
         {section.items.map(p => (
-          <div key={p.id} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-            padding:"10px 16px", background:W57_T.card, border:`1px solid ${W57_T.border}`,
-            borderRadius:10, marginBottom:6, borderLeft:`3px solid ${section.color}` }}>
+          <div key={p.id}
+            className="flex justify-between items-center py-[10px] px-4 bg-[#13151f] border border-[#1e2235] rounded-[10px] mb-[6px] border-l-[3px]"
+            style={{ borderLeftColor: section.color }}
+          >
             <div>
-              <span style={{color:W57_T.muted,fontSize:12,fontFamily:"monospace"}}>BOJ {p.id}</span>
-              <span style={{color:W57_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-              <span style={{color:W57_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+              <span className="text-[#4a5070] text-[12px] font-mono">BOJ {p.id}</span>
+              <span className="text-[#dde2f0] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#4a5070] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <span>{p.level}</span>
           </div>
         ))}
         {section.prog.map(p => (
-          <div key={p.title} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-            padding:"10px 16px", background:W57_T.card, border:`1px solid ${W57_T.border}`,
-            borderRadius:10, marginBottom:6, borderLeft:`3px solid ${section.color}88` }}>
+          <div key={p.title}
+            className="flex justify-between items-center py-[10px] px-4 bg-[#13151f] border border-[#1e2235] rounded-[10px] mb-[6px] border-l-[3px]"
+            style={{ borderLeftColor: `${section.color}88` }}
+          >
             <div>
-              <span style={{color:W57_T.muted,fontSize:12}}>프로그래머스</span>
-              <span style={{color:W57_T.text,fontWeight:700,marginLeft:10}}>{p.title}</span>
-              <span style={{color:W57_T.muted,fontSize:12,marginLeft:10}}>{p.tip}</span>
+              <span className="text-[#4a5070] text-[12px]">프로그래머스</span>
+              <span className="text-[#dde2f0] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#4a5070] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <W57_Badge color={section.color}>Lv.3</W57_Badge>
           </div>
@@ -860,4 +874,5 @@ problems: () => (
 };
 
 /* ══════════════════════════════ APP ══════════════════════════════ */
+
 

@@ -1,4 +1,12 @@
-import { cn } from '../lib/cn'
+import { tv } from 'tailwind-variants'
+
+const callout = tv({
+  slots: {
+    root: 'rounded-[10px] p-4 my-3.5 border-l-4',
+    title: 'font-bold mb-2',
+    body: 'text-[#dde8d6] leading-[1.9] text-[13.5px]',
+  },
+})
 
 interface CalloutProps {
   color?: string
@@ -9,9 +17,10 @@ interface CalloutProps {
 }
 
 export function Callout({ color = '#7eff6a', icon, title, children, className }: CalloutProps) {
+  const { root, title: titleSlot, body } = callout()
   return (
     <div
-      className={cn('rounded-[10px] p-4 my-3.5 border-l-4', className)}
+      className={root({ className })}
       style={{
         background: `${color}12`,
         border: `1px solid ${color}44`,
@@ -19,11 +28,11 @@ export function Callout({ color = '#7eff6a', icon, title, children, className }:
       }}
     >
       {title && (
-        <div className="font-bold mb-2" style={{ color }}>
+        <div className={titleSlot()} style={{ color }}>
           {icon} {title}
         </div>
       )}
-      <div className="text-[#dde8d6] leading-[1.9] text-[13.5px]">{children}</div>
+      <div className={body()}>{children}</div>
     </div>
   )
 }

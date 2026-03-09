@@ -20,8 +20,10 @@ export const W810_chapters = [
 /* ══════════════════ SHARED UI ══════════════════ */
 function W810_Badge({ children, color = W810_T.w8 }) {
   return (
-    <span style={{ background:color+"22", border:`1px solid ${color}55`,
-      color, padding:"2px 10px", borderRadius:20, fontSize:12, fontWeight:600, display:"inline-block" }}>
+    <span
+      className="inline-block px-[10px] py-[2px] rounded-[20px] text-[12px] font-semibold border"
+      style={{ background: `${color}22`, borderColor: `${color}55`, color }}
+    >
       {children}
     </span>
   );
@@ -29,21 +31,27 @@ function W810_Badge({ children, color = W810_T.w8 }) {
 
 function W810_Callout({ color = W810_T.w8, icon = "💡", title, children }) {
   return (
-    <div style={{ background:color+"10", border:`1px solid ${color}40`,
-      borderLeft:`4px solid ${color}`, borderRadius:10, padding:"14px 18px", margin:"14px 0" }}>
-      {title && <div style={{ color, fontWeight:700, marginBottom:8, fontSize:14 }}>{icon} {title}</div>}
-      <div style={{ color:W810_T.text, lineHeight:1.9, fontSize:13.5 }}>{children}</div>
+    <div
+      className="rounded-[10px] p-[14px_18px] my-[14px] border-l-[4px] border"
+      style={{ background: `${color}10`, borderColor: `${color}40`, borderLeftColor: color }}
+    >
+      {title && (
+        <div className="font-bold mb-[8px] text-[14px]" style={{ color }}>
+          {icon} {title}
+        </div>
+      )}
+      <div className="text-[#f8f8f2] leading-[1.9] text-[13.5px]">{children}</div>
     </div>
   );
 }
 
 function W810_SectionTitle({ children, sub, color = W810_T.w8 }) {
   return (
-    <div style={{ marginBottom:24 }}>
-      <h2 style={{ color, margin:0, fontSize:22, fontWeight:800, fontFamily:"'DM Mono','Fira Code',monospace" }}>
+    <div className="mb-[24px]">
+      <h2 className="m-0 text-[22px] font-extrabold font-mono" style={{ color }}>
         {children}
       </h2>
-      {sub && <p style={{ color:W810_T.muted, margin:"6px 0 0", fontSize:14 }}>{sub}</p>}
+      {sub && <p className="text-[#6272a4] mt-[6px] mb-0 text-[14px]">{sub}</p>}
     </div>
   );
 }
@@ -56,34 +64,35 @@ function W810_CodeBlock({ code }) {
     "zip","map","filter","sum","any","all","append","collections","defaultdict","heapq","heappush","heappop"]);
 
   const tokenize = (text) => text.split(/(\b\w+\b|[^\w\s]|\s+)/g).filter(Boolean).map((t,i) => {
-    if (kw.has(t)) return <span key={i} style={{color:"#c084fc",fontWeight:700}}>{t}</span>;
-    if (bi.has(t)) return <span key={i} style={{color:W810_T.cyan}}>{t}</span>;
-    if (/^\d+$/.test(t)) return <span key={i} style={{color:W810_T.yellow}}>{t}</span>;
-    if (/^["']/.test(t)) return <span key={i} style={{color:"#86efac"}}>{t}</span>;
+    if (kw.has(t)) return <span key={i} className="text-[#c084fc] font-bold">{t}</span>;
+    if (bi.has(t)) return <span key={i} className="text-[#8be9fd]">{t}</span>;
+    if (/^\d+$/.test(t)) return <span key={i} className="text-[#f1fa8c]">{t}</span>;
+    if (/^["']/.test(t)) return <span key={i} className="text-[#86efac]">{t}</span>;
     return <span key={i}>{t}</span>;
   });
 
   const renderLine = (line) => {
     const ci = line.indexOf("#");
-    if (ci !== -1) return [tokenize(line.slice(0,ci)), <span key="c" style={{color:"#4a5568",fontStyle:"italic"}}>{line.slice(ci)}</span>];
+    if (ci !== -1) return [tokenize(line.slice(0,ci)), <span key="c" className="text-[#4a5568] italic">{line.slice(ci)}</span>];
     return tokenize(line);
   };
 
   return (
-    <div style={{ background:"#0a0614", border:`1px solid ${W810_T.border}`, borderRadius:12, overflow:"hidden", margin:"12px 0" }}>
-      <div style={{ background:"#110820", borderBottom:`1px solid ${W810_T.border}`,
-        display:"flex", justifyContent:"space-between", padding:"6px 14px" }}>
-        <span style={{ color:W810_T.muted, fontSize:11, fontFamily:"monospace" }}>python3</span>
-        <button onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(()=>setCopied(false),1500); }}
-          style={{ background:"none", border:"none", color:copied?W810_T.green:W810_T.muted, cursor:"pointer", fontSize:12 }}>
-          {copied?"✅ 복사됨":"📋 복사"}
+    <div className="bg-[#0a0614] border border-[#2d2048] rounded-[12px] overflow-hidden my-[12px]">
+      <div className="bg-[#110820] border-b border-[#2d2048] flex justify-between px-[14px] py-[6px]">
+        <span className="text-[#6272a4] text-[11px] font-mono">python3</span>
+        <button
+          type="button"
+          onClick={() => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(()=>setCopied(false),1500); }}
+          className={`bg-transparent border-0 cursor-pointer text-[12px] ${copied ? "text-[#50fa7b]" : "text-[#6272a4]"}`}
+        >
+          {copied ? "✅ 복사됨" : "📋 복사"}
         </button>
       </div>
-      <pre style={{ padding:16, margin:0, overflowX:"auto",
-        fontFamily:"'Fira Code','Courier New',monospace", fontSize:13, lineHeight:1.75, color:W810_T.text }}>
+      <pre className="p-[16px] m-0 overflow-x-auto font-mono text-[13px] leading-[1.75] text-[#f8f8f2]">
         {code.split("\n").map((line,i) => (
-          <div key={i} style={{display:"flex"}}>
-            <span style={{color:W810_T.muted, userSelect:"none", minWidth:28, fontSize:11, paddingTop:2}}>{i+1}</span>
+          <div key={i} className="flex">
+            <span className="text-[#6272a4] select-none min-w-[28px] text-[11px] pt-[2px]">{i+1}</span>
             <span>{renderLine(line)}</span>
           </div>
         ))}
@@ -97,27 +106,30 @@ export const W810_sections = {
   intro: () => (
     <div>
       <W810_SectionTitle color={W810_T.w8}>🗺️ 3단계: DP · 그리디 · 고급탐색 (Week 8–10)</W810_SectionTitle>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(220px,1fr))", gap:14, marginBottom:24 }}>
+      <div className="grid gap-[14px] mb-[24px] grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
         {[
           { week:"Week 8", title:"DP 기초", items:["메모이제이션","타뷸레이션","1차원 DP","2차원 DP"], color:W810_T.w8 },
           { week:"Week 9", title:"DP 심화", items:["배낭 문제","LIS · LCS","비트마스킹 DP","구간 DP"], color:W810_T.w9 },
           { week:"Week 10", title:"완전탐색", items:["그리디","분할정복","백트래킹","경우의 수"], color:W810_T.w10 },
         ].map(({ week, title, items, color }) => (
-          <div key={week} style={{ background:W810_T.card, border:`1px solid ${W810_T.border}`,
-            borderRadius:12, padding:20, borderTop:`3px solid ${color}` }}>
-            <div style={{ color, fontSize:11, fontWeight:700, marginBottom:4, fontFamily:"monospace" }}>{week}</div>
-            <div style={{ color:W810_T.text, fontSize:16, fontWeight:700, marginBottom:12 }}>{title}</div>
-            {items.map(i => (
-              <div key={i} style={{ color:W810_T.muted, fontSize:13, padding:"4px 0", borderBottom:`1px solid ${W810_T.border}` }}>• {i}</div>
+          <div
+            key={week}
+            className="bg-[#1e1530] border border-[#2d2048] rounded-[12px] p-[20px]"
+            style={{ borderTop:`3px solid ${color}` }}
+          >
+            <div className="text-[11px] font-bold mb-[4px] font-mono" style={{ color }}>{week}</div>
+            <div className="text-[#f8f8f2] text-[16px] font-bold mb-[12px]">{title}</div>
+            {items.map(item => (
+              <div key={item} className="text-[#6272a4] text-[13px] py-[4px] border-b border-[#2d2048]">• {item}</div>
             ))}
           </div>
         ))}
       </div>
       <W810_Callout color={W810_T.w8} icon="🧠" title="DP를 언제 쓰나?">
-        <ul style={{ margin:0, paddingLeft:20, lineHeight:2 }}>
+        <ul className="m-0 pl-[20px] leading-[2]">
           <li><strong>최적 부분 구조</strong>: 전체 최적해가 부분 최적해로 구성</li>
           <li><strong>중복 부분 문제</strong>: 같은 하위 문제가 반복 등장</li>
-          <li>키워드: <span style={{color:W810_T.w8}}>최소·최대·경우의 수·가능 여부</span></li>
+          <li>키워드: <span className="text-[#bd93f9]">최소·최대·경우의 수·가능 여부</span></li>
         </ul>
       </W810_Callout>
     </div>
@@ -126,16 +138,16 @@ export const W810_sections = {
   dp_intro: () => (
     <div>
       <W810_SectionTitle color={W810_T.w8}>🧠 다이나믹 프로그래밍 개념</W810_SectionTitle>
-      <p style={{ color:W810_T.muted, marginBottom:16 }}>큰 문제를 작은 부분 문제로 나눠 풀고, 결과를 저장해 재사용하는 기법</p>
+      <p className="text-[#6272a4] mb-[16px]">큰 문제를 작은 부분 문제로 나눠 풀고, 결과를 저장해 재사용하는 기법</p>
       <W810_Badge color={W810_T.w8}>시간 O(n) ~ O(n²)</W810_Badge>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, margin:"16px 0" }}>
-        <div style={{ background:W810_T.card, border:`1px solid ${W810_T.border}`, borderRadius:10, padding:16 }}>
-          <div style={{ color:W810_T.w8, fontWeight:700, marginBottom:8 }}>📝 메모이제이션 (Top-Down)</div>
-          <div style={{ color:W810_T.text, fontSize:13, lineHeight:1.8 }}>재귀 + 캐싱 — 필요한 값만 계산<br/>직관적, 스택 오버플로 주의</div>
+      <div className="grid grid-cols-2 gap-[16px] my-[16px]">
+        <div className="bg-[#1e1530] border border-[#2d2048] rounded-[10px] p-[16px]">
+          <div className="text-[#bd93f9] font-bold mb-[8px]">📝 메모이제이션 (Top-Down)</div>
+          <div className="text-[#f8f8f2] text-[13px] leading-[1.8]">재귀 + 캐싱 — 필요한 값만 계산<br/>직관적, 스택 오버플로 주의</div>
         </div>
-        <div style={{ background:W810_T.card, border:`1px solid ${W810_T.border}`, borderRadius:10, padding:16 }}>
-          <div style={{ color:W810_T.cyan, fontWeight:700, marginBottom:8 }}>📋 타뷸레이션 (Bottom-Up)</div>
-          <div style={{ color:W810_T.text, fontSize:13, lineHeight:1.8 }}>반복문 + dp 배열 — 모든 값 미리 계산<br/>빠르고 안정적 → 코테 권장</div>
+        <div className="bg-[#1e1530] border border-[#2d2048] rounded-[10px] p-[16px]">
+          <div className="text-[#8be9fd] font-bold mb-[8px]">📋 타뷸레이션 (Bottom-Up)</div>
+          <div className="text-[#f8f8f2] text-[13px] leading-[1.8]">반복문 + dp 배열 — 모든 값 미리 계산<br/>빠르고 안정적 → 코테 권장</div>
         </div>
       </div>
       <W810_CodeBlock code={`# 피보나치 - 메모이제이션 vs 타뷸레이션
@@ -156,7 +168,7 @@ def fib_dp(n):
 
 print(fib_dp(10))  # 55`} />
       <W810_Callout color={W810_T.w8} icon="💡" title="DP 풀이 4단계">
-        <ol style={{ margin:0, paddingLeft:20, lineHeight:2 }}>
+        <ol className="m-0 pl-[20px] leading-[2]">
           <li><strong>dp 정의</strong>: dp[i] = "i번째 상태에서의 최적값"</li>
           <li><strong>점화식</strong>: dp[i]를 이전 dp 값들로 표현</li>
           <li><strong>초기값</strong>: dp[0], dp[1] 등 base case 설정</li>
@@ -253,7 +265,7 @@ print(edit_distance("horse", "ros"))  # 3`} />
   knapsack: () => (
     <div>
       <W810_SectionTitle color={W810_T.w9}>🎒 배낭 문제 (Knapsack)</W810_SectionTitle>
-      <p style={{ color:W810_T.muted, marginBottom:16 }}>무게 제한 W 안에서 최대 가치를 구하는 고전 DP</p>
+      <p className="text-[#6272a4] mb-[16px]">무게 제한 W 안에서 최대 가치를 구하는 고전 DP</p>
       <W810_Badge color={W810_T.w9}>시간 O(nW)</W810_Badge>
       <W810_KnapsackViz />
       <W810_CodeBlock code={`# 0/1 배낭 문제 - 1D 최적화 (실전 권장)
@@ -268,7 +280,7 @@ weights = [2, 3, 4, 5]
 values  = [3, 4, 5, 6]
 print(knapsack(weights, values, 8))  # 10`} />
       <W810_Callout color={W810_T.w9} icon="🔑" title="배낭 변형 패턴">
-        <ul style={{ margin:0, paddingLeft:20, lineHeight:2 }}>
+        <ul className="m-0 pl-[20px] leading-[2]">
           <li><strong>0/1 배낭</strong>: 역방향 순회 (W → 0)</li>
           <li><strong>무한 배낭</strong>: 정방향 순회 (0 → W)</li>
         </ul>
@@ -279,7 +291,7 @@ print(knapsack(weights, values, 8))  # 10`} />
   lis_lcs: () => (
     <div>
       <W810_SectionTitle color={W810_T.w9}>📈 LIS / LCS</W810_SectionTitle>
-      <div style={{ color:W810_T.w9, fontWeight:700, fontSize:15, marginBottom:8 }}>LIS — 최장 증가 부분 수열</div>
+      <div className="text-[#ff79c6] font-bold text-[15px] mb-[8px]">LIS — 최장 증가 부분 수열</div>
       <W810_Badge color={W810_T.w9}>O(n²) 기본 / O(n log n) 이진탐색</W810_Badge>
       <W810_LISViz />
       <W810_CodeBlock code={`# LIS O(n log n) - 실전 권장
@@ -295,7 +307,7 @@ def lis(nums):
 
 nums = [10, 9, 2, 5, 3, 7, 101, 18]
 print(lis(nums))  # 4`} />
-      <div style={{ color:W810_T.pink, fontWeight:700, fontSize:15, margin:"20px 0 8px" }}>LCS — 최장 공통 부분 수열</div>
+      <div className="text-[#ff79c6] font-bold text-[15px] mt-[20px] mb-[8px]">LCS — 최장 공통 부분 수열</div>
       <W810_Badge color={W810_T.pink}>시간 O(mn)</W810_Badge>
       <W810_LCSViz />
       <W810_CodeBlock code={`def lcs(s1, s2):
@@ -314,7 +326,7 @@ print(lcs("ABCBDAB", "BDCAB"))  # 4`} />
   bitmask: () => (
     <div>
       <W810_SectionTitle color={W810_T.w9}>🔢 비트마스킹 DP</W810_SectionTitle>
-      <p style={{ color:W810_T.muted, marginBottom:16 }}>집합의 부분집합을 정수(비트)로 표현해 DP 상태로 사용</p>
+      <p className="text-[#6272a4] mb-[16px]">집합의 부분집합을 정수(비트)로 표현해 DP 상태로 사용</p>
       <W810_Badge color={W810_T.w9}>시간 O(2ⁿ · n)</W810_Badge>
       <W810_BitMaskViz />
       <W810_CodeBlock code={`# 비트 연산 기초
@@ -349,7 +361,7 @@ def tsp(dist):
   greedy: () => (
     <div>
       <W810_SectionTitle color={W810_T.w10}>💰 그리디 알고리즘</W810_SectionTitle>
-      <p style={{ color:W810_T.muted, marginBottom:16 }}>매 순간 가장 좋아 보이는 선택으로 전체 최적을 구하는 기법</p>
+      <p className="text-[#6272a4] mb-[16px]">매 순간 가장 좋아 보이는 선택으로 전체 최적을 구하는 기법</p>
       <W810_Badge color={W810_T.w10}>시간 O(n log n) (정렬 포함)</W810_Badge>
       <W810_GreedyActivityViz />
       <W810_CodeBlock code={`# 활동 선택 문제 - 끝나는 시간 기준 정렬
@@ -379,7 +391,7 @@ def change(amount, coins):
 
   divide: () => (
     <div>
-      <W810_SectionTitle color={W810_T.w10}>✂️ 분할정복 (Divide & Conquer)</W810_SectionTitle>
+      <W810_SectionTitle color={W810_T.w10}>✂️ 분할정복 (Divide &amp; Conquer)</W810_SectionTitle>
       <W810_Callout color={W810_T.w10} icon="🔑" title="3단계">
         <strong>Divide</strong>: 문제 분할 → <strong>Conquer</strong>: 재귀 해결 → <strong>Combine</strong>: 결과 합산
       </W810_Callout>
@@ -410,7 +422,7 @@ def merge_sort(arr):
   backtrack: () => (
     <div>
       <W810_SectionTitle color={W810_T.w10}>🔙 백트래킹 (Backtracking)</W810_SectionTitle>
-      <p style={{ color:W810_T.muted, marginBottom:16 }}>불가능한 경우를 일찍 포기(가지치기)해 완전탐색을 최적화</p>
+      <p className="text-[#6272a4] mb-[16px]">불가능한 경우를 일찍 포기(가지치기)해 완전탐색을 최적화</p>
       <W810_NQueensViz />
       <W810_CodeBlock code={`# N-Queens
 def n_queens(n):
@@ -482,20 +494,21 @@ def permutations(arr):             # 순열
           { title:"백준 9663 - N-Queen", level:"🟠 어려움", desc:"백트래킹" },
         ]},
       ].map(({ week, color, problems }) => (
-        <div key={week} style={{ marginBottom:20 }}>
-          <div style={{ color, fontWeight:700, fontSize:13, fontFamily:"monospace",
-            padding:"6px 12px", background:color+"15", borderRadius:6, display:"inline-block", marginBottom:10 }}>
+        <div key={week} className="mb-[20px]">
+          <div
+            className="text-[13px] font-bold font-mono px-[12px] py-[6px] rounded-[6px] inline-block mb-[10px]"
+            style={{ color, background: `${color}15` }}
+          >
             {week}
           </div>
-          <div style={{ background:W810_T.card, borderRadius:10, overflow:"hidden", border:`1px solid ${W810_T.border}` }}>
-            {problems.map((p, i) => (
-              <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-                padding:"10px 16px", borderBottom:`1px solid ${W810_T.border}` }}>
+          <div className="bg-[#1e1530] rounded-[10px] overflow-hidden border border-[#2d2048]">
+            {problems.map((p) => (
+              <div key={p.title} className="flex justify-between items-center px-[16px] py-[10px] border-b border-[#2d2048]">
                 <div>
-                  <span style={{ color:W810_T.text, fontWeight:600 }}>{p.title}</span>
-                  <span style={{ color:W810_T.muted, fontSize:12, marginLeft:10 }}>{p.desc}</span>
+                  <span className="text-[#f8f8f2] font-semibold">{p.title}</span>
+                  <span className="text-[#6272a4] text-[12px] ml-[10px]">{p.desc}</span>
                 </div>
-                <span style={{ fontSize:12 }}>{p.level}</span>
+                <span className="text-[12px]">{p.level}</span>
               </div>
             ))}
           </div>

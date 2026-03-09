@@ -26,18 +26,17 @@ export const W34_sections = {
   intro: () => (
     <div>
       <W34_SectionTitle>🗺️ 2단계: 핵심 자료구조 (Week 3–4)</W34_SectionTitle>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+      <div className="grid grid-cols-2 gap-4 mb-6">
         {[
           { week: "Week 3", title: "스택 & 큐", items: ["스택 (LIFO)", "큐 (FIFO)", "덱 Deque", "우선순위 큐"], color: W34_T.accent },
           { week: "Week 4", title: "해시 & 문자열", items: ["해시맵", "문자열 처리", "투 포인터", "슬라이딩 윈도우"], color: W34_T.accent2 },
         ].map(({ week, title, items, color }) => (
-          <div key={week} style={{ background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 12, padding: 20, borderTop: `3px solid ${color}` }}>
-            <div style={{ color, fontSize: 11, fontWeight: 700, marginBottom: 4, fontFamily: "monospace" }}>{week}</div>
-            <div style={{ color: W34_T.text, fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{title}</div>
+          <div key={week} className="bg-[#1a1f16] border border-[#2a3325] rounded-[12px] p-5"
+            style={{ borderTop: `3px solid ${color}` }}>
+            <div className="text-[11px] font-bold mb-1 font-mono" style={{ color }}>{week}</div>
+            <div className="text-[#dde8d6] text-[16px] font-bold mb-3">{title}</div>
             {items.map(i => (
-              <div key={i} style={{ color: W34_T.muted, fontSize: 13, padding: "4px 0",
-                borderBottom: `1px solid ${W34_T.border}` }}>• {i}</div>
+              <div key={i} className="text-[#5a6e50] text-[13px] py-1 border-b border-[#2a3325]">• {i}</div>
             ))}
           </div>
         ))}
@@ -47,7 +46,7 @@ export const W34_sections = {
         스택으로 풀면 O(n), 잘못 쓰면 O(n²)이 되는 문제들이 많습니다.<br />
         자료구조를 잘 선택하는 것이 코딩테스트 합격의 핵심입니다.
       </W34_Callout>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-[10px]">
         {[
           { name: "스택", op: "push/pop", time: "O(1)", icon: "📚" },
           { name: "큐", op: "enqueue/dequeue", time: "O(1)", icon: "🚶" },
@@ -56,11 +55,10 @@ export const W34_sections = {
           { name: "해시맵", op: "get/set", time: "O(1) avg", icon: "🗂️" },
           { name: "Counter", op: "빈도 계산", time: "O(n)", icon: "🔢" },
         ].map(item => (
-          <div key={item.name} style={{ background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 10, padding: "14px 16px", textAlign: "center" }}>
-            <div style={{ fontSize: 24, marginBottom: 6 }}>{item.icon}</div>
-            <div style={{ color: W34_T.text, fontWeight: 700, fontSize: 13 }}>{item.name}</div>
-            <div style={{ color: W34_T.muted, fontSize: 11, margin: "4px 0" }}>{item.op}</div>
+          <div key={item.name} className="bg-[#1a1f16] border border-[#2a3325] rounded-[10px] px-4 py-[14px] text-center">
+            <div className="text-[24px] mb-[6px]">{item.icon}</div>
+            <div className="text-[#dde8d6] font-bold text-[13px]">{item.name}</div>
+            <div className="text-[#5a6e50] text-[11px] my-1">{item.op}</div>
             <W34_Badge color={W34_T.accent3}>{item.time}</W34_Badge>
           </div>
         ))}
@@ -71,7 +69,7 @@ export const W34_sections = {
   stack: () => (
     <div>
       <W34_SectionTitle sub="LIFO — Last In, First Out">📚 스택 (Stack)</W34_SectionTitle>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent}>push O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent}>pop O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>파이썬: list 사용</W34_Badge>
@@ -113,19 +111,19 @@ def stock_price(prices):
     n = len(prices)
     answer = [0] * n
     stack = []  # 인덱스 저장
-    
+
     for i in range(n):
         # 스택 top의 가격보다 현재 가격이 작으면 → 가격 하락!
         while stack and prices[stack[-1]] > prices[i]:
             j = stack.pop()
             answer[j] = i - j  # 가격이 유지된 기간
         stack.append(i)
-    
+
     # 스택에 남은 인덱스들 = 끝까지 안 떨어진 것들
     while stack:
         j = stack.pop()
         answer[j] = n - 1 - j
-    
+
     return answer
 
 print(stock_price([1, 2, 3, 2, 3]))  # [4, 3, 1, 1, 0]`} />
@@ -139,15 +137,15 @@ print(stock_price([1, 2, 3, 2, 3]))  # [4, 3, 1, 1, 0]`} />
   queue: () => (
     <div>
       <W34_SectionTitle sub="FIFO — First In, First Out">🚶 큐 (Queue)</W34_SectionTitle>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent2}>enqueue O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>dequeue O(1)</W34_Badge>
         <W34_Badge color={W34_T.danger}>⚠️ list.pop(0)는 O(n)!</W34_Badge>
       </div>
       <W34_QueueViz />
       <W34_Callout color={W34_T.danger} icon="⚠️" title="list로 큐 쓰면 안 되는 이유">
-        <code style={{ color: W34_T.warn }}>list.pop(0)</code>은 O(n)입니다! 모든 원소를 왼쪽으로 당겨야 하기 때문.<br />
-        반드시 <code style={{ color: W34_T.accent }}>collections.deque</code>를 사용하세요 → <code style={{ color: W34_T.accent }}>popleft()</code>가 O(1)
+        <code className="text-[#ffd166]">list.pop(0)</code>은 O(n)입니다! 모든 원소를 왼쪽으로 당겨야 하기 때문.<br />
+        반드시 <code className="text-[#7eff6a]">collections.deque</code>를 사용하세요 → <code className="text-[#7eff6a]">popleft()</code>가 O(1)
       </W34_Callout>
       <W34_CodeBlock code={`from collections import deque
 
@@ -165,7 +163,7 @@ def bfs(graph, start):
     visited = set([start])
     queue = deque([start])
     order = []
-    
+
     while queue:
         node = queue.popleft()  # O(1)로 꺼냄
         order.append(node)
@@ -182,11 +180,11 @@ from collections import deque
 
 def card_game(n):
     queue = deque(range(1, n + 1))
-    
+
     while len(queue) > 1:
         queue.popleft()         # 맨 위 카드 버리기
         queue.append(queue.popleft())  # 다음 카드 맨 아래로
-    
+
     return queue[0]
 
 print(card_game(6))   # 4
@@ -226,7 +224,7 @@ from collections import deque
 def max_sliding_window(nums, k):
     dq = deque()  # 인덱스를 저장 (단조 감소)
     result = []
-    
+
     for i, v in enumerate(nums):
         # 윈도우 밖으로 나간 인덱스 제거
         while dq and dq[0] < i - k + 1:
@@ -237,7 +235,7 @@ def max_sliding_window(nums, k):
         dq.append(i)
         if i >= k - 1:
             result.append(nums[dq[0]])  # 덱 앞 = 현재 최댓값
-    
+
     return result
 
 print(max_sliding_window([1,3,-1,-3,5,3,6,7], 3))
@@ -252,7 +250,7 @@ print(max_sliding_window([1,3,-1,-3,5,3,6,7], 3))
   heap2: () => (
     <div>
       <W34_SectionTitle sub="가장 작은(또는 큰) 원소를 O(log n)으로 꺼내기">🏋️ 우선순위 큐 / 힙</W34_SectionTitle>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent}>heappush O(log n)</W34_Badge>
         <W34_Badge color={W34_T.accent}>heappop O(log n)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>파이썬 = min heap 기본</W34_Badge>
@@ -466,7 +464,7 @@ print(chr(97))       # 'a'
 for c in "abc":
     print(ord(c) - ord('a'))  # 0, 1, 2`} />
       <W34_Callout color={W34_T.purple} icon="⚡" title="문자열 성능 팁">
-        <code style={{ color: W34_T.accent }}>"+".join(list)</code>이 <code style={{ color: W34_T.danger }}>s += c</code>보다 훨씬 빠릅니다!<br />
+        <code className="text-[#7eff6a]">"+".join(list)</code>이 <code className="text-[#ff4f4f]">s += c</code>보다 훨씬 빠릅니다!<br />
         문자열은 immutable이라 += 할 때마다 새 객체 생성 → O(n²) 위험
       </W34_Callout>
     </div>
@@ -475,7 +473,7 @@ for c in "abc":
   twoptr: () => (
     <div>
       <W34_SectionTitle sub="두 인덱스로 O(n)에 해결 — 정렬된 배열에서 강력!">👆 투 포인터 (Two Pointer)</W34_SectionTitle>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent3}>시간 O(n)</W34_Badge>
         <W34_Badge color={W34_T.accent3}>공간 O(1)</W34_Badge>
         <W34_Badge color={W34_T.warn}>정렬된 배열에서 효과적</W34_Badge>
@@ -484,7 +482,7 @@ for c in "abc":
       <W34_CodeBlock code={`# ─── 패턴 1: 양 끝 포인터 (Two Sum in sorted array) ───
 def two_sum_sorted(arr, target):
     left, right = 0, len(arr) - 1
-    
+
     while left < right:
         s = arr[left] + arr[right]
         if s == target:
@@ -493,7 +491,7 @@ def two_sum_sorted(arr, target):
             left += 1   # 합이 작으면 왼쪽 포인터 이동
         else:
             right -= 1  # 합이 크면 오른쪽 포인터 이동
-    
+
     return None
 
 arr = [1, 2, 3, 4, 6, 8, 9]
@@ -505,13 +503,13 @@ def max_two_sum_pairs(n, limit, people):
     people.sort()
     left, right = 0, len(people) - 1
     boats = 0
-    
+
     while left <= right:
         if people[left] + people[right] <= limit:
             left += 1  # 가벼운 사람도 태울 수 있음
         right -= 1     # 무거운 사람은 항상 혼자 또는 같이
         boats += 1
-    
+
     return boats
 
 print(max_two_sum_pairs(4, 100, [50, 50, 70, 80]))  # 3`} />
@@ -521,18 +519,18 @@ def count_subarray_sum(arr, target):
     count = 0
     left = 0
     current_sum = 0
-    
+
     for right in range(len(arr)):
         current_sum += arr[right]
-        
+
         # 합이 target 초과하면 left 이동
         while current_sum > target and left <= right:
             current_sum -= arr[left]
             left += 1
-        
+
         if current_sum == target:
             count += 1
-    
+
     return count
 
 # 양수 배열에서만 작동 (음수 있으면 슬라이딩 윈도우 불가)
@@ -542,7 +540,7 @@ print(count_subarray_sum([1, 2, 3, 4, 5], 5))  # 2 (2+3, 5)
 def three_sum(arr, target):
     arr.sort()
     result = []
-    
+
     for i in range(len(arr) - 2):
         left, right = i + 1, len(arr) - 1
         while left < right:
@@ -559,7 +557,7 @@ def three_sum(arr, target):
   sliding: () => (
     <div>
       <W34_SectionTitle sub="고정/가변 크기 윈도우로 O(n)에 최적값 계산">🪟 슬라이딩 윈도우</W34_SectionTitle>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent2}>시간 O(n)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>공간 O(k) or O(1)</W34_Badge>
         <W34_Badge color={W34_T.warn}>연속된 부분 배열/문자열</W34_Badge>
@@ -570,17 +568,17 @@ def max_subarray_sum(arr, k):
     n = len(arr)
     if n < k:
         return -1
-    
+
     # 첫 윈도우 합
     window_sum = sum(arr[:k])
     max_sum = window_sum
-    
+
     # 슬라이딩: 한 칸씩 이동할 때 빠지는 값 빼고, 들어오는 값 더함
     for i in range(k, n):
         window_sum += arr[i]       # 새로 들어온 원소
         window_sum -= arr[i - k]   # 빠져나간 원소
         max_sum = max(max_sum, window_sum)
-    
+
     return max_sum
 
 print(max_subarray_sum([2, 1, 5, 1, 3, 2], 3))  # 9 (5+1+3)
@@ -590,16 +588,16 @@ def min_window_sum(arr, target):
     left = 0
     current_sum = 0
     min_len = float('inf')
-    
+
     for right in range(len(arr)):
         current_sum += arr[right]
-        
+
         # 조건 만족하면 왼쪽 줄여보기
         while current_sum >= target:
             min_len = min(min_len, right - left + 1)
             current_sum -= arr[left]
             left += 1
-    
+
     return min_len if min_len != float('inf') else 0
 
 print(min_window_sum([2,3,1,2,4,3], 7))  # 2 (4+3)`} />
@@ -611,13 +609,13 @@ def longest_unique_substring(s):
     char_map = {}
     left = 0
     max_len = 0
-    
+
     for right, c in enumerate(s):
         if c in char_map and char_map[c] >= left:
             left = char_map[c] + 1  # 중복 발생 → 왼쪽 이동
         char_map[c] = right
         max_len = max(max_len, right - left + 1)
-    
+
     return max_len
 
 print(longest_unique_substring("abcabcbb"))  # 3 ("abc")
@@ -630,7 +628,7 @@ def truck_bridge(bridge_length, weight, truck_weights):
     bridge = deque([0] * bridge_length)
     current_weight = 0
     time = 0
-    
+
     for truck in truck_weights:
         while True:
             if current_weight + truck <= weight:
@@ -643,7 +641,7 @@ def truck_bridge(bridge_length, weight, truck_weights):
                 bridge.append(0)
                 current_weight -= bridge.popleft()
                 time += 1
-    
+
     return time + bridge_length
 
 print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
@@ -658,8 +656,8 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
   problems: () => (
     <div>
       <W34_SectionTitle>📝 연습 문제 & 정리</W34_SectionTitle>
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ color: W34_T.accent, fontWeight: 700, marginBottom: 12, fontSize: 15 }}>Week 3: 스택 & 큐</div>
+      <div className="mb-6">
+        <div className="text-[#7eff6a] font-bold mb-3 text-[15px]">Week 3: 스택 & 큐</div>
         {[
           { id: "10828", title: "스택", level: "🟢", tip: "스택 기본 구현", url: "https://www.acmicpc.net/problem/10828" },
           { id: "10773", title: "제로", level: "🟢", tip: "스택으로 취소 기능 구현", url: "https://www.acmicpc.net/problem/10773" },
@@ -668,13 +666,11 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
           { id: "2164",  title: "카드2", level: "🟡", tip: "deque 시뮬레이션", url: "https://www.acmicpc.net/problem/2164" },
           { id: "11286", title: "절댓값 힙", level: "🟠", tip: "튜플 힙 활용", url: "https://www.acmicpc.net/problem/11286" },
         ].map(p => (
-          <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "12px 16px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 10, marginBottom: 8, borderLeft: `3px solid ${W34_T.accent}` }}>
+          <div key={p.id} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#7eff6a]">
             <div>
-              <span style={{ color: W34_T.muted, fontSize: 12, fontFamily: "monospace" }}>BOJ {p.id}</span>
-              <span style={{ color: W34_T.text, fontWeight: 700, marginLeft: 10 }}>{p.title}</span>
-              <span style={{ color: W34_T.muted, fontSize: 12, marginLeft: 10 }}>{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px] font-mono">BOJ {p.id}</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <span>{p.level}</span>
           </div>
@@ -684,33 +680,29 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
           { title: "프린터", level: "🟡", tip: "덱 시뮬레이션", site: "프로그래머스" },
           { title: "다리를 지나는 트럭", level: "🟠", tip: "슬라이딩 윈도우 + 덱", site: "프로그래머스" },
         ].map(p => (
-          <div key={p.title} style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "12px 16px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 10, marginBottom: 8, borderLeft: `3px solid ${W34_T.accent2}` }}>
+          <div key={p.title} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]">
             <div>
-              <span style={{ color: W34_T.muted, fontSize: 12 }}>{p.site}</span>
-              <span style={{ color: W34_T.text, fontWeight: 700, marginLeft: 10 }}>{p.title}</span>
-              <span style={{ color: W34_T.muted, fontSize: 12, marginLeft: 10 }}>{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px]">{p.site}</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <span>{p.level}</span>
           </div>
         ))}
       </div>
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ color: W34_T.accent2, fontWeight: 700, marginBottom: 12, fontSize: 15 }}>Week 4: 해시 & 문자열</div>
+      <div className="mb-6">
+        <div className="text-[#ff8c42] font-bold mb-3 text-[15px]">Week 4: 해시 & 문자열</div>
         {[
           { id: "1620",  title: "나는야 포켓몬 마스터", level: "🟡", tip: "dict 양방향 매핑" },
           { id: "17219", title: "비밀번호 찾기", level: "🟢", tip: "dict 기본", },
           { id: "7785",  title: "회사에 있는 사람", level: "🟡", tip: "set 활용" },
           { id: "1764",  title: "듣보잡", level: "🟡", tip: "set 교집합" },
         ].map(p => (
-          <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "12px 16px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 10, marginBottom: 8, borderLeft: `3px solid ${W34_T.accent2}` }}>
+          <div key={p.id} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]">
             <div>
-              <span style={{ color: W34_T.muted, fontSize: 12, fontFamily: "monospace" }}>BOJ {p.id}</span>
-              <span style={{ color: W34_T.text, fontWeight: 700, marginLeft: 10 }}>{p.title}</span>
-              <span style={{ color: W34_T.muted, fontSize: 12, marginLeft: 10 }}>{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px] font-mono">BOJ {p.id}</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <W34_Badge color={W34_T.accent2}>해시</W34_Badge>
           </div>
@@ -720,27 +712,26 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
           { title: "전화번호 목록", tip: "set으로 접두어 검사" },
           { title: "베스트앨범", tip: "dict + sorted 복합 활용" },
         ].map(p => (
-          <div key={p.title} style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "12px 16px", background: W34_T.card, border: `1px solid ${W34_T.border}`,
-            borderRadius: 10, marginBottom: 8, borderLeft: `3px solid ${W34_T.accent3}` }}>
+          <div key={p.title} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#42c9ff]">
             <div>
-              <span style={{ color: W34_T.muted, fontSize: 12 }}>프로그래머스</span>
-              <span style={{ color: W34_T.text, fontWeight: 700, marginLeft: 10 }}>{p.title}</span>
-              <span style={{ color: W34_T.muted, fontSize: 12, marginLeft: 10 }}>{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px]">프로그래머스</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
             </div>
             <W34_Badge color={W34_T.accent3}>해시</W34_Badge>
           </div>
         ))}
       </div>
       <W34_Callout color={W34_T.accent} icon="📌" title="이번 주 핵심 정리">
-        <strong style={{ color: W34_T.accent }}>deque</strong>를 항상 list 대신 쓰자 (popleft는 반드시 deque!)<br />
-        <strong style={{ color: W34_T.accent2 }}>Counter / defaultdict</strong>로 빈도 계산은 3줄이면 끝<br />
-        <strong style={{ color: W34_T.accent3 }}>투포인터</strong>는 정렬 후, <strong style={{ color: W34_T.purple }}>슬라이딩 윈도우</strong>는 연속 구간<br />
-        힙은 <strong style={{ color: W34_T.warn }}>최솟값/최댓값 반복 추출</strong>할 때 쓴다
+        <strong className="text-[#7eff6a]">deque</strong>를 항상 list 대신 쓰자 (popleft는 반드시 deque!)<br />
+        <strong className="text-[#ff8c42]">Counter / defaultdict</strong>로 빈도 계산은 3줄이면 끝<br />
+        <strong className="text-[#42c9ff]">투포인터</strong>는 정렬 후, <strong className="text-[#b57fff]">슬라이딩 윈도우</strong>는 연속 구간<br />
+        힙은 <strong className="text-[#ffd166]">최솟값/최댓값 반복 추출</strong>할 때 쓴다
       </W34_Callout>
     </div>
   ),
 };
 
 /* ─────────────────────────────── APP ─────────────────────────────── */
+
 
