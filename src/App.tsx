@@ -63,7 +63,7 @@ export default function App() {
   return (
     <div>
       <nav className={root()}>
-        <span className={logo()}>🎓 코테 커리큘럼</span>
+        <span className={logo()}>🎓 알고있슈</span>
 
         <select
           value={page}
