@@ -5,7 +5,7 @@ import { ComplexityBadge as W2_ComplexityBadge } from '../../components/Badge';
 import { CodeBlock as W2_CodeBlock } from '../../components/CodeBlock';
 
 export const W2_chapters = [
-  { id: "intro", label: "📋 목차", icon: "📋" },
+  { id: "intro", label: "목차", icon: "📋" },
   { id: "bubble", label: "버블 정렬", icon: "🫧" },
   { id: "selection", label: "선택 정렬", icon: "🎯" },
   { id: "insertion", label: "삽입 정렬", icon: "🃏" },
