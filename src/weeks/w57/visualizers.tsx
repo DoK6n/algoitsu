@@ -1,20 +1,41 @@
 // @ts-nocheck
-import { useState, useEffect, useRef } from 'react';
-import { W57_T } from './theme';
+import { useState, useEffect, useRef } from "react";
+import { W57_T } from "./theme";
 
 const W57_GRAPH_NODES = {
   1: { x: 150, y: 60 },
-  2: { x: 60,  y: 160 },
+  2: { x: 60, y: 160 },
   3: { x: 240, y: 160 },
-  4: { x: 30,  y: 270 },
+  4: { x: 30, y: 270 },
   5: { x: 130, y: 270 },
   6: { x: 260, y: 270 },
 };
-const W57_GRAPH_EDGES = [[1,2],[1,3],[2,4],[2,5],[3,5],[3,6]];
-const W57_GRAPH_ADJ = { 1:[2,3], 2:[1,4,5], 3:[1,5,6], 4:[2], 5:[2,3], 6:[3] };
+const W57_GRAPH_EDGES = [
+  [1, 2],
+  [1, 3],
+  [2, 4],
+  [2, 5],
+  [3, 5],
+  [3, 6],
+];
+const W57_GRAPH_ADJ = {
+  1: [2, 3],
+  2: [1, 4, 5],
+  3: [1, 5, 6],
+  4: [2],
+  5: [2, 3],
+  6: [3],
+};
 
-function W57_GraphSVG({ visited = [], current = null, queue = [], path = [], nodeColor, edgeColor }) {
-  const getNC = (n) => {
+function W57_GraphSVG({
+  visited = [],
+  current = null,
+  queue = [],
+  path = [],
+  nodeColor,
+  edgeColor,
+}) {
+  const getNC = n => {
     if (n === current) return W57_T.accent;
     if (nodeColor && nodeColor[n]) return nodeColor[n];
     if (visited.includes(n)) return W57_T.green;
@@ -26,27 +47,51 @@ function W57_GraphSVG({ visited = [], current = null, queue = [], path = [], nod
     <svg viewBox="0 0 300 330" className="w-full max-w-[300px] block mx-auto">
       {W57_GRAPH_EDGES.map(([a, b], i) => {
         const bothVisited = visited.includes(a) && visited.includes(b);
-        const inPath = path.some(([x,y]) => (x===a&&y===b)||(x===b&&y===a));
+        const inPath = path.some(
+          ([x, y]) => (x === a && y === b) || (x === b && y === a),
+        );
         return (
-          <line key={i}
-            x1={W57_GRAPH_NODES[a].x} y1={W57_GRAPH_NODES[a].y}
-            x2={W57_GRAPH_NODES[b].x} y2={W57_GRAPH_NODES[b].y}
-            stroke={inPath ? W57_T.accent : bothVisited ? `${W57_T.green}88` : W57_T.border}
+          <line
+            key={i}
+            x1={W57_GRAPH_NODES[a].x}
+            y1={W57_GRAPH_NODES[a].y}
+            x2={W57_GRAPH_NODES[b].x}
+            y2={W57_GRAPH_NODES[b].y}
+            stroke={
+              inPath
+                ? W57_T.accent
+                : bothVisited
+                  ? `${W57_T.green}88`
+                  : W57_T.border
+            }
             strokeWidth={inPath ? 3 : 2}
           />
         );
       })}
-      {Object.entries(W57_GRAPH_NODES).map(([n, {x,y}]) => {
+      {Object.entries(W57_GRAPH_NODES).map(([n, { x, y }]) => {
         const nc = getNC(Number(n));
         return (
           <g key={n}>
-            <circle cx={x} cy={y} r={22}
+            <circle
+              cx={x}
+              cy={y}
+              r={22}
               fill={nc === W57_T.nodeBorder ? W57_T.node : `${nc}33`}
-              stroke={nc} strokeWidth={2.5}
+              stroke={nc}
+              strokeWidth={2.5}
               style={{ transition: "all 0.35s" }}
             />
-            <text x={x} y={y+5} textAnchor="middle" fill={W57_T.text}
-              fontSize={14} fontWeight={700} fontFamily="monospace">{n}</text>
+            <text
+              x={x}
+              y={y + 5}
+              textAnchor="middle"
+              fill={W57_T.text}
+              fontSize={14}
+              fontWeight={700}
+              fontFamily="monospace"
+            >
+              {n}
+            </text>
           </g>
         );
       })}
@@ -62,36 +107,73 @@ function W57_DFSViz() {
   const timerRef = useRef(null);
 
   const buildSteps = () => {
-    const s = [{ visited: [], stack: [1], current: null, msg: "시작: 스택에 노드 1 추가" }];
+    const s = [
+      {
+        visited: [],
+        stack: [1],
+        current: null,
+        msg: "시작: 스택에 노드 1 추가",
+      },
+    ];
     const visited = [];
     const stack = [1];
     while (stack.length) {
       const node = stack.pop();
       if (visited.includes(node)) {
-        s.push({ visited: [...visited], stack: [...stack], current: node, msg: `노드 ${node} 이미 방문 — 스킵` });
+        s.push({
+          visited: [...visited],
+          stack: [...stack],
+          current: node,
+          msg: `노드 ${node} 이미 방문 — 스킵`,
+        });
         continue;
       }
       visited.push(node);
-      s.push({ visited: [...visited], stack: [...stack], current: node, msg: `노드 ${node} 방문! 스택: [${stack.join(",")}]` });
+      s.push({
+        visited: [...visited],
+        stack: [...stack],
+        current: node,
+        msg: `노드 ${node} 방문! 스택: [${stack.join(",")}]`,
+      });
       const neighbors = [...(W57_GRAPH_ADJ[node] || [])].reverse();
       for (const nb of neighbors) {
         if (!visited.includes(nb)) {
           stack.push(nb);
-          s.push({ visited: [...visited], stack: [...stack], current: node, msg: `인접 노드 ${nb} → 스택에 push` });
+          s.push({
+            visited: [...visited],
+            stack: [...stack],
+            current: node,
+            msg: `인접 노드 ${nb} → 스택에 push`,
+          });
         }
       }
     }
-    s.push({ visited: [...visited], stack: [], current: null, msg: `완료! 방문 순서: ${visited.join(" → ")}` });
+    s.push({
+      visited: [...visited],
+      stack: [],
+      current: null,
+      msg: `완료! 방문 순서: ${visited.join(" → ")}`,
+    });
     return s;
   };
 
-  const start = () => { const s = buildSteps(); setSteps(s); setIdx(0); };
+  const start = () => {
+    const s = buildSteps();
+    setSteps(s);
+    setIdx(0);
+  };
   const step = steps[idx] || { visited: [], stack: [], current: null, msg: "" };
 
   useEffect(() => {
     if (running && steps.length) {
       timerRef.current = setInterval(() => {
-        setIdx(p => { if (p >= steps.length - 1) { setRunning(false); return p; } return p + 1; });
+        setIdx(p => {
+          if (p >= steps.length - 1) {
+            setRunning(false);
+            return p;
+          }
+          return p + 1;
+        });
       }, 700);
     }
     return () => clearInterval(timerRef.current);
@@ -107,17 +189,22 @@ function W57_DFSViz() {
           <div className="mb-[10px]">
             <div className="text-[#4a5070] text-[12px] mb-1">스택 (LIFO)</div>
             <div className="flex gap-1 flex-wrap">
-              {step.stack.length === 0
-                ? <span className="text-[#4a5070] text-[12px]">비어있음</span>
-                : [...step.stack].reverse().map((n, i) => (
-                  <div key={i}
+              {step.stack.length === 0 ? (
+                <span className="text-[#4a5070] text-[12px]">비어있음</span>
+              ) : (
+                [...step.stack].reverse().map((n, i) => (
+                  <div
+                    key={i}
                     className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-bold font-mono text-[13px] border-2"
                     style={{
                       background: i === 0 ? `${W57_T.accent}33` : W57_T.card,
                       borderColor: i === 0 ? W57_T.accent : W57_T.border,
                     }}
-                  >{n}</div>
-                ))}
+                  >
+                    {n}
+                  </div>
+                ))
+              )}
             </div>
           </div>
           <div className="mb-[10px]">
@@ -138,22 +225,54 @@ function W57_DFSViz() {
         </div>
       </div>
       <div className="flex gap-2 mt-[14px] flex-wrap">
-        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#e8645a] border-none text-white rounded-[8px] cursor-pointer font-bold text-[13px]">🔴 시작</button>
-        <button type="button" onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
-        <button type="button" onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
-        <button type="button" onClick={() => setRunning(r => !r)} disabled={!steps.length}
+        <button
+          type="button"
+          onClick={start}
+          className="py-[7px] px-4 bg-[#e8645a] border-none text-white rounded-[8px] cursor-pointer font-bold text-[13px]"
+        >
+          🔴 시작
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.max(0, p - 1))}
+          disabled={idx <= 0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ◀
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))}
+          disabled={idx >= steps.length - 1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ▶
+        </button>
+        <button
+          type="button"
+          onClick={() => setRunning(r => !r)}
+          disabled={!steps.length}
           className="py-[7px] px-[14px] border-none text-black rounded-[8px] cursor-pointer font-bold"
-          style={{ background: running ? W57_T.danger : W57_T.green }}>
+          style={{ background: running ? W57_T.danger : W57_T.green }}
+        >
           {running ? "⏸" : "▶ 자동"}
         </button>
-        {steps.length > 0 && <span className="text-[#4a5070] text-[12px] self-center">{idx + 1}/{steps.length}</span>}
+        {steps.length > 0 && (
+          <span className="text-[#4a5070] text-[12px] self-center">
+            {idx + 1}/{steps.length}
+          </span>
+        )}
       </div>
       <div className="flex gap-4 mt-[10px] text-[12px]">
-        <span><span className="text-[#e8645a]">●</span> 현재</span>
-        <span><span className="text-[#52d68a]">●</span> 방문</span>
-        <span><span className="text-[#ffd166]">●</span> 큐/스택</span>
+        <span>
+          <span className="text-[#e8645a]">●</span> 현재
+        </span>
+        <span>
+          <span className="text-[#52d68a]">●</span> 방문
+        </span>
+        <span>
+          <span className="text-[#ffd166]">●</span> 큐/스택
+        </span>
       </div>
     </div>
   );
@@ -167,33 +286,75 @@ function W57_BFSViz() {
   const timerRef = useRef(null);
 
   const buildSteps = () => {
-    const s = [{ visited: [], queue: [1], current: null, level: {1:0}, msg: "시작: 큐에 노드 1 추가 (레벨 0)" }];
+    const s = [
+      {
+        visited: [],
+        queue: [1],
+        current: null,
+        level: { 1: 0 },
+        msg: "시작: 큐에 노드 1 추가 (레벨 0)",
+      },
+    ];
     const visited = [1];
     const queue = [1];
-    const level = {1: 0};
+    const level = { 1: 0 };
     while (queue.length) {
       const node = queue.shift();
-      s.push({ visited: [...visited], queue: [...queue], current: node, level: {...level}, msg: `노드 ${node} (레벨 ${level[node]}) 방문!` });
-      for (const nb of (W57_GRAPH_ADJ[node] || [])) {
+      s.push({
+        visited: [...visited],
+        queue: [...queue],
+        current: node,
+        level: { ...level },
+        msg: `노드 ${node} (레벨 ${level[node]}) 방문!`,
+      });
+      for (const nb of W57_GRAPH_ADJ[node] || []) {
         if (!visited.includes(nb)) {
           visited.push(nb);
           queue.push(nb);
           level[nb] = level[node] + 1;
-          s.push({ visited: [...visited], queue: [...queue], current: node, level: {...level}, msg: `인접 노드 ${nb} → 큐에 enqueue (레벨 ${level[nb]})` });
+          s.push({
+            visited: [...visited],
+            queue: [...queue],
+            current: node,
+            level: { ...level },
+            msg: `인접 노드 ${nb} → 큐에 enqueue (레벨 ${level[nb]})`,
+          });
         }
       }
     }
-    s.push({ visited: [...visited], queue: [], current: null, level: {...level}, msg: `완료! BFS 방문 순서: ${visited.join(" → ")}` });
+    s.push({
+      visited: [...visited],
+      queue: [],
+      current: null,
+      level: { ...level },
+      msg: `완료! BFS 방문 순서: ${visited.join(" → ")}`,
+    });
     return s;
   };
 
-  const start = () => { const s = buildSteps(); setSteps(s); setIdx(0); };
-  const step = steps[idx] || { visited: [], queue: [], current: null, level: {}, msg: "" };
+  const start = () => {
+    const s = buildSteps();
+    setSteps(s);
+    setIdx(0);
+  };
+  const step = steps[idx] || {
+    visited: [],
+    queue: [],
+    current: null,
+    level: {},
+    msg: "",
+  };
 
   useEffect(() => {
     if (running && steps.length) {
       timerRef.current = setInterval(() => {
-        setIdx(p => { if (p >= steps.length - 1) { setRunning(false); return p; } return p + 1; });
+        setIdx(p => {
+          if (p >= steps.length - 1) {
+            setRunning(false);
+            return p;
+          }
+          return p + 1;
+        });
       }, 700);
     }
     return () => clearInterval(timerRef.current);
@@ -209,37 +370,66 @@ function W57_BFSViz() {
             visited={step.visited}
             current={step.current}
             queue={step.queue}
-            nodeColor={Object.fromEntries(Object.entries(step.level || {}).map(([n, l]) => [n, step.visited.includes(Number(n)) ? levelColors[l] || W57_T.green : W57_T.nodeBorder]))}
+            nodeColor={Object.fromEntries(
+              Object.entries(step.level || {}).map(([n, l]) => [
+                n,
+                step.visited.includes(Number(n))
+                  ? levelColors[l] || W57_T.green
+                  : W57_T.nodeBorder,
+              ]),
+            )}
           />
         </div>
         <div className="flex-1 min-w-[200px]">
           <div className="mb-[10px]">
-            <div className="text-[#4a5070] text-[12px] mb-1">큐 (FIFO) — 앞 ← 뒤</div>
+            <div className="text-[#4a5070] text-[12px] mb-1">
+              큐 (FIFO) — 앞 ← 뒤
+            </div>
             <div className="flex gap-1">
-              {step.queue.length === 0
-                ? <span className="text-[#4a5070] text-[12px]">비어있음</span>
-                : step.queue.map((n, i) => (
-                  <div key={i}
+              {step.queue.length === 0 ? (
+                <span className="text-[#4a5070] text-[12px]">비어있음</span>
+              ) : (
+                step.queue.map((n, i) => (
+                  <div
+                    key={i}
                     className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-bold font-mono text-[13px] border-2"
                     style={{
                       background: i === 0 ? `${W57_T.warn}33` : W57_T.card,
                       borderColor: i === 0 ? W57_T.warn : W57_T.border,
                     }}
-                  >{n}</div>
-                ))}
+                  >
+                    {n}
+                  </div>
+                ))
+              )}
             </div>
           </div>
           <div className="mb-[10px]">
             <div className="text-[#4a5070] text-[12px] mb-1">레벨별 탐색</div>
-            {[0,1,2].map(l => {
-              const nodes = Object.entries(step.level || {}).filter(([,lv]) => lv === l).map(([n]) => Number(n));
+            {[0, 1, 2].map(l => {
+              const nodes = Object.entries(step.level || {})
+                .filter(([, lv]) => lv === l)
+                .map(([n]) => Number(n));
               return nodes.length ? (
                 <div key={l} className="flex gap-[6px] items-center mb-1">
-                  <span className="text-[11px] min-w-[50px]" style={{ color: levelColors[l] }}>레벨 {l}:</span>
+                  <span
+                    className="text-[11px] min-w-[50px]"
+                    style={{ color: levelColors[l] }}
+                  >
+                    레벨 {l}:
+                  </span>
                   {nodes.map(n => (
-                    <span key={n} className="font-mono text-[13px]"
-                      style={{ color: step.visited.includes(n) ? levelColors[l] : W57_T.muted }}
-                    >{n}</span>
+                    <span
+                      key={n}
+                      className="font-mono text-[13px]"
+                      style={{
+                        color: step.visited.includes(n)
+                          ? levelColors[l]
+                          : W57_T.muted,
+                      }}
+                    >
+                      {n}
+                    </span>
                   ))}
                 </div>
               ) : null;
@@ -253,28 +443,96 @@ function W57_BFSViz() {
         </div>
       </div>
       <div className="flex gap-2 mt-[14px] flex-wrap">
-        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]">🟠 시작</button>
-        <button type="button" onClick={() => setIdx(p => Math.max(0, p - 1))} disabled={idx <= 0}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
-        <button type="button" onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))} disabled={idx >= steps.length - 1}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
-        <button type="button" onClick={() => setRunning(r => !r)} disabled={!steps.length}
+        <button
+          type="button"
+          onClick={start}
+          className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]"
+        >
+          🟠 시작
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.max(0, p - 1))}
+          disabled={idx <= 0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ◀
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))}
+          disabled={idx >= steps.length - 1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ▶
+        </button>
+        <button
+          type="button"
+          onClick={() => setRunning(r => !r)}
+          disabled={!steps.length}
           className="py-[7px] px-[14px] border-none text-black rounded-[8px] cursor-pointer font-bold"
-          style={{ background: running ? W57_T.danger : W57_T.green }}>
+          style={{ background: running ? W57_T.danger : W57_T.green }}
+        >
           {running ? "⏸" : "▶ 자동"}
         </button>
-        {steps.length > 0 && <span className="text-[#4a5070] text-[12px] self-center">{idx + 1}/{steps.length}</span>}
+        {steps.length > 0 && (
+          <span className="text-[#4a5070] text-[12px] self-center">
+            {idx + 1}/{steps.length}
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
 /* ══════════════════════════════ DIJKSTRA VIZ ══════════════════════════════ */
-const W57_DJ_NODES = { 1:{x:150,y:50}, 2:{x:60,y:150}, 3:{x:240,y:150}, 4:{x:30,y:260}, 5:{x:150,y:260}, 6:{x:270,y:260} };
-const W57_DJ_EDGES = [[1,2,2],[1,3,4],[2,3,1],[2,4,7],[3,5,3],[4,5,1],[4,6,8],[5,6,2]];
+const W57_DJ_NODES = {
+  1: { x: 150, y: 50 },
+  2: { x: 60, y: 150 },
+  3: { x: 240, y: 150 },
+  4: { x: 30, y: 260 },
+  5: { x: 150, y: 260 },
+  6: { x: 270, y: 260 },
+};
+const W57_DJ_EDGES = [
+  [1, 2, 2],
+  [1, 3, 4],
+  [2, 3, 1],
+  [2, 4, 7],
+  [3, 5, 3],
+  [4, 5, 1],
+  [4, 6, 8],
+  [5, 6, 2],
+];
 const W57_DJ_ADJ = {
-  1:[[2,2],[3,4]], 2:[[1,2],[3,1],[4,7]], 3:[[1,4],[2,1],[5,3]],
-  4:[[2,7],[5,1],[6,8]], 5:[[3,3],[4,1],[6,2]], 6:[[4,8],[5,2]]
+  1: [
+    [2, 2],
+    [3, 4],
+  ],
+  2: [
+    [1, 2],
+    [3, 1],
+    [4, 7],
+  ],
+  3: [
+    [1, 4],
+    [2, 1],
+    [5, 3],
+  ],
+  4: [
+    [2, 7],
+    [5, 1],
+    [6, 8],
+  ],
+  5: [
+    [3, 3],
+    [4, 1],
+    [6, 2],
+  ],
+  6: [
+    [4, 8],
+    [5, 2],
+  ],
 };
 
 function W57_DijkstraViz() {
@@ -283,36 +541,62 @@ function W57_DijkstraViz() {
 
   const buildSteps = () => {
     const INF = Infinity;
-    const dist = {1:0,2:INF,3:INF,4:INF,5:INF,6:INF};
+    const dist = { 1: 0, 2: INF, 3: INF, 4: INF, 5: INF, 6: INF };
     const visited = new Set();
-    const s = [{ dist:{...dist}, visited:[], current:null, msg:"초기화: dist[1]=0, 나머지=∞" }];
+    const s = [
+      {
+        dist: { ...dist },
+        visited: [],
+        current: null,
+        msg: "초기화: dist[1]=0, 나머지=∞",
+      },
+    ];
 
     for (let iter = 0; iter < 6; iter++) {
       let u = null;
       for (const [n, d] of Object.entries(dist)) {
-        if (!visited.has(Number(n)) && (u === null || d < dist[u])) u = Number(n);
+        if (!visited.has(Number(n)) && (u === null || d < dist[u]))
+          u = Number(n);
       }
       if (u === null || dist[u] === INF) break;
       visited.add(u);
-      s.push({ dist:{...dist}, visited:[...visited], current:u, msg:`노드 ${u} 선택 (dist=${dist[u] === INF ? "∞" : dist[u]})` });
+      s.push({
+        dist: { ...dist },
+        visited: [...visited],
+        current: u,
+        msg: `노드 ${u} 선택 (dist=${dist[u] === INF ? "∞" : dist[u]})`,
+      });
 
-      for (const [v, w] of (W57_DJ_ADJ[u] || [])) {
+      for (const [v, w] of W57_DJ_ADJ[u] || []) {
         if (!visited.has(v) && dist[u] + w < dist[v]) {
           const old = dist[v];
           dist[v] = dist[u] + w;
-          s.push({ dist:{...dist}, visited:[...visited], current:u,
-            msg:`dist[${v}] 갱신: ${old===INF?"∞":old} → ${dist[v]} (via ${u})` });
+          s.push({
+            dist: { ...dist },
+            visited: [...visited],
+            current: u,
+            msg: `dist[${v}] 갱신: ${old === INF ? "∞" : old} → ${dist[v]} (via ${u})`,
+          });
         }
       }
     }
-    s.push({ dist:{...dist}, visited:[...visited], current:null, msg:"완료!" });
+    s.push({
+      dist: { ...dist },
+      visited: [...visited],
+      current: null,
+      msg: "완료!",
+    });
     return s;
   };
 
-  const start = () => { const s = buildSteps(); setSteps(s); setIdx(0); };
-  const step = steps[idx] || { dist:{}, visited:[], current:null, msg:"" };
+  const start = () => {
+    const s = buildSteps();
+    setSteps(s);
+    setIdx(0);
+  };
+  const step = steps[idx] || { dist: {}, visited: [], current: null, msg: "" };
 
-  const getNC = (n) => {
+  const getNC = n => {
     if (n === step.current) return W57_T.accent;
     if (step.visited.includes(n)) return W57_T.green;
     return W57_T.nodeBorder;
@@ -322,28 +606,80 @@ function W57_DijkstraViz() {
     <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
       <div className="flex gap-4 flex-wrap">
         <svg viewBox="0 0 310 300" className="w-full max-w-[310px] flex-none">
-          {W57_DJ_EDGES.map(([a,b,w], i) => {
-            const ax = W57_DJ_NODES[a].x, ay = W57_DJ_NODES[a].y;
-            const bx = W57_DJ_NODES[b].x, by = W57_DJ_NODES[b].y;
-            const mx = (ax+bx)/2, my = (ay+by)/2;
+          {W57_DJ_EDGES.map(([a, b, w], i) => {
+            const ax = W57_DJ_NODES[a].x,
+              ay = W57_DJ_NODES[a].y;
+            const bx = W57_DJ_NODES[b].x,
+              by = W57_DJ_NODES[b].y;
+            const mx = (ax + bx) / 2,
+              my = (ay + by) / 2;
             return (
               <g key={i}>
-                <line x1={ax} y1={ay} x2={bx} y2={by} stroke={W57_T.border} strokeWidth={2} />
-                <rect x={mx-10} y={my-9} width={20} height={16} rx={4} fill={W57_T.surface} />
-                <text x={mx} y={my+4} textAnchor="middle" fill={W57_T.w6} fontSize={11} fontWeight={700} fontFamily="monospace">{w}</text>
+                <line
+                  x1={ax}
+                  y1={ay}
+                  x2={bx}
+                  y2={by}
+                  stroke={W57_T.border}
+                  strokeWidth={2}
+                />
+                <rect
+                  x={mx - 10}
+                  y={my - 9}
+                  width={20}
+                  height={16}
+                  rx={4}
+                  fill={W57_T.surface}
+                />
+                <text
+                  x={mx}
+                  y={my + 4}
+                  textAnchor="middle"
+                  fill={W57_T.w6}
+                  fontSize={11}
+                  fontWeight={700}
+                  fontFamily="monospace"
+                >
+                  {w}
+                </text>
               </g>
             );
           })}
-          {Object.entries(W57_DJ_NODES).map(([n,{x,y}]) => {
+          {Object.entries(W57_DJ_NODES).map(([n, { x, y }]) => {
             const nc = getNC(Number(n));
             const d = step.dist[Number(n)];
             return (
               <g key={n}>
-                <circle cx={x} cy={y} r={22} fill={nc===W57_T.nodeBorder ? W57_T.node : `${nc}33`} stroke={nc} strokeWidth={2.5} style={{transition:"all 0.3s"}} />
-                <text x={x} y={y+1} textAnchor="middle" fill={W57_T.text} fontSize={13} fontWeight={700} fontFamily="monospace">{n}</text>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={22}
+                  fill={nc === W57_T.nodeBorder ? W57_T.node : `${nc}33`}
+                  stroke={nc}
+                  strokeWidth={2.5}
+                  style={{ transition: "all 0.3s" }}
+                />
+                <text
+                  x={x}
+                  y={y + 1}
+                  textAnchor="middle"
+                  fill={W57_T.text}
+                  fontSize={13}
+                  fontWeight={700}
+                  fontFamily="monospace"
+                >
+                  {n}
+                </text>
                 {d !== undefined && (
-                  <text x={x} y={y+14} textAnchor="middle" fill={nc===W57_T.nodeBorder?W57_T.muted:nc} fontSize={10} fontFamily="monospace">
-                    {d===Infinity?"∞":d}
+                  <text
+                    x={x}
+                    y={y + 14}
+                    textAnchor="middle"
+                    fill={nc === W57_T.nodeBorder ? W57_T.muted : nc}
+                    fontSize={10}
+                    fontFamily="monospace"
+                  >
+                    {d === Infinity ? "∞" : d}
                   </text>
                 )}
               </g>
@@ -351,23 +687,44 @@ function W57_DijkstraViz() {
           })}
         </svg>
         <div className="flex-1 min-w-[180px]">
-          <div className="text-[#4a5070] text-[12px] mb-2">최단 거리 테이블 (노드 1 기준)</div>
+          <div className="text-[#4a5070] text-[12px] mb-2">
+            최단 거리 테이블 (노드 1 기준)
+          </div>
           <div className="flex flex-col gap-1">
-            {[1,2,3,4,5,6].map(n => {
+            {[1, 2, 3, 4, 5, 6].map(n => {
               const d = step.dist[n];
               const isVisited = step.visited && step.visited.includes(n);
               return (
-                <div key={n}
+                <div
+                  key={n}
                   className="flex gap-2 items-center py-1 px-[10px] rounded-[6px] border transition-all duration-300"
                   style={{
-                    background: n===step.current ? `${W57_T.accent}22` : isVisited ? `${W57_T.green}11` : W57_T.card,
-                    borderColor: n===step.current ? W57_T.accent : isVisited ? W57_T.green : W57_T.border,
-                  }}>
-                  <span className="text-[#dde2f0] font-mono min-w-[40px]">노드 {n}</span>
-                  <span className="font-mono font-bold" style={{ color: d===Infinity ? W57_T.muted : W57_T.w6 }}>
-                    {d===undefined||d===Infinity ? "∞" : d}
+                    background:
+                      n === step.current
+                        ? `${W57_T.accent}22`
+                        : isVisited
+                          ? `${W57_T.green}11`
+                          : W57_T.card,
+                    borderColor:
+                      n === step.current
+                        ? W57_T.accent
+                        : isVisited
+                          ? W57_T.green
+                          : W57_T.border,
+                  }}
+                >
+                  <span className="text-[#dde2f0] font-mono min-w-[40px]">
+                    노드 {n}
                   </span>
-                  {isVisited && <span className="text-[#52d68a] text-[11px]">✓ 확정</span>}
+                  <span
+                    className="font-mono font-bold"
+                    style={{ color: d === Infinity ? W57_T.muted : W57_T.w6 }}
+                  >
+                    {d === undefined || d === Infinity ? "∞" : d}
+                  </span>
+                  {isVisited && (
+                    <span className="text-[#52d68a] text-[11px]">✓ 확정</span>
+                  )}
                 </div>
               );
             })}
@@ -380,12 +737,34 @@ function W57_DijkstraViz() {
         </div>
       </div>
       <div className="flex gap-2 mt-[14px] flex-wrap">
-        <button type="button" onClick={start} className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]">⚡ 시작</button>
-        <button type="button" onClick={() => setIdx(p => Math.max(0,p-1))} disabled={idx<=0}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
-        <button type="button" onClick={() => setIdx(p => Math.min(steps.length-1,p+1))} disabled={idx>=steps.length-1}
-          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
-        {steps.length>0 && <span className="text-[#4a5070] text-[12px] self-center">{idx+1}/{steps.length}</span>}
+        <button
+          type="button"
+          onClick={start}
+          className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold text-[13px]"
+        >
+          ⚡ 시작
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.max(0, p - 1))}
+          disabled={idx <= 0}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ◀
+        </button>
+        <button
+          type="button"
+          onClick={() => setIdx(p => Math.min(steps.length - 1, p + 1))}
+          disabled={idx >= steps.length - 1}
+          className="py-[7px] px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ▶
+        </button>
+        {steps.length > 0 && (
+          <span className="text-[#4a5070] text-[12px] self-center">
+            {idx + 1}/{steps.length}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -396,10 +775,10 @@ function W57_FloydViz() {
   const n = 4;
   const INF = 999;
   const initDist = [
-    [0,   3,   INF, 7  ],
-    [8,   0,   2,   INF],
-    [5,   INF, 0,   1  ],
-    [2,   INF, INF, 0  ],
+    [0, 3, INF, 7],
+    [8, 0, 2, INF],
+    [5, INF, 0, 1],
+    [2, INF, INF, 0],
   ];
   const [dist, setDist] = useState(initDist.map(r => [...r]));
   const [k, setK] = useState(-1);
@@ -407,12 +786,22 @@ function W57_FloydViz() {
   const [msg, setMsg] = useState("플로이드-워셜: 모든 쌍 최단 경로");
   const [done, setDone] = useState(false);
 
-  const reset = () => { setDist(initDist.map(r=>[...r])); setK(-1); setMsg("플로이드-워셜: 모든 쌍 최단 경로"); setDone(false); setHighlight(null); };
+  const reset = () => {
+    setDist(initDist.map(r => [...r]));
+    setK(-1);
+    setMsg("플로이드-워셜: 모든 쌍 최단 경로");
+    setDone(false);
+    setHighlight(null);
+  };
 
   const nextK = () => {
     if (done) return;
     const nk = k + 1;
-    if (nk >= n) { setDone(true); setMsg("완료! 모든 쌍의 최단 경로가 계산되었습니다."); return; }
+    if (nk >= n) {
+      setDone(true);
+      setMsg("완료! 모든 쌍의 최단 경로가 계산되었습니다.");
+      return;
+    }
     const nd = dist.map(r => [...r]);
     let updated = 0;
     for (let i = 0; i < n; i++) {
@@ -426,10 +815,10 @@ function W57_FloydViz() {
     setDist(nd);
     setK(nk);
     setHighlight(nk);
-    setMsg(`경유 노드 ${nk+1}: ${updated}개 경로 갱신됨`);
+    setMsg(`경유 노드 ${nk + 1}: ${updated}개 경로 갱신됨`);
   };
 
-  const cell = (v) => v === INF ? "∞" : v;
+  const cell = v => (v === INF ? "∞" : v);
 
   return (
     <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
@@ -437,14 +826,19 @@ function W57_FloydViz() {
         <table className="border-collapse font-mono text-[14px]">
           <thead>
             <tr>
-              <th className="py-[6px] px-3 text-[#4a5070] border border-[#1e2235]">i\j</th>
-              {[1,2,3,4].map(j => (
-                <th key={j}
+              <th className="py-[6px] px-3 text-[#4a5070] border border-[#1e2235]">
+                i\j
+              </th>
+              {[1, 2, 3, 4].map(j => (
+                <th
+                  key={j}
                   className="py-[6px] px-3 border border-[#1e2235]"
                   style={{
-                    color: j-1===highlight ? W57_T.w6 : W57_T.text,
-                    background: j-1===highlight ? `${W57_T.w6}22` : "transparent",
-                  }}>
+                    color: j - 1 === highlight ? W57_T.w6 : W57_T.text,
+                    background:
+                      j - 1 === highlight ? `${W57_T.w6}22` : "transparent",
+                  }}
+                >
                   {j}
                 </th>
               ))}
@@ -456,19 +850,31 @@ function W57_FloydViz() {
                 <td
                   className="py-[6px] px-3 border border-[#1e2235] font-bold"
                   style={{
-                    color: i===highlight ? W57_T.w6 : W57_T.text,
-                    background: i===highlight ? `${W57_T.w6}22` : "transparent",
-                  }}>
-                  {i+1}
+                    color: i === highlight ? W57_T.w6 : W57_T.text,
+                    background:
+                      i === highlight ? `${W57_T.w6}22` : "transparent",
+                  }}
+                >
+                  {i + 1}
                 </td>
                 {row.map((v, j) => (
-                  <td key={j}
+                  <td
+                    key={j}
                     className="py-[6px] px-[14px] text-center border border-[#1e2235] transition-all duration-300"
                     style={{
-                      background: (i===highlight||j===highlight) && i!==j ? `${W57_T.w6}11` : "transparent",
-                      color: v === 0 ? W57_T.muted : v === INF ? `${W57_T.muted}88` : W57_T.green,
-                      fontWeight: v===0 ? 400 : 700,
-                    }}>
+                      background:
+                        (i === highlight || j === highlight) && i !== j
+                          ? `${W57_T.w6}11`
+                          : "transparent",
+                      color:
+                        v === 0
+                          ? W57_T.muted
+                          : v === INF
+                            ? `${W57_T.muted}88`
+                            : W57_T.green,
+                      fontWeight: v === 0 ? 400 : 700,
+                    }}
+                  >
                     {cell(v)}
                   </td>
                 ))}
@@ -478,15 +884,27 @@ function W57_FloydViz() {
         </table>
       </div>
       <div className="flex gap-2 mt-3 items-center flex-wrap">
-        <button type="button" onClick={nextK} disabled={done}
-          className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold">
-          다음 k ({k+2 <= n ? `k=${k+2}` : "끝"})
+        <button
+          type="button"
+          onClick={nextK}
+          disabled={done}
+          className="py-[7px] px-4 bg-[#f0a500] border-none text-black rounded-[8px] cursor-pointer font-bold"
+        >
+          다음 k ({k + 2 <= n ? `k=${k + 2}` : "끝"})
         </button>
-        <button type="button" onClick={reset}
-          className="py-[7px] px-[14px] bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer">
+        <button
+          type="button"
+          onClick={reset}
+          className="py-[7px] px-[14px] bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer"
+        >
           🔄 리셋
         </button>
-        <span className="text-[13px] font-mono" style={{ color: done ? W57_T.green : W57_T.w6 }}>{msg}</span>
+        <span
+          className="text-[13px] font-mono"
+          style={{ color: done ? W57_T.green : W57_T.w6 }}
+        >
+          {msg}
+        </span>
       </div>
     </div>
   );
@@ -495,8 +913,16 @@ function W57_FloydViz() {
 /* ══════════════════════════════ W57_TREE TRAVERSAL VIZ ══════════════════════════════ */
 const W57_TREE = {
   val: 1,
-  left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } },
-  right: { val: 3, left: { val: 6, left: null, right: null }, right: { val: 7, left: null, right: null } },
+  left: {
+    val: 2,
+    left: { val: 4, left: null, right: null },
+    right: { val: 5, left: null, right: null },
+  },
+  right: {
+    val: 3,
+    left: { val: 6, left: null, right: null },
+    right: { val: 7, left: null, right: null },
+  },
 };
 
 function W57_drawTree(node, x, y, gap, items) {
@@ -514,9 +940,23 @@ function W57_drawTree(node, x, y, gap, items) {
 
 function W57_getTraversal(node, type) {
   if (!node) return [];
-  if (type === "pre") return [node.val, ...W57_getTraversal(node.left, type), ...W57_getTraversal(node.right, type)];
-  if (type === "in") return [...W57_getTraversal(node.left, type), node.val, ...W57_getTraversal(node.right, type)];
-  return [...W57_getTraversal(node.left, type), ...W57_getTraversal(node.right, type), node.val];
+  if (type === "pre")
+    return [
+      node.val,
+      ...W57_getTraversal(node.left, type),
+      ...W57_getTraversal(node.right, type),
+    ];
+  if (type === "in")
+    return [
+      ...W57_getTraversal(node.left, type),
+      node.val,
+      ...W57_getTraversal(node.right, type),
+    ];
+  return [
+    ...W57_getTraversal(node.left, type),
+    ...W57_getTraversal(node.right, type),
+    node.val,
+  ];
 }
 
 function W57_TreeViz() {
@@ -529,57 +969,139 @@ function W57_TreeViz() {
   const activeVals = step >= 0 ? trav.slice(0, step + 1) : [];
   const currentVal = step >= 0 ? trav[step] : null;
 
-  const typeLabel = { pre: "전위 (Pre-order): 루트→왼→오", in: "중위 (In-order): 왼→루트→오", post: "후위 (Post-order): 왼→오→루트" };
+  const typeLabel = {
+    pre: "전위 (Pre-order): 루트→왼→오",
+    in: "중위 (In-order): 왼→루트→오",
+    post: "후위 (Post-order): 왼→오→루트",
+  };
 
   return (
     <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
       <div className="flex gap-2 mb-[14px] flex-wrap">
-        {["pre","in","post"].map(t => (
-          <button key={t} type="button" onClick={() => { setType(t); setStep(-1); }}
+        {["pre", "in", "post"].map(t => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => {
+              setType(t);
+              setStep(-1);
+            }}
             className="py-[6px] px-[14px] rounded-[8px] cursor-pointer text-[13px] border"
             style={{
-              background: type===t ? W57_T.w7 : W57_T.card,
-              borderColor: type===t ? W57_T.w7 : W57_T.border,
-              color: type===t ? "#000" : W57_T.muted,
-              fontWeight: type===t ? 700 : 400,
-            }}>
+              background: type === t ? W57_T.w7 : W57_T.card,
+              borderColor: type === t ? W57_T.w7 : W57_T.border,
+              color: type === t ? "#000" : W57_T.muted,
+              fontWeight: type === t ? 700 : 400,
+            }}
+          >
             {t === "pre" ? "전위" : t === "in" ? "중위" : "후위"}
           </button>
         ))}
-        <span className="text-[#4a5070] text-[12px] self-center">{typeLabel[type]}</span>
+        <span className="text-[#4a5070] text-[12px] self-center">
+          {typeLabel[type]}
+        </span>
       </div>
-      <svg viewBox="0 0 310 200" className="w-full max-w-[310px] block mx-auto mb-[10px]">
-        {items.filter(i => i.type === "edge").map((e, i) => (
-          <line key={i} x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} stroke={W57_T.border} strokeWidth={2} />
-        ))}
-        {items.filter(i => !i.type).map((n, i) => (
-          <g key={i}>
-            <circle cx={n.x} cy={n.y} r={20}
-              fill={n.val === currentVal ? `${W57_T.w7}55` : activeVals.includes(n.val) ? `${W57_T.green}33` : W57_T.node}
-              stroke={n.val === currentVal ? W57_T.w7 : activeVals.includes(n.val) ? W57_T.green : W57_T.nodeBorder}
-              strokeWidth={2.5} style={{ transition: "all 0.3s" }} />
-            <text x={n.x} y={n.y+5} textAnchor="middle" fill={W57_T.text} fontSize={14} fontWeight={700} fontFamily="monospace">{n.val}</text>
-          </g>
-        ))}
+      <svg
+        viewBox="0 0 310 200"
+        className="w-full max-w-[310px] block mx-auto mb-[10px]"
+      >
+        {items
+          .filter(i => i.type === "edge")
+          .map((e, i) => (
+            <line
+              key={i}
+              x1={e.x1}
+              y1={e.y1}
+              x2={e.x2}
+              y2={e.y2}
+              stroke={W57_T.border}
+              strokeWidth={2}
+            />
+          ))}
+        {items
+          .filter(i => !i.type)
+          .map((n, i) => (
+            <g key={i}>
+              <circle
+                cx={n.x}
+                cy={n.y}
+                r={20}
+                fill={
+                  n.val === currentVal
+                    ? `${W57_T.w7}55`
+                    : activeVals.includes(n.val)
+                      ? `${W57_T.green}33`
+                      : W57_T.node
+                }
+                stroke={
+                  n.val === currentVal
+                    ? W57_T.w7
+                    : activeVals.includes(n.val)
+                      ? W57_T.green
+                      : W57_T.nodeBorder
+                }
+                strokeWidth={2.5}
+                style={{ transition: "all 0.3s" }}
+              />
+              <text
+                x={n.x}
+                y={n.y + 5}
+                textAnchor="middle"
+                fill={W57_T.text}
+                fontSize={14}
+                fontWeight={700}
+                fontFamily="monospace"
+              >
+                {n.val}
+              </text>
+            </g>
+          ))}
       </svg>
       <div className="flex gap-1 mb-3 flex-wrap">
         {trav.map((v, i) => (
-          <div key={i}
+          <div
+            key={i}
             className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#dde2f0] font-mono font-bold text-[13px] border-2 transition-all duration-300"
             style={{
-              background: i === step ? `${W57_T.w7}44` : i < step ? `${W57_T.green}33` : W57_T.card,
-              borderColor: i === step ? W57_T.w7 : i < step ? W57_T.green : W57_T.border,
-            }}>{v}</div>
+              background:
+                i === step
+                  ? `${W57_T.w7}44`
+                  : i < step
+                    ? `${W57_T.green}33`
+                    : W57_T.card,
+              borderColor:
+                i === step ? W57_T.w7 : i < step ? W57_T.green : W57_T.border,
+            }}
+          >
+            {v}
+          </div>
         ))}
       </div>
       <div className="flex gap-2 flex-wrap">
-        <button type="button" onClick={() => setStep(-1)}
-          className="py-[6px] px-3 bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer text-[12px]">초기화</button>
-        <button type="button" onClick={() => setStep(p => Math.max(-1, p-1))}
-          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">◀</button>
-        <button type="button" onClick={() => setStep(p => Math.min(trav.length-1, p+1))}
-          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer">▶</button>
-        <span className="text-[#4a5070] text-[12px] self-center">{step+1}/{trav.length}</span>
+        <button
+          type="button"
+          onClick={() => setStep(-1)}
+          className="py-[6px] px-3 bg-[#13151f] border border-[#1e2235] text-[#4a5070] rounded-[8px] cursor-pointer text-[12px]"
+        >
+          초기화
+        </button>
+        <button
+          type="button"
+          onClick={() => setStep(p => Math.max(-1, p - 1))}
+          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ◀
+        </button>
+        <button
+          type="button"
+          onClick={() => setStep(p => Math.min(trav.length - 1, p + 1))}
+          className="py-[6px] px-[10px] bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] cursor-pointer"
+        >
+          ▶
+        </button>
+        <span className="text-[#4a5070] text-[12px] self-center">
+          {step + 1}/{trav.length}
+        </span>
       </div>
     </div>
   );
@@ -596,15 +1118,18 @@ function W57_TrieViz() {
     <span
       className="inline-block px-[10px] py-[2px] rounded-[20px] text-[12px] font-semibold border"
       style={{ background: `${color}22`, borderColor: `${color}55`, color }}
-    >{children}</span>
+    >
+      {children}
+    </span>
   );
 
-  const buildTrie = (ws) => {
+  const buildTrie = ws => {
     const root = { children: {}, isEnd: false };
     for (const w of ws) {
       let node = root;
       for (const c of w) {
-        if (!node.children[c]) node.children[c] = { children: {}, isEnd: false };
+        if (!node.children[c])
+          node.children[c] = { children: {}, isEnd: false };
         node = node.children[c];
       }
       node.isEnd = true;
@@ -617,38 +1142,93 @@ function W57_TrieViz() {
   const doSearch = () => {
     let node = trie;
     for (const c of search) {
-      if (!node.children[c]) { setResult({ found: false, msg: `'${search}' — 접두어 없음` }); return; }
+      if (!node.children[c]) {
+        setResult({ found: false, msg: `'${search}' — 접두어 없음` });
+        return;
+      }
       node = node.children[c];
     }
-    if (node.isEnd) setResult({ found: true, msg: `'${search}' — 단어 존재 ✅` });
-    else setResult({ found: "prefix", msg: `'${search}' — 접두어로 존재 (단어는 아님)` });
+    if (node.isEnd)
+      setResult({ found: true, msg: `'${search}' — 단어 존재 ✅` });
+    else
+      setResult({
+        found: "prefix",
+        msg: `'${search}' — 접두어로 존재 (단어는 아님)`,
+      });
   };
 
-  const renderTrie = (node, prefix = "", depth = 0, x = 155, y = 20, parentX = null, parentY = null) => {
+  const renderTrie = (
+    node,
+    prefix = "",
+    depth = 0,
+    x = 155,
+    y = 20,
+    parentX = null,
+    parentY = null,
+  ) => {
     const items = [];
     if (parentX !== null) {
-      items.push(<line key={`e${prefix}`} x1={parentX} y1={parentY} x2={x} y2={y} stroke={W57_T.border} strokeWidth={1.5} />);
+      items.push(
+        <line
+          key={`e${prefix}`}
+          x1={parentX}
+          y1={parentY}
+          x2={x}
+          y2={y}
+          stroke={W57_T.border}
+          strokeWidth={1.5}
+        />,
+      );
     }
-    const isHighlight = search && prefix.startsWith(search.slice(0, prefix.length)) && search.slice(0, prefix.length) === prefix;
+    const isHighlight =
+      search &&
+      prefix.startsWith(search.slice(0, prefix.length)) &&
+      search.slice(0, prefix.length) === prefix;
     const isEnd = node.isEnd;
     items.push(
       <g key={`n${prefix}`}>
-        <circle cx={x} cy={y} r={16}
-          fill={isHighlight ? `${W57_T.w7}44` : isEnd ? `${W57_T.green}33` : W57_T.node}
-          stroke={isHighlight ? W57_T.w7 : isEnd ? W57_T.green : W57_T.nodeBorder} strokeWidth={2} />
-        <text x={x} y={y+5} textAnchor="middle" fill={W57_T.text} fontSize={11} fontFamily="monospace">
+        <circle
+          cx={x}
+          cy={y}
+          r={16}
+          fill={
+            isHighlight
+              ? `${W57_T.w7}44`
+              : isEnd
+                ? `${W57_T.green}33`
+                : W57_T.node
+          }
+          stroke={
+            isHighlight ? W57_T.w7 : isEnd ? W57_T.green : W57_T.nodeBorder
+          }
+          strokeWidth={2}
+        />
+        <text
+          x={x}
+          y={y + 5}
+          textAnchor="middle"
+          fill={W57_T.text}
+          fontSize={11}
+          fontFamily="monospace"
+        >
           {prefix.slice(-1) || "·"}
         </text>
-        {isEnd && <text x={x+14} y={y-8} fill={W57_T.green} fontSize={8}>★</text>}
-      </g>
+        {isEnd && (
+          <text x={x + 14} y={y - 8} fill={W57_T.green} fontSize={8}>
+            ★
+          </text>
+        )}
+      </g>,
     );
     const keys = Object.keys(node.children);
     const total = keys.length;
     keys.forEach((c, i) => {
       const spacing = Math.max(30, 90 / Math.pow(2, depth));
-      const nx = x + (i - (total-1)/2) * spacing;
+      const nx = x + (i - (total - 1) / 2) * spacing;
       const ny = y + 50;
-      items.push(...renderTrie(node.children[c], prefix+c, depth+1, nx, ny, x, y));
+      items.push(
+        ...renderTrie(node.children[c], prefix + c, depth + 1, nx, ny, x, y),
+      );
     });
     return items;
   };
@@ -657,27 +1237,52 @@ function W57_TrieViz() {
     <div className="bg-[#07080e] border border-[#1e2235] rounded-[12px] p-5 my-[14px]">
       <div className="mb-3">
         <div className="text-[#4a5070] text-[12px] mb-[6px]">
-          삽입된 단어: {words.map(w => <Badge key={w} color={W57_T.w7}>{w}</Badge>).reduce((a,b) => [a," ",b])}
+          삽입된 단어:{" "}
+          {words
+            .map(w => (
+              <Badge key={w} color={W57_T.w7}>
+                {w}
+              </Badge>
+            ))
+            .reduce((a, b) => [a, " ", b])}
         </div>
       </div>
-      <svg viewBox="0 0 310 230" className="w-full max-w-[310px] block mx-auto mb-3">
+      <svg
+        viewBox="0 0 310 230"
+        className="w-full max-w-[310px] block mx-auto mb-3"
+      >
         {renderTrie(trie)}
       </svg>
       <div className="flex gap-2 items-center flex-wrap">
         <input
           value={search}
-          onChange={e => { setSearch(e.target.value); setResult(null); }}
+          onChange={e => {
+            setSearch(e.target.value);
+            setResult(null);
+          }}
           onKeyDown={e => e.key === "Enter" && doSearch()}
           placeholder="검색어 입력"
           className="py-2 px-3 bg-[#13151f] border border-[#1e2235] text-[#dde2f0] rounded-[8px] font-mono w-[140px]"
         />
-        <button type="button" onClick={doSearch}
-          className="py-2 px-[14px] bg-[#4fc4cf] border-none text-black rounded-[8px] cursor-pointer font-bold">
+        <button
+          type="button"
+          onClick={doSearch}
+          className="py-2 px-[14px] bg-[#4fc4cf] border-none text-black rounded-[8px] cursor-pointer font-bold"
+        >
           탐색
         </button>
         {result && (
-          <span className="text-[13px] font-mono"
-            style={{ color: result.found === true ? W57_T.green : result.found === "prefix" ? W57_T.warn : W57_T.danger }}>
+          <span
+            className="text-[13px] font-mono"
+            style={{
+              color:
+                result.found === true
+                  ? W57_T.green
+                  : result.found === "prefix"
+                    ? W57_T.warn
+                    : W57_T.danger,
+            }}
+          >
             {result.msg}
           </span>
         )}
@@ -688,4 +1293,11 @@ function W57_TrieViz() {
 
 /* ══════════════════════════════ SECTIONS ══════════════════════════════ */
 
-export { W57_DFSViz, W57_BFSViz, W57_DijkstraViz, W57_FloydViz, W57_TreeViz, W57_TrieViz };
+export {
+  W57_DFSViz,
+  W57_BFSViz,
+  W57_DijkstraViz,
+  W57_FloydViz,
+  W57_TreeViz,
+  W57_TrieViz,
+};

@@ -1,23 +1,31 @@
 // @ts-nocheck
-import { useState } from 'react';
-import { W34_T } from './theme';
-import { W34_StackViz, W34_QueueViz, W34_DequeViz, W34_HeapViz, W34_HashMapViz, W34_TwoPtrViz, W34_SlidingWindowViz } from './visualizers';
-import { Badge as W34_Badge } from '../../components/Badge';
-import { Callout as W34_Callout } from '../../components/Callout';
-import { SectionTitle as W34_SectionTitle } from '../../components/SectionTitle';
-import { CodeBlock as W34_CodeBlock } from '../../components/CodeBlock';
+import { useState } from "react";
+import { W34_T } from "./theme";
+import {
+  W34_StackViz,
+  W34_QueueViz,
+  W34_DequeViz,
+  W34_HeapViz,
+  W34_HashMapViz,
+  W34_TwoPtrViz,
+  W34_SlidingWindowViz,
+} from "./visualizers";
+import { Badge as W34_Badge } from "../../components/Badge";
+import { Callout as W34_Callout } from "../../components/Callout";
+import { SectionTitle as W34_SectionTitle } from "../../components/SectionTitle";
+import { CodeBlock as W34_CodeBlock } from "../../components/CodeBlock";
 
 export const W34_chapters = [
-  { id:"intro",     week:"",   label:"목차",          icon:"🗺️" },
-  { id:"stack",     week:"W3", label:"스택",          icon:"📚" },
-  { id:"queue",     week:"W3", label:"큐",            icon:"🚶" },
-  { id:"deque",     week:"W3", label:"덱(Deque)",     icon:"↔️" },
-  { id:"heap2",     week:"W3", label:"우선순위 큐",   icon:"🏋️" },
-  { id:"hashmap",   week:"W4", label:"해시맵",        icon:"🗂️" },
-  { id:"string",    week:"W4", label:"문자열 처리",   icon:"🔤" },
-  { id:"twoptr",    week:"W4", label:"투 포인터",     icon:"👆" },
-  { id:"sliding",   week:"W4", label:"슬라이딩 윈도우", icon:"🪟" },
-  { id:"problems",  week:"",   label:"연습 문제",     icon:"📝" },
+  { id: "intro", week: "", label: "목차", icon: "🗺️" },
+  { id: "stack", week: "W3", label: "스택", icon: "📚" },
+  { id: "queue", week: "W3", label: "큐", icon: "🚶" },
+  { id: "deque", week: "W3", label: "덱(Deque)", icon: "↔️" },
+  { id: "heap2", week: "W3", label: "우선순위 큐", icon: "🏋️" },
+  { id: "hashmap", week: "W4", label: "해시맵", icon: "🗂️" },
+  { id: "string", week: "W4", label: "문자열 처리", icon: "🔤" },
+  { id: "twoptr", week: "W4", label: "투 포인터", icon: "👆" },
+  { id: "sliding", week: "W4", label: "슬라이딩 윈도우", icon: "🪟" },
+  { id: "problems", week: "", label: "연습 문제", icon: "📝" },
 ];
 
 /* ─────────────────────────────── UTILS ─────────────────────────────── */
@@ -28,22 +36,54 @@ export const W34_sections = {
       <W34_SectionTitle>🗺️ 2단계: 핵심 자료구조 (Week 3–4)</W34_SectionTitle>
       <div className="grid grid-cols-2 gap-4 mb-6">
         {[
-          { week: "Week 3", title: "스택 & 큐", items: ["스택 (LIFO)", "큐 (FIFO)", "덱 Deque", "우선순위 큐"], color: W34_T.accent },
-          { week: "Week 4", title: "해시 & 문자열", items: ["해시맵", "문자열 처리", "투 포인터", "슬라이딩 윈도우"], color: W34_T.accent2 },
+          {
+            week: "Week 3",
+            title: "스택 & 큐",
+            items: ["스택 (LIFO)", "큐 (FIFO)", "덱 Deque", "우선순위 큐"],
+            color: W34_T.accent,
+          },
+          {
+            week: "Week 4",
+            title: "해시 & 문자열",
+            items: ["해시맵", "문자열 처리", "투 포인터", "슬라이딩 윈도우"],
+            color: W34_T.accent2,
+          },
         ].map(({ week, title, items, color }) => (
-          <div key={week} className="bg-[#1a1f16] border border-[#2a3325] rounded-[12px] p-5"
-            style={{ borderTop: `3px solid ${color}` }}>
-            <div className="text-[11px] font-bold mb-1 font-mono" style={{ color }}>{week}</div>
-            <div className="text-[#dde8d6] text-[16px] font-bold mb-3">{title}</div>
+          <div
+            key={week}
+            className="bg-[#1a1f16] border border-[#2a3325] rounded-[12px] p-5"
+            style={{ borderTop: `3px solid ${color}` }}
+          >
+            <div
+              className="text-[11px] font-bold mb-1 font-mono"
+              style={{ color }}
+            >
+              {week}
+            </div>
+            <div className="text-[#dde8d6] text-[16px] font-bold mb-3">
+              {title}
+            </div>
             {items.map(i => (
-              <div key={i} className="text-[#5a6e50] text-[13px] py-1 border-b border-[#2a3325]">• {i}</div>
+              <div
+                key={i}
+                className="text-[#5a6e50] text-[13px] py-1 border-b border-[#2a3325]"
+              >
+                • {i}
+              </div>
             ))}
           </div>
         ))}
       </div>
-      <W34_Callout color={W34_T.accent3} icon="⚡" title="왜 자료구조가 중요한가?">
-        알고리즘의 효율성은 <strong>어떤 자료구조를 쓰느냐</strong>에 달려있습니다.<br />
-        스택으로 풀면 O(n), 잘못 쓰면 O(n²)이 되는 문제들이 많습니다.<br />
+      <W34_Callout
+        color={W34_T.accent3}
+        icon="⚡"
+        title="왜 자료구조가 중요한가?"
+      >
+        알고리즘의 효율성은 <strong>어떤 자료구조를 쓰느냐</strong>에
+        달려있습니다.
+        <br />
+        스택으로 풀면 O(n), 잘못 쓰면 O(n²)이 되는 문제들이 많습니다.
+        <br />
         자료구조를 잘 선택하는 것이 코딩테스트 합격의 핵심입니다.
       </W34_Callout>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-[10px]">
@@ -55,9 +95,14 @@ export const W34_sections = {
           { name: "해시맵", op: "get/set", time: "O(1) avg", icon: "🗂️" },
           { name: "Counter", op: "빈도 계산", time: "O(n)", icon: "🔢" },
         ].map(item => (
-          <div key={item.name} className="bg-[#1a1f16] border border-[#2a3325] rounded-[10px] px-4 py-[14px] text-center">
+          <div
+            key={item.name}
+            className="bg-[#1a1f16] border border-[#2a3325] rounded-[10px] px-4 py-[14px] text-center"
+          >
             <div className="text-[24px] mb-[6px]">{item.icon}</div>
-            <div className="text-[#dde8d6] font-bold text-[13px]">{item.name}</div>
+            <div className="text-[#dde8d6] font-bold text-[13px]">
+              {item.name}
+            </div>
             <div className="text-[#5a6e50] text-[11px] my-1">{item.op}</div>
             <W34_Badge color={W34_T.accent3}>{item.time}</W34_Badge>
           </div>
@@ -68,14 +113,17 @@ export const W34_sections = {
 
   stack: () => (
     <div>
-      <W34_SectionTitle sub="LIFO — Last In, First Out">📚 스택 (Stack)</W34_SectionTitle>
+      <W34_SectionTitle sub="LIFO — Last In, First Out">
+        📚 스택 (Stack)
+      </W34_SectionTitle>
       <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent}>push O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent}>pop O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>파이썬: list 사용</W34_Badge>
       </div>
       <W34_StackViz />
-      <W34_CodeBlock code={`# 파이썬에서 스택 = list!
+      <W34_CodeBlock
+        code={`# 파이썬에서 스택 = list!
 stack = []
 
 # push
@@ -103,8 +151,10 @@ def is_valid_parenthesis(s):
     return len(stack) == 0    # 모두 짝이 맞아야 True
 
 print(is_valid_parenthesis("((()))"))  # True
-print(is_valid_parenthesis("(()"))     # False`} />
-      <W34_CodeBlock code={`# ─── 실전 패턴: 단조 스택 (Monotonic Stack) ───
+print(is_valid_parenthesis("(()"))     # False`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 실전 패턴: 단조 스택 (Monotonic Stack) ───
 # 주식 가격 문제 - 가격이 떨어지지 않은 기간
 
 def stock_price(prices):
@@ -126,28 +176,40 @@ def stock_price(prices):
 
     return answer
 
-print(stock_price([1, 2, 3, 2, 3]))  # [4, 3, 1, 1, 0]`} />
+print(stock_price([1, 2, 3, 2, 3]))  # [4, 3, 1, 1, 0]`}
+      />
       <W34_Callout color={W34_T.accent} icon="🎯" title="스택이 유용한 패턴">
-        <strong>괄호 검사</strong>, <strong>함수 호출 스택</strong>, <strong>DFS 반복 구현</strong>,
-        <strong>히스토그램 최대 넓이</strong>, <strong>단조 스택(다음 큰/작은 원소)</strong>
+        <strong>괄호 검사</strong>, <strong>함수 호출 스택</strong>,{" "}
+        <strong>DFS 반복 구현</strong>,<strong>히스토그램 최대 넓이</strong>,{" "}
+        <strong>단조 스택(다음 큰/작은 원소)</strong>
       </W34_Callout>
     </div>
   ),
 
   queue: () => (
     <div>
-      <W34_SectionTitle sub="FIFO — First In, First Out">🚶 큐 (Queue)</W34_SectionTitle>
+      <W34_SectionTitle sub="FIFO — First In, First Out">
+        🚶 큐 (Queue)
+      </W34_SectionTitle>
       <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent2}>enqueue O(1)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>dequeue O(1)</W34_Badge>
         <W34_Badge color={W34_T.danger}>⚠️ list.pop(0)는 O(n)!</W34_Badge>
       </div>
       <W34_QueueViz />
-      <W34_Callout color={W34_T.danger} icon="⚠️" title="list로 큐 쓰면 안 되는 이유">
-        <code className="text-[#ffd166]">list.pop(0)</code>은 O(n)입니다! 모든 원소를 왼쪽으로 당겨야 하기 때문.<br />
-        반드시 <code className="text-[#7eff6a]">collections.deque</code>를 사용하세요 → <code className="text-[#7eff6a]">popleft()</code>가 O(1)
+      <W34_Callout
+        color={W34_T.danger}
+        icon="⚠️"
+        title="list로 큐 쓰면 안 되는 이유"
+      >
+        <code className="text-[#ffd166]">list.pop(0)</code>은 O(n)입니다! 모든
+        원소를 왼쪽으로 당겨야 하기 때문.
+        <br />
+        반드시 <code className="text-[#7eff6a]">collections.deque</code>를
+        사용하세요 → <code className="text-[#7eff6a]">popleft()</code>가 O(1)
       </W34_Callout>
-      <W34_CodeBlock code={`from collections import deque
+      <W34_CodeBlock
+        code={`from collections import deque
 
 # 올바른 큐 사용법
 queue = deque()
@@ -174,8 +236,10 @@ def bfs(graph, start):
     return order
 
 graph = {1: [2,3], 2: [4], 3: [4,5], 4: [], 5: []}
-print(bfs(graph, 1))  # [1, 2, 3, 4, 5]`} />
-      <W34_CodeBlock code={`# ─── 실전: 카드 뒤집기 (BOJ 2164) ───
+print(bfs(graph, 1))  # [1, 2, 3, 4, 5]`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 실전: 카드 뒤집기 (BOJ 2164) ───
 from collections import deque
 
 def card_game(n):
@@ -188,15 +252,19 @@ def card_game(n):
     return queue[0]
 
 print(card_game(6))   # 4
-print(card_game(10))  # 4`} />
+print(card_game(10))  # 4`}
+      />
     </div>
   ),
 
   deque: () => (
     <div>
-      <W34_SectionTitle sub="Double-Ended Queue — 양쪽에서 O(1) push/pop">↔️ 덱 (Deque)</W34_SectionTitle>
+      <W34_SectionTitle sub="Double-Ended Queue — 양쪽에서 O(1) push/pop">
+        ↔️ 덱 (Deque)
+      </W34_SectionTitle>
       <W34_DequeViz />
-      <W34_CodeBlock code={`from collections import deque
+      <W34_CodeBlock
+        code={`from collections import deque
 
 dq = deque([1, 2, 3, 4, 5])
 
@@ -217,8 +285,10 @@ window = deque(maxlen=3)
 for v in [1, 2, 3, 4, 5]:
     window.append(v)
     print(list(window))
-# [1] → [1,2] → [1,2,3] → [2,3,4] → [3,4,5]`} />
-      <W34_CodeBlock code={`# ─── 실전: 슬라이딩 윈도우 최댓값 (단조 덱) ───
+# [1] → [1,2] → [1,2,3] → [2,3,4] → [3,4,5]`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 실전: 슬라이딩 윈도우 최댓값 (단조 덱) ───
 from collections import deque
 
 def max_sliding_window(nums, k):
@@ -239,24 +309,29 @@ def max_sliding_window(nums, k):
     return result
 
 print(max_sliding_window([1,3,-1,-3,5,3,6,7], 3))
-# [3, 3, 5, 5, 6, 7]`} />
+# [3, 3, 5, 5, 6, 7]`}
+      />
       <W34_Callout color={W34_T.accent3} icon="💡" title="덱 활용 패턴 요약">
-        <strong>스택 + 큐 동시</strong> 필요할 때 / <strong>슬라이딩 윈도우 최솟값/최댓값</strong> (단조 덱) /
-        회전 연산 / BFS에서 우선 탐색
+        <strong>스택 + 큐 동시</strong> 필요할 때 /{" "}
+        <strong>슬라이딩 윈도우 최솟값/최댓값</strong> (단조 덱) / 회전 연산 /
+        BFS에서 우선 탐색
       </W34_Callout>
     </div>
   ),
 
   heap2: () => (
     <div>
-      <W34_SectionTitle sub="가장 작은(또는 큰) 원소를 O(log n)으로 꺼내기">🏋️ 우선순위 큐 / 힙</W34_SectionTitle>
+      <W34_SectionTitle sub="가장 작은(또는 큰) 원소를 O(log n)으로 꺼내기">
+        🏋️ 우선순위 큐 / 힙
+      </W34_SectionTitle>
       <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent}>heappush O(log n)</W34_Badge>
         <W34_Badge color={W34_T.accent}>heappop O(log n)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>파이썬 = min heap 기본</W34_Badge>
       </div>
       <W34_HeapViz />
-      <W34_CodeBlock code={`import heapq
+      <W34_CodeBlock
+        code={`import heapq
 
 # ─── 기본 사용 ───
 heap = []
@@ -287,8 +362,10 @@ heapq.heappush(tasks, (2, "중간 우선순위"))
 
 while tasks:
     priority, task = heapq.heappop(tasks)
-    print(f"{priority}: {task}")`} />
-      <W34_CodeBlock code={`# ─── 실전: K번째 최솟값 찾기 ───
+    print(f"{priority}: {task}")`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 실전: K번째 최솟값 찾기 ───
 
 def kth_smallest(arr, k):
     heapq.heapify(arr)
@@ -310,15 +387,19 @@ def absolute_heap():
             if heap:
                 print(heapq.heappop(heap)[1])
             else:
-                print(0)`} />
+                print(0)`}
+      />
     </div>
   ),
 
   hashmap: () => (
     <div>
-      <W34_SectionTitle sub="키-값 매핑, 평균 O(1) 탐색/삽입/삭제">🗂️ 해시맵 (HashMap)</W34_SectionTitle>
+      <W34_SectionTitle sub="키-값 매핑, 평균 O(1) 탐색/삽입/삭제">
+        🗂️ 해시맵 (HashMap)
+      </W34_SectionTitle>
       <W34_HashMapViz />
-      <W34_CodeBlock code={`# ─── 파이썬 dict 기본 ───
+      <W34_CodeBlock
+        code={`# ─── 파이썬 dict 기본 ───
 # 생성
 d = {}
 d = dict()
@@ -347,8 +428,10 @@ print(count["grape"])           # 0 (없어도 KeyError 없음!)
 c1 = Counter("aabbc")
 c2 = Counter("abc")
 print(c1 + c2)  # Counter({'a': 3, 'b': 3, 'c': 2})
-print(c1 - c2)  # Counter({'a': 1, 'b': 1})`} />
-      <W34_CodeBlock code={`from collections import defaultdict
+print(c1 - c2)  # Counter({'a': 1, 'b': 1})`}
+      />
+      <W34_CodeBlock
+        code={`from collections import defaultdict
 
 # ─── defaultdict: KeyError 없는 딕셔너리 ───
 # 기본값 자동 생성
@@ -382,11 +465,19 @@ def solution(phone_book):
         for i in range(1, len(phone)):
             if phone[:i] in phone_set:  # 접두어 존재?
                 return False
-    return True`} />
-      <W34_Callout color={W34_T.accent2} icon="🔑" title="해시맵 활용 패턴 4가지">
-        <strong>1. 빈도 계산</strong> → Counter / defaultdict(int)<br />
-        <strong>2. 그룹화</strong> → defaultdict(list)<br />
-        <strong>3. 중복 제거</strong> → set<br />
+    return True`}
+      />
+      <W34_Callout
+        color={W34_T.accent2}
+        icon="🔑"
+        title="해시맵 활용 패턴 4가지"
+      >
+        <strong>1. 빈도 계산</strong> → Counter / defaultdict(int)
+        <br />
+        <strong>2. 그룹화</strong> → defaultdict(list)
+        <br />
+        <strong>3. 중복 제거</strong> → set
+        <br />
         <strong>4. 인덱스 저장</strong> → dict (값 → 인덱스 매핑)
       </W34_Callout>
     </div>
@@ -394,8 +485,11 @@ def solution(phone_book):
 
   string: () => (
     <div>
-      <W34_SectionTitle sub="파이썬 문자열 핵심 기법 총정리">🔤 문자열 처리</W34_SectionTitle>
-      <W34_CodeBlock code={`# ─── 파이썬 문자열 기본 메서드 ───
+      <W34_SectionTitle sub="파이썬 문자열 핵심 기법 총정리">
+        🔤 문자열 처리
+      </W34_SectionTitle>
+      <W34_CodeBlock
+        code={`# ─── 파이썬 문자열 기본 메서드 ───
 s = "Hello, World!"
 
 # 검색
@@ -424,8 +518,10 @@ s.replace("l", "r")  # "Herro, Worrd!"
 # 슬라이싱
 s[1:5]               # "ello"
 s[::-1]              # 역순 "!dlroW ,olleH"
-s[::2]               # 홀수 인덱스 문자들`} />
-      <W34_CodeBlock code={`# ─── 애너그램 판별 ───
+s[::2]               # 홀수 인덱스 문자들`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 애너그램 판별 ───
 from collections import Counter
 
 def is_anagram(s, t):
@@ -462,9 +558,12 @@ print(chr(97))       # 'a'
 
 # 알파벳 → 인덱스
 for c in "abc":
-    print(ord(c) - ord('a'))  # 0, 1, 2`} />
+    print(ord(c) - ord('a'))  # 0, 1, 2`}
+      />
       <W34_Callout color={W34_T.purple} icon="⚡" title="문자열 성능 팁">
-        <code className="text-[#7eff6a]">"+".join(list)</code>이 <code className="text-[#ff4f4f]">s += c</code>보다 훨씬 빠릅니다!<br />
+        <code className="text-[#7eff6a]">"+".join(list)</code>이{" "}
+        <code className="text-[#ff4f4f]">s += c</code>보다 훨씬 빠릅니다!
+        <br />
         문자열은 immutable이라 += 할 때마다 새 객체 생성 → O(n²) 위험
       </W34_Callout>
     </div>
@@ -472,14 +571,17 @@ for c in "abc":
 
   twoptr: () => (
     <div>
-      <W34_SectionTitle sub="두 인덱스로 O(n)에 해결 — 정렬된 배열에서 강력!">👆 투 포인터 (Two Pointer)</W34_SectionTitle>
+      <W34_SectionTitle sub="두 인덱스로 O(n)에 해결 — 정렬된 배열에서 강력!">
+        👆 투 포인터 (Two Pointer)
+      </W34_SectionTitle>
       <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent3}>시간 O(n)</W34_Badge>
         <W34_Badge color={W34_T.accent3}>공간 O(1)</W34_Badge>
         <W34_Badge color={W34_T.warn}>정렬된 배열에서 효과적</W34_Badge>
       </div>
       <W34_TwoPtrViz />
-      <W34_CodeBlock code={`# ─── 패턴 1: 양 끝 포인터 (Two Sum in sorted array) ───
+      <W34_CodeBlock
+        code={`# ─── 패턴 1: 양 끝 포인터 (Two Sum in sorted array) ───
 def two_sum_sorted(arr, target):
     left, right = 0, len(arr) - 1
 
@@ -512,8 +614,10 @@ def max_two_sum_pairs(n, limit, people):
 
     return boats
 
-print(max_two_sum_pairs(4, 100, [50, 50, 70, 80]))  # 3`} />
-      <W34_CodeBlock code={`# ─── 패턴 3: 연속 부분합 (Subarray Sum) ───
+print(max_two_sum_pairs(4, 100, [50, 50, 70, 80]))  # 3`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 패턴 3: 연속 부분합 (Subarray Sum) ───
 def count_subarray_sum(arr, target):
     # O(n): 부분합이 target인 부분 배열 개수
     count = 0
@@ -550,20 +654,24 @@ def three_sum(arr, target):
                 left += 1; right -= 1
             elif s < target: left += 1
             else: right -= 1
-    return result`} />
+    return result`}
+      />
     </div>
   ),
 
   sliding: () => (
     <div>
-      <W34_SectionTitle sub="고정/가변 크기 윈도우로 O(n)에 최적값 계산">🪟 슬라이딩 윈도우</W34_SectionTitle>
+      <W34_SectionTitle sub="고정/가변 크기 윈도우로 O(n)에 최적값 계산">
+        🪟 슬라이딩 윈도우
+      </W34_SectionTitle>
       <div className="flex gap-2 mb-4 flex-wrap">
         <W34_Badge color={W34_T.accent2}>시간 O(n)</W34_Badge>
         <W34_Badge color={W34_T.accent2}>공간 O(k) or O(1)</W34_Badge>
         <W34_Badge color={W34_T.warn}>연속된 부분 배열/문자열</W34_Badge>
       </div>
       <W34_SlidingWindowViz />
-      <W34_CodeBlock code={`# ─── 고정 크기 윈도우: 연속 k개 최대합 ───
+      <W34_CodeBlock
+        code={`# ─── 고정 크기 윈도우: 연속 k개 최대합 ───
 def max_subarray_sum(arr, k):
     n = len(arr)
     if n < k:
@@ -600,8 +708,10 @@ def min_window_sum(arr, target):
 
     return min_len if min_len != float('inf') else 0
 
-print(min_window_sum([2,3,1,2,4,3], 7))  # 2 (4+3)`} />
-      <W34_CodeBlock code={`# ─── 문자열 슬라이딩 윈도우 ───
+print(min_window_sum([2,3,1,2,4,3], 7))  # 2 (4+3)`}
+      />
+      <W34_CodeBlock
+        code={`# ─── 문자열 슬라이딩 윈도우 ───
 from collections import defaultdict
 
 def longest_unique_substring(s):
@@ -644,11 +754,19 @@ def truck_bridge(bridge_length, weight, truck_weights):
 
     return time + bridge_length
 
-print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
-      <W34_Callout color={W34_T.accent2} icon="🧠" title="투 포인터 vs 슬라이딩 윈도우 구분법">
-        <strong>투 포인터</strong>: 두 포인터가 <em>독립적으로</em> 이동, 주로 두 원소의 관계<br />
-        <strong>슬라이딩 윈도우</strong>: 윈도우 <em>전체</em>의 합/최대/최소, 구간의 성질<br />
-        → 실제로는 많이 겹치므로 패턴 연습이 중요!
+print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`}
+      />
+      <W34_Callout
+        color={W34_T.accent2}
+        icon="🧠"
+        title="투 포인터 vs 슬라이딩 윈도우 구분법"
+      >
+        <strong>투 포인터</strong>: 두 포인터가 <em>독립적으로</em> 이동, 주로
+        두 원소의 관계
+        <br />
+        <strong>슬라이딩 윈도우</strong>: 윈도우 <em>전체</em>의 합/최대/최소,
+        구간의 성질
+        <br />→ 실제로는 많이 겹치므로 패턴 연습이 중요!
       </W34_Callout>
     </div>
   ),
@@ -657,52 +775,147 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
     <div>
       <W34_SectionTitle>📝 연습 문제 & 정리</W34_SectionTitle>
       <div className="mb-6">
-        <div className="text-[#7eff6a] font-bold mb-3 text-[15px]">Week 3: 스택 & 큐</div>
+        <div className="text-[#7eff6a] font-bold mb-3 text-[15px]">
+          Week 3: 스택 & 큐
+        </div>
         {[
-          { id: "10828", title: "스택", level: "🟢", tip: "스택 기본 구현", url: "https://www.acmicpc.net/problem/10828" },
-          { id: "10773", title: "제로", level: "🟢", tip: "스택으로 취소 기능 구현", url: "https://www.acmicpc.net/problem/10773" },
-          { id: "9012",  title: "괄호", level: "🟡", tip: "스택으로 괄호 짝 검사", url: "https://www.acmicpc.net/problem/9012" },
-          { id: "18258", title: "큐 2", level: "🟢", tip: "deque로 큐 구현", url: "https://www.acmicpc.net/problem/18258" },
-          { id: "2164",  title: "카드2", level: "🟡", tip: "deque 시뮬레이션", url: "https://www.acmicpc.net/problem/2164" },
-          { id: "11286", title: "절댓값 힙", level: "🟠", tip: "튜플 힙 활용", url: "https://www.acmicpc.net/problem/11286" },
+          {
+            id: "10828",
+            title: "스택",
+            level: "🟢",
+            tip: "스택 기본 구현",
+            url: "https://www.acmicpc.net/problem/10828",
+          },
+          {
+            id: "10773",
+            title: "제로",
+            level: "🟢",
+            tip: "스택으로 취소 기능 구현",
+            url: "https://www.acmicpc.net/problem/10773",
+          },
+          {
+            id: "9012",
+            title: "괄호",
+            level: "🟡",
+            tip: "스택으로 괄호 짝 검사",
+            url: "https://www.acmicpc.net/problem/9012",
+          },
+          {
+            id: "18258",
+            title: "큐 2",
+            level: "🟢",
+            tip: "deque로 큐 구현",
+            url: "https://www.acmicpc.net/problem/18258",
+          },
+          {
+            id: "2164",
+            title: "카드2",
+            level: "🟡",
+            tip: "deque 시뮬레이션",
+            url: "https://www.acmicpc.net/problem/2164",
+          },
+          {
+            id: "11286",
+            title: "절댓값 힙",
+            level: "🟠",
+            tip: "튜플 힙 활용",
+            url: "https://www.acmicpc.net/problem/11286",
+          },
         ].map(p => (
-          <div key={p.id} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#7eff6a]">
+          <div
+            key={p.id}
+            className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#7eff6a]"
+          >
             <div>
-              <span className="text-[#5a6e50] text-[12px] font-mono">BOJ {p.id}</span>
-              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
-              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px] font-mono">
+                BOJ {p.id}
+              </span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">
+                {p.title}
+              </span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">
+                {p.tip}
+              </span>
             </div>
             <span>{p.level}</span>
           </div>
         ))}
         {[
-          { title: "주식가격", level: "🟡", tip: "단조 스택", site: "프로그래머스" },
-          { title: "프린터", level: "🟡", tip: "덱 시뮬레이션", site: "프로그래머스" },
-          { title: "다리를 지나는 트럭", level: "🟠", tip: "슬라이딩 윈도우 + 덱", site: "프로그래머스" },
+          {
+            title: "주식가격",
+            level: "🟡",
+            tip: "단조 스택",
+            site: "프로그래머스",
+          },
+          {
+            title: "프린터",
+            level: "🟡",
+            tip: "덱 시뮬레이션",
+            site: "프로그래머스",
+          },
+          {
+            title: "다리를 지나는 트럭",
+            level: "🟠",
+            tip: "슬라이딩 윈도우 + 덱",
+            site: "프로그래머스",
+          },
         ].map(p => (
-          <div key={p.title} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]">
+          <div
+            key={p.title}
+            className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]"
+          >
             <div>
               <span className="text-[#5a6e50] text-[12px]">{p.site}</span>
-              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
-              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">
+                {p.title}
+              </span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">
+                {p.tip}
+              </span>
             </div>
             <span>{p.level}</span>
           </div>
         ))}
       </div>
       <div className="mb-6">
-        <div className="text-[#ff8c42] font-bold mb-3 text-[15px]">Week 4: 해시 & 문자열</div>
+        <div className="text-[#ff8c42] font-bold mb-3 text-[15px]">
+          Week 4: 해시 & 문자열
+        </div>
         {[
-          { id: "1620",  title: "나는야 포켓몬 마스터", level: "🟡", tip: "dict 양방향 매핑" },
-          { id: "17219", title: "비밀번호 찾기", level: "🟢", tip: "dict 기본", },
-          { id: "7785",  title: "회사에 있는 사람", level: "🟡", tip: "set 활용" },
-          { id: "1764",  title: "듣보잡", level: "🟡", tip: "set 교집합" },
+          {
+            id: "1620",
+            title: "나는야 포켓몬 마스터",
+            level: "🟡",
+            tip: "dict 양방향 매핑",
+          },
+          {
+            id: "17219",
+            title: "비밀번호 찾기",
+            level: "🟢",
+            tip: "dict 기본",
+          },
+          {
+            id: "7785",
+            title: "회사에 있는 사람",
+            level: "🟡",
+            tip: "set 활용",
+          },
+          { id: "1764", title: "듣보잡", level: "🟡", tip: "set 교집합" },
         ].map(p => (
-          <div key={p.id} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]">
+          <div
+            key={p.id}
+            className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#ff8c42]"
+          >
             <div>
-              <span className="text-[#5a6e50] text-[12px] font-mono">BOJ {p.id}</span>
-              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
-              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
+              <span className="text-[#5a6e50] text-[12px] font-mono">
+                BOJ {p.id}
+              </span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">
+                {p.title}
+              </span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">
+                {p.tip}
+              </span>
             </div>
             <W34_Badge color={W34_T.accent2}>해시</W34_Badge>
           </div>
@@ -712,26 +925,37 @@ print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`} />
           { title: "전화번호 목록", tip: "set으로 접두어 검사" },
           { title: "베스트앨범", tip: "dict + sorted 복합 활용" },
         ].map(p => (
-          <div key={p.title} className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#42c9ff]">
+          <div
+            key={p.title}
+            className="flex justify-between items-center px-4 py-3 bg-[#1a1f16] border border-[#2a3325] rounded-[10px] mb-2 border-l-[3px] border-l-[#42c9ff]"
+          >
             <div>
               <span className="text-[#5a6e50] text-[12px]">프로그래머스</span>
-              <span className="text-[#dde8d6] font-bold ml-[10px]">{p.title}</span>
-              <span className="text-[#5a6e50] text-[12px] ml-[10px]">{p.tip}</span>
+              <span className="text-[#dde8d6] font-bold ml-[10px]">
+                {p.title}
+              </span>
+              <span className="text-[#5a6e50] text-[12px] ml-[10px]">
+                {p.tip}
+              </span>
             </div>
             <W34_Badge color={W34_T.accent3}>해시</W34_Badge>
           </div>
         ))}
       </div>
       <W34_Callout color={W34_T.accent} icon="📌" title="이번 주 핵심 정리">
-        <strong className="text-[#7eff6a]">deque</strong>를 항상 list 대신 쓰자 (popleft는 반드시 deque!)<br />
-        <strong className="text-[#ff8c42]">Counter / defaultdict</strong>로 빈도 계산은 3줄이면 끝<br />
-        <strong className="text-[#42c9ff]">투포인터</strong>는 정렬 후, <strong className="text-[#b57fff]">슬라이딩 윈도우</strong>는 연속 구간<br />
-        힙은 <strong className="text-[#ffd166]">최솟값/최댓값 반복 추출</strong>할 때 쓴다
+        <strong className="text-[#7eff6a]">deque</strong>를 항상 list 대신 쓰자
+        (popleft는 반드시 deque!)
+        <br />
+        <strong className="text-[#ff8c42]">Counter / defaultdict</strong>로 빈도
+        계산은 3줄이면 끝<br />
+        <strong className="text-[#42c9ff]">투포인터</strong>는 정렬 후,{" "}
+        <strong className="text-[#b57fff]">슬라이딩 윈도우</strong>는 연속 구간
+        <br />
+        힙은 <strong className="text-[#ffd166]">최솟값/최댓값 반복 추출</strong>
+        할 때 쓴다
       </W34_Callout>
     </div>
   ),
 };
 
 /* ─────────────────────────────── APP ─────────────────────────────── */
-
-

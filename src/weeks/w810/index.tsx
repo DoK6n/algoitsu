@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { tv } from 'tailwind-variants'
-import { PageLayout } from '../../components/PageLayout'
-import { W810_T } from './theme'
-import { W810_chapters, W810_sections } from './sections'
+import { useState } from "react";
+import { tv } from "tailwind-variants";
+import { PageLayout } from "../../components/PageLayout";
+import { W810_T } from "./theme";
+import { W810_chapters, W810_sections } from "./sections";
 
 const theme = {
   bg: W810_T.bg,
@@ -11,20 +11,21 @@ const theme = {
   accent: W810_T.accent,
   text: W810_T.text,
   muted: W810_T.muted,
-}
+};
 
 const header = tv({
   slots: {
-    iconWrap: 'rounded-lg w-[34px] h-[34px] flex items-center justify-center text-lg shrink-0',
-    title: 'font-extrabold text-[15px]',
-    subtitle: 'text-[11px] font-mono',
+    iconWrap:
+      "rounded-lg w-[34px] h-[34px] flex items-center justify-center text-lg shrink-0",
+    title: "font-extrabold text-[15px]",
+    subtitle: "text-[11px] font-mono",
   },
-})
+});
 
 export function W810Page() {
-  const [active, setActive] = useState('intro')
-  const Content = W810_sections[active] || W810_sections.intro
-  const { iconWrap, title, subtitle } = header()
+  const [active, setActive] = useState("intro");
+  const Content = W810_sections[active] || W810_sections.intro;
+  const { iconWrap, title, subtitle } = header();
 
   return (
     <PageLayout
@@ -36,14 +37,17 @@ export function W810Page() {
         <>
           <div
             className={iconWrap()}
-            style={{ background: `linear-gradient(135deg, ${W810_T.w8}, ${W810_T.w10})` }}
+            style={{
+              background: `linear-gradient(135deg, ${W810_T.w8}, ${W810_T.w10})`,
+            }}
           >
             🧩
           </div>
           <div>
             <div className={title()}>코테 커리큘럼</div>
             <div className={subtitle()} style={{ color: W810_T.muted }}>
-              Week 8-9 다이나믹 프로그래밍 &nbsp;|&nbsp; Week 10 그리디·분할정복·백트래킹
+              Week 8-9 다이나믹 프로그래밍 &nbsp;|&nbsp; Week 10
+              그리디·분할정복·백트래킹
             </div>
           </div>
         </>
@@ -51,5 +55,5 @@ export function W810Page() {
     >
       <Content />
     </PageLayout>
-  )
+  );
 }

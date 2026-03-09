@@ -1,18 +1,32 @@
 // @ts-nocheck
-import { useState } from 'react';
-import { W810_T } from './theme';
+import { useState } from "react";
+import { W810_T } from "./theme";
 
-function W810_DPTableViz({ title, dp, highlightCell, headers, rowHeaders, color = W810_T.w8 }) {
+function W810_DPTableViz({
+  title,
+  dp,
+  highlightCell,
+  headers,
+  rowHeaders,
+  color = W810_T.w8,
+}) {
   return (
     <div className="overflow-x-auto my-[12px]">
-      {title && <div className="text-[#6272a4] text-[12px] mb-[6px]">{title}</div>}
+      {title && (
+        <div className="text-[#6272a4] text-[12px] mb-[6px]">{title}</div>
+      )}
       <table className="border-collapse font-mono text-[13px]">
         {headers && (
           <thead>
             <tr>
               <th className="px-[10px] py-[5px] text-[#6272a4] border border-[#2d2048]" />
-              {headers.map((h) => (
-                <th key={h} className="px-[12px] py-[5px] text-[#8be9fd] border border-[#2d2048] font-bold">{h}</th>
+              {headers.map(h => (
+                <th
+                  key={h}
+                  className="px-[12px] py-[5px] text-[#8be9fd] border border-[#2d2048] font-bold"
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
@@ -21,17 +35,29 @@ function W810_DPTableViz({ title, dp, highlightCell, headers, rowHeaders, color 
           {dp.map((row, i) => (
             <tr key={rowHeaders ? rowHeaders[i] : i}>
               {rowHeaders && (
-                <td className="px-[10px] py-[5px] text-[#ffb86c] border border-[#2d2048] font-bold">{rowHeaders[i]}</td>
+                <td className="px-[10px] py-[5px] text-[#ffb86c] border border-[#2d2048] font-bold">
+                  {rowHeaders[i]}
+                </td>
               )}
               {(Array.isArray(row) ? row : [row]).map((val, j) => {
-                const isHL = highlightCell?.some(([hi, hj]) => hi === i && hj === j);
+                const isHL = highlightCell?.some(
+                  ([hi, hj]) => hi === i && hj === j,
+                );
                 return (
                   <td
                     key={j}
                     className="px-[14px] py-[6px] text-center border border-[#2d2048] transition-all duration-300 min-w-[36px]"
                     style={{
-                      background: isHL ? `${color}33` : val > 0 ? `${color}11` : "transparent",
-                      color: isHL ? color : val === 0 ? W810_T.muted : W810_T.text,
+                      background: isHL
+                        ? `${color}33`
+                        : val > 0
+                          ? `${color}11`
+                          : "transparent",
+                      color: isHL
+                        ? color
+                        : val === 0
+                          ? W810_T.muted
+                          : W810_T.text,
                       fontWeight: isHL ? 700 : 400,
                     }}
                   >
@@ -68,7 +94,10 @@ function W810_DP1463Viz() {
           min={2}
           max={20}
           value={n}
-          onChange={e => { setN(Number(e.target.value)); setStep(1); }}
+          onChange={e => {
+            setN(Number(e.target.value));
+            setStep(1);
+          }}
           className="w-[120px]"
           style={{ accentColor: W810_T.w8 }}
         />
@@ -85,19 +114,28 @@ function W810_DP1463Viz() {
             <div
               key={idx}
               onClick={() => setStep(idx)}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setStep(idx); }}
+              onKeyDown={e => {
+                if (e.key === "Enter" || e.key === " ") setStep(idx);
+              }}
               role="button"
               tabIndex={0}
               className="min-w-[42px] h-[48px] flex flex-col items-center justify-center rounded-[8px] cursor-pointer transition-all duration-200 gap-[2px]"
               style={{
-                background: isStep ? `${W810_T.w8}44` : idx <= step ? `${W810_T.w8}11` : W810_T.card,
+                background: isStep
+                  ? `${W810_T.w8}44`
+                  : idx <= step
+                    ? `${W810_T.w8}11`
+                    : W810_T.card,
                 border: `2px solid ${isStep ? W810_T.w8 : idx < step ? `${W810_T.w8}55` : W810_T.border}`,
               }}
             >
               <div className="text-[#6272a4] text-[10px]">{idx}</div>
               <div
                 className="font-mono"
-                style={{ color: isStep ? W810_T.w8 : W810_T.text, fontWeight: isStep ? 700 : 400 }}
+                style={{
+                  color: isStep ? W810_T.w8 : W810_T.text,
+                  fontWeight: isStep ? 700 : 400,
+                }}
               >
                 {v}
               </div>
@@ -111,10 +149,10 @@ function W810_DP1463Viz() {
           {step % 3 === 0 && step % 2 === 0
             ? `min(dp[${step - 1}]+1=${dp[step - 1] + 1}, dp[${step / 3}]+1=${dp[step / 3] + 1}, dp[${step / 2}]+1=${dp[step / 2] + 1})`
             : step % 3 === 0
-            ? `min(dp[${step - 1}]+1=${dp[step - 1] + 1}, dp[${step / 3}]+1=${dp[step / 3] + 1})`
-            : step % 2 === 0
-            ? `min(dp[${step - 1}]+1=${dp[step - 1] + 1}, dp[${step / 2}]+1=${dp[step / 2] + 1})`
-            : `dp[${step - 1}]+1 = ${dp[step - 1] + 1}`}{" "}
+              ? `min(dp[${step - 1}]+1=${dp[step - 1] + 1}, dp[${step / 3}]+1=${dp[step / 3] + 1})`
+              : step % 2 === 0
+                ? `min(dp[${step - 1}]+1=${dp[step - 1] + 1}, dp[${step / 2}]+1=${dp[step / 2] + 1})`
+                : `dp[${step - 1}]+1 = ${dp[step - 1] + 1}`}{" "}
           = <span className="text-[#50fa7b] font-bold">{dp[step]}</span>
         </div>
       )}
@@ -134,7 +172,12 @@ function W810_LISViz() {
       if (arr[j] < arr[i]) {
         if (dp[j] + 1 > dp[i]) {
           dp[i] = dp[j] + 1;
-          steps.push({ i, j, dp: [...dp], msg: `arr[${j}]=${arr[j]} < arr[${i}]=${arr[i]} → dp[${i}]=max(dp[${i}], dp[${j}]+1)=${dp[i]}` });
+          steps.push({
+            i,
+            j,
+            dp: [...dp],
+            msg: `arr[${j}]=${arr[j]} < arr[${i}]=${arr[i]} → dp[${i}]=max(dp[${i}], dp[${j}]+1)=${dp[i]}`,
+          });
         }
       }
     }
@@ -147,7 +190,8 @@ function W810_LISViz() {
     <div className="bg-[#090612] border border-[#2d2048] rounded-[12px] p-[20px] my-[14px]">
       <div className="mb-[12px]">
         <div className="text-[#6272a4] text-[12px] mb-[6px]">
-          배열: [{arr.join(", ")}] — LIS 길이: <strong className="text-[#50fa7b]">{maxLen}</strong>
+          배열: [{arr.join(", ")}] — LIS 길이:{" "}
+          <strong className="text-[#50fa7b]">{maxLen}</strong>
         </div>
         <div className="flex gap-[4px] flex-wrap">
           {arr.map((v, i) => (
@@ -155,7 +199,10 @@ function W810_LISViz() {
               key={`arr-${i}`}
               className="min-w-[44px] h-[52px] flex flex-col items-center justify-center gap-[3px] rounded-[8px] transition-all duration-300"
               style={{
-                background: cur && (i === cur.i || i === cur.j) ? `${W810_T.w9}33` : W810_T.card,
+                background:
+                  cur && (i === cur.i || i === cur.j)
+                    ? `${W810_T.w9}33`
+                    : W810_T.card,
                 border: `2px solid ${cur && i === cur.i ? W810_T.w9 : cur && i === cur.j ? W810_T.cyan : W810_T.border}`,
               }}
             >
@@ -171,10 +218,30 @@ function W810_LISViz() {
         </div>
       </div>
       <div className="flex gap-[8px] mb-[12px] flex-wrap">
-        <button type="button" onClick={() => setStep(-1)} className="px-[12px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#6272a4] rounded-[8px] cursor-pointer text-[12px]">초기화</button>
-        <button type="button" onClick={() => setStep(p => Math.max(-1, p - 1))} className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[8px] cursor-pointer">◀</button>
-        <button type="button" onClick={() => setStep(p => Math.min(steps.length - 1, p + 1))} className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[8px] cursor-pointer">▶</button>
-        <span className="text-[#6272a4] text-[12px] self-center">{step + 1}/{steps.length}</span>
+        <button
+          type="button"
+          onClick={() => setStep(-1)}
+          className="px-[12px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#6272a4] rounded-[8px] cursor-pointer text-[12px]"
+        >
+          초기화
+        </button>
+        <button
+          type="button"
+          onClick={() => setStep(p => Math.max(-1, p - 1))}
+          className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[8px] cursor-pointer"
+        >
+          ◀
+        </button>
+        <button
+          type="button"
+          onClick={() => setStep(p => Math.min(steps.length - 1, p + 1))}
+          className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[8px] cursor-pointer"
+        >
+          ▶
+        </button>
+        <span className="text-[#6272a4] text-[12px] self-center">
+          {step + 1}/{steps.length}
+        </span>
       </div>
       {cur && (
         <div className="px-[12px] py-[8px] bg-[#1e1530] border-l-[3px] border-l-[#ff79c6] rounded-[0_8px_8px_0] text-[13px] font-mono text-[#f8f8f2]">
@@ -187,7 +254,12 @@ function W810_LISViz() {
 
 /* ══════════════════════════════ KNAPSACK VIZ ══════════════════════════════ */
 function W810_KnapsackViz() {
-  const items = [{ w: 1, v: 1 }, { w: 2, v: 6 }, { w: 3, v: 10 }, { w: 5, v: 16 }];
+  const items = [
+    { w: 1, v: 1 },
+    { w: 2, v: 6 },
+    { w: 3, v: 10 },
+    { w: 5, v: 16 },
+  ];
   const W = 7;
   const n = items.length;
 
@@ -196,7 +268,10 @@ function W810_KnapsackViz() {
     for (let j = 0; j <= W; j++) {
       dp[i][j] = dp[i - 1][j];
       if (items[i - 1].w <= j) {
-        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - items[i - 1].w] + items[i - 1].v);
+        dp[i][j] = Math.max(
+          dp[i][j],
+          dp[i - 1][j - items[i - 1].w] + items[i - 1].v,
+        );
       }
     }
   }
@@ -211,31 +286,45 @@ function W810_KnapsackViz() {
           <div className="text-[#6272a4] text-[12px] mb-[6px]">물건 목록</div>
           <div className="flex gap-[6px] flex-wrap">
             {items.map((item, i) => (
-              <div key={`item-${i}`} className="px-[12px] py-[8px] bg-[#1e1530] border border-[#2d2048] rounded-[8px]">
-                <div className="text-[#ff79c6] font-bold text-[13px]">물건 {i + 1}</div>
-                <div className="text-[#f8f8f2] text-[12px]">무게:{item.w} 가치:{item.v}</div>
+              <div
+                key={`item-${i}`}
+                className="px-[12px] py-[8px] bg-[#1e1530] border border-[#2d2048] rounded-[8px]"
+              >
+                <div className="text-[#ff79c6] font-bold text-[13px]">
+                  물건 {i + 1}
+                </div>
+                <div className="text-[#f8f8f2] text-[12px]">
+                  무게:{item.w} 가치:{item.v}
+                </div>
               </div>
             ))}
           </div>
         </div>
         <div className="self-center px-[16px] py-[10px] bg-[#ff79c622] border border-[#ff79c6] rounded-[10px]">
           <div className="text-[#6272a4] text-[12px]">가방 용량: {W}kg</div>
-          <div className="text-[#ff79c6] font-bold text-[18px]">최대 가치: {dp[n][W]}</div>
+          <div className="text-[#ff79c6] font-bold text-[18px]">
+            최대 가치: {dp[n][W]}
+          </div>
         </div>
       </div>
-      <div className="text-[#6272a4] text-[12px] mb-[6px]">DP 테이블 — 클릭해서 확인 (행=물건, 열=용량)</div>
+      <div className="text-[#6272a4] text-[12px] mb-[6px]">
+        DP 테이블 — 클릭해서 확인 (행=물건, 열=용량)
+      </div>
       <div className="overflow-x-auto">
         <table className="border-collapse font-mono text-[12px]">
           <thead>
             <tr>
-              <th className="px-[8px] py-[4px] text-[#6272a4] border border-[#2d2048] text-[11px]">i\w</th>
+              <th className="px-[8px] py-[4px] text-[#6272a4] border border-[#2d2048] text-[11px]">
+                i\w
+              </th>
               {Array.from({ length: W + 1 }, (_, j) => (
                 <th
                   key={`col-${j}`}
                   className="px-[8px] py-[4px] border border-[#2d2048]"
                   style={{
                     color: hlCol === j ? W810_T.cyan : W810_T.muted,
-                    background: hlCol === j ? `${W810_T.cyan}22` : "transparent",
+                    background:
+                      hlCol === j ? `${W810_T.cyan}22` : "transparent",
                   }}
                 >
                   {j}
@@ -250,7 +339,8 @@ function W810_KnapsackViz() {
                   className="px-[8px] py-[4px] border border-[#2d2048] font-bold text-[11px]"
                   style={{
                     color: hlRow === i ? W810_T.orange : W810_T.muted,
-                    background: hlRow === i ? `${W810_T.orange}22` : "transparent",
+                    background:
+                      hlRow === i ? `${W810_T.orange}22` : "transparent",
                   }}
                 >
                   {i === 0 ? "—" : `아이템${i}`}
@@ -260,14 +350,32 @@ function W810_KnapsackViz() {
                   return (
                     <td
                       key={`cell-${i}-${j}`}
-                      onClick={() => { setHlRow(i); setHlCol(j); }}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setHlRow(i); setHlCol(j); } }}
+                      onClick={() => {
+                        setHlRow(i);
+                        setHlCol(j);
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          setHlRow(i);
+                          setHlCol(j);
+                        }
+                      }}
                       role="button"
                       tabIndex={0}
                       className="px-[10px] py-[5px] text-center border border-[#2d2048] cursor-pointer transition-all duration-200 min-w-[32px]"
                       style={{
-                        background: isHL ? `${W810_T.w9}44` : (hlRow === i || hlCol === j) ? `${W810_T.w9}11` : v > 0 ? `${W810_T.w9}08` : "transparent",
-                        color: isHL ? W810_T.w9 : v > 0 ? W810_T.text : W810_T.muted,
+                        background: isHL
+                          ? `${W810_T.w9}44`
+                          : hlRow === i || hlCol === j
+                            ? `${W810_T.w9}11`
+                            : v > 0
+                              ? `${W810_T.w9}08`
+                              : "transparent",
+                        color: isHL
+                          ? W810_T.w9
+                          : v > 0
+                            ? W810_T.text
+                            : W810_T.muted,
                         fontWeight: isHL ? 700 : v === dp[n][W] ? 600 : 400,
                       }}
                     >
@@ -298,7 +406,9 @@ function W810_LCSViz() {
   const [s2] = useState("BDCABA");
   const [hlCell, setHlCell] = useState(null);
 
-  const dp = Array.from({ length: s1.length + 1 }, () => Array(s2.length + 1).fill(0));
+  const dp = Array.from({ length: s1.length + 1 }, () =>
+    Array(s2.length + 1).fill(0),
+  );
   for (let i = 1; i <= s1.length; i++) {
     for (let j = 1; j <= s2.length; j++) {
       if (s1[i - 1] === s2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
@@ -309,19 +419,35 @@ function W810_LCSViz() {
   return (
     <div className="bg-[#090612] border border-[#2d2048] rounded-[12px] p-[20px] my-[14px]">
       <div className="mb-[10px] flex gap-[16px] flex-wrap">
-        <span className="text-[#f8f8f2] text-[13px]">S1: <strong className="text-[#8be9fd] font-mono">{s1}</strong></span>
-        <span className="text-[#f8f8f2] text-[13px]">S2: <strong className="text-[#ffb86c] font-mono">{s2}</strong></span>
-        <span className="text-[#f8f8f2] text-[13px]">LCS 길이: <strong className="text-[#50fa7b]">{dp[s1.length][s2.length]}</strong></span>
+        <span className="text-[#f8f8f2] text-[13px]">
+          S1: <strong className="text-[#8be9fd] font-mono">{s1}</strong>
+        </span>
+        <span className="text-[#f8f8f2] text-[13px]">
+          S2: <strong className="text-[#ffb86c] font-mono">{s2}</strong>
+        </span>
+        <span className="text-[#f8f8f2] text-[13px]">
+          LCS 길이:{" "}
+          <strong className="text-[#50fa7b]">{dp[s1.length][s2.length]}</strong>
+        </span>
       </div>
-      <div className="text-[#6272a4] text-[12px] mb-[6px]">셀 클릭으로 점화식 확인</div>
+      <div className="text-[#6272a4] text-[12px] mb-[6px]">
+        셀 클릭으로 점화식 확인
+      </div>
       <div className="overflow-x-auto">
         <table className="border-collapse font-mono text-[12px]">
           <thead>
             <tr>
               <th className="px-[8px] py-[4px] border border-[#2d2048] text-[#6272a4]" />
-              <th className="px-[8px] py-[4px] border border-[#2d2048] text-[#6272a4]">∅</th>
+              <th className="px-[8px] py-[4px] border border-[#2d2048] text-[#6272a4]">
+                ∅
+              </th>
               {s2.split("").map((c, j) => (
-                <th key={`s2-${j}`} className="px-[10px] py-[4px] border border-[#2d2048] text-[#ffb86c]">{c}</th>
+                <th
+                  key={`s2-${j}`}
+                  className="px-[10px] py-[4px] border border-[#2d2048] text-[#ffb86c]"
+                >
+                  {c}
+                </th>
               ))}
             </tr>
           </thead>
@@ -338,13 +464,26 @@ function W810_LCSViz() {
                     <td
                       key={`lcs-cell-${i}-${j}`}
                       onClick={() => setHlCell([i, j])}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setHlCell([i, j]); }}
+                      onKeyDown={e => {
+                        if (e.key === "Enter" || e.key === " ")
+                          setHlCell([i, j]);
+                      }}
                       role="button"
                       tabIndex={0}
                       className="px-[10px] py-[5px] text-center border border-[#2d2048] cursor-pointer transition-all duration-200 min-w-[28px]"
                       style={{
-                        background: isHL ? `${W810_T.w9}44` : isMatch && v > 0 ? `${W810_T.green}22` : W810_T.card,
-                        color: isHL ? W810_T.w9 : isMatch && v > 0 ? W810_T.green : v > 0 ? W810_T.text : W810_T.muted,
+                        background: isHL
+                          ? `${W810_T.w9}44`
+                          : isMatch && v > 0
+                            ? `${W810_T.green}22`
+                            : W810_T.card,
+                        color: isHL
+                          ? W810_T.w9
+                          : isMatch && v > 0
+                            ? W810_T.green
+                            : v > 0
+                              ? W810_T.text
+                              : W810_T.muted,
                         fontWeight: isHL ? 700 : 400,
                       }}
                     >
@@ -359,10 +498,20 @@ function W810_LCSViz() {
       </div>
       {hlCell && hlCell[0] > 0 && hlCell[1] > 0 && (
         <div className="mt-[10px] px-[12px] py-[8px] bg-[#1e1530] border-l-[3px] border-l-[#ff79c6] rounded-[0_8px_8px_0] text-[13px] font-mono text-[#f8f8f2]">
-          {s1[hlCell[0] - 1] === s2[hlCell[1] - 1]
-            ? <span><span className="text-[#50fa7b]">✅ 문자 일치</span>: dp[{hlCell[0]}][{hlCell[1]}] = dp[{hlCell[0] - 1}][{hlCell[1] - 1}]+1 = {dp[hlCell[0] - 1][hlCell[1] - 1] + 1}</span>
-            : <span><span className="text-[#6272a4]">불일치</span>: dp[{hlCell[0]}][{hlCell[1]}] = max(dp[{hlCell[0] - 1}][{hlCell[1]}]={dp[hlCell[0] - 1][hlCell[1]]}, dp[{hlCell[0]}][{hlCell[1] - 1}]={dp[hlCell[0]][hlCell[1] - 1]}) = {dp[hlCell[0]][hlCell[1]]}</span>
-          }
+          {s1[hlCell[0] - 1] === s2[hlCell[1] - 1] ? (
+            <span>
+              <span className="text-[#50fa7b]">✅ 문자 일치</span>: dp[
+              {hlCell[0]}][{hlCell[1]}] = dp[{hlCell[0] - 1}][{hlCell[1] - 1}]+1
+              = {dp[hlCell[0] - 1][hlCell[1] - 1] + 1}
+            </span>
+          ) : (
+            <span>
+              <span className="text-[#6272a4]">불일치</span>: dp[{hlCell[0]}][
+              {hlCell[1]}] = max(dp[{hlCell[0] - 1}][{hlCell[1]}]=
+              {dp[hlCell[0] - 1][hlCell[1]]}, dp[{hlCell[0]}][{hlCell[1] - 1}]=
+              {dp[hlCell[0]][hlCell[1] - 1]}) = {dp[hlCell[0]][hlCell[1]]}
+            </span>
+          )}
         </div>
       )}
     </div>
@@ -372,33 +521,53 @@ function W810_LCSViz() {
 /* ══════════════════════════════ GREEDY VIZ ══════════════════════════════ */
 function W810_GreedyActivityViz() {
   const activities = [
-    { s: 1, e: 4, name: "A" }, { s: 3, e: 5, name: "B" }, { s: 0, e: 6, name: "C" },
-    { s: 5, e: 7, name: "D" }, { s: 3, e: 9, name: "E" }, { s: 5, e: 9, name: "F" },
-    { s: 6, e: 10, name: "G" }, { s: 8, e: 11, name: "H" }, { s: 8, e: 12, name: "I" },
-    { s: 2, e: 14, name: "J" }, { s: 12, e: 16, name: "K" },
+    { s: 1, e: 4, name: "A" },
+    { s: 3, e: 5, name: "B" },
+    { s: 0, e: 6, name: "C" },
+    { s: 5, e: 7, name: "D" },
+    { s: 3, e: 9, name: "E" },
+    { s: 5, e: 9, name: "F" },
+    { s: 6, e: 10, name: "G" },
+    { s: 8, e: 11, name: "H" },
+    { s: 8, e: 12, name: "I" },
+    { s: 2, e: 14, name: "J" },
+    { s: 12, e: 16, name: "K" },
   ];
   const sorted = [...activities].sort((a, b) => a.e - b.e);
   const selected = [];
   let lastEnd = -1;
   for (const act of sorted) {
-    if (act.s >= lastEnd) { selected.push(act.name); lastEnd = act.e; }
+    if (act.s >= lastEnd) {
+      selected.push(act.name);
+      lastEnd = act.e;
+    }
   }
 
   const maxT = 16;
 
   return (
     <div className="bg-[#090612] border border-[#2d2048] rounded-[12px] p-[20px] my-[14px]">
-      <div className="text-[#6272a4] text-[12px] mb-[8px]">활동 선택 문제 — 종료 시간 기준 정렬 후 그리디</div>
+      <div className="text-[#6272a4] text-[12px] mb-[8px]">
+        활동 선택 문제 — 종료 시간 기준 정렬 후 그리디
+      </div>
       <div className="relative mb-[8px]">
         <div className="flex gap-[2px] mb-[4px]">
           {Array.from({ length: maxT + 1 }, (_, i) => (
-            <div key={`t-${i}`} className="flex-1 text-center text-[#6272a4] text-[10px]">{i}</div>
+            <div
+              key={`t-${i}`}
+              className="flex-1 text-center text-[#6272a4] text-[10px]"
+            >
+              {i}
+            </div>
           ))}
         </div>
-        {sorted.map((act) => {
+        {sorted.map(act => {
           const isSelected = selected.includes(act.name);
           return (
-            <div key={act.name} className="flex items-center mb-[3px] gap-[6px]">
+            <div
+              key={act.name}
+              className="flex items-center mb-[3px] gap-[6px]"
+            >
               <div
                 className="w-[16px] text-[11px] font-bold"
                 style={{ color: isSelected ? W810_T.green : W810_T.muted }}
@@ -411,7 +580,9 @@ function W810_GreedyActivityViz() {
                   style={{
                     left: `${(act.s / maxT) * 100}%`,
                     width: `${((act.e - act.s) / maxT) * 100}%`,
-                    background: isSelected ? `${W810_T.green}66` : `${W810_T.muted}33`,
+                    background: isSelected
+                      ? `${W810_T.green}66`
+                      : `${W810_T.muted}33`,
                     border: `1px solid ${isSelected ? W810_T.green : `${W810_T.muted}55`}`,
                   }}
                 />
@@ -423,9 +594,16 @@ function W810_GreedyActivityViz() {
       <div className="mt-[10px] text-[13px]">
         <span className="text-[#6272a4]">선택된 활동: </span>
         {selected.map(name => (
-          <span key={name} className="text-[#50fa7b] mr-[6px] font-mono font-bold">{name}</span>
+          <span
+            key={name}
+            className="text-[#50fa7b] mr-[6px] font-mono font-bold"
+          >
+            {name}
+          </span>
         ))}
-        <span className="text-[#6272a4] text-[12px]">(총 {selected.length}개)</span>
+        <span className="text-[#6272a4] text-[12px]">
+          (총 {selected.length}개)
+        </span>
       </div>
     </div>
   );
@@ -446,14 +624,22 @@ function W810_NQueensViz() {
     const diag2 = new Set();
 
     function bt(row) {
-      if (row === n) { result.push([...board]); return; }
+      if (row === n) {
+        result.push([...board]);
+        return;
+      }
       for (let col = 0; col < n; col++) {
-        if (cols.has(col) || diag1.has(row - col) || diag2.has(row + col)) continue;
+        if (cols.has(col) || diag1.has(row - col) || diag2.has(row + col))
+          continue;
         board[row] = col;
-        cols.add(col); diag1.add(row - col); diag2.add(row + col);
+        cols.add(col);
+        diag1.add(row - col);
+        diag2.add(row + col);
         bt(row + 1);
         board[row] = -1;
-        cols.delete(col); diag1.delete(row - col); diag2.delete(row + col);
+        cols.delete(col);
+        diag1.delete(row - col);
+        diag2.delete(row + col);
       }
     }
     bt(0);
@@ -470,10 +656,18 @@ function W810_NQueensViz() {
         <span className="text-[#f8f8f2] text-[13px]">N =</span>
         <select
           value={n}
-          onChange={e => { setN(Number(e.target.value)); setSolved(false); setSolutions([]); }}
+          onChange={e => {
+            setN(Number(e.target.value));
+            setSolved(false);
+            setSolutions([]);
+          }}
           className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[6px]"
         >
-          {[4, 5, 6, 7, 8].map(v => <option key={v} value={v}>{v}</option>)}
+          {[4, 5, 6, 7, 8].map(v => (
+            <option key={v} value={v}>
+              {v}
+            </option>
+          ))}
         </select>
         <button
           type="button"
@@ -484,7 +678,9 @@ function W810_NQueensViz() {
         </button>
         {solved && (
           <>
-            <span className="text-[#50fa7b] text-[13px]">해 {solutions.length}개 발견!</span>
+            <span className="text-[#50fa7b] text-[13px]">
+              해 {solutions.length}개 발견!
+            </span>
             <button
               type="button"
               onClick={() => setCurrentSol(p => Math.max(0, p - 1))}
@@ -495,13 +691,17 @@ function W810_NQueensViz() {
             </button>
             <button
               type="button"
-              onClick={() => setCurrentSol(p => Math.min(solutions.length - 1, p + 1))}
+              onClick={() =>
+                setCurrentSol(p => Math.min(solutions.length - 1, p + 1))
+              }
               disabled={currentSol >= solutions.length - 1}
               className="px-[10px] py-[6px] bg-[#1e1530] border border-[#2d2048] text-[#f8f8f2] rounded-[6px] cursor-pointer"
             >
               ▶
             </button>
-            <span className="text-[#6272a4] text-[12px]">{currentSol + 1}/{solutions.length}</span>
+            <span className="text-[#6272a4] text-[12px]">
+              {currentSol + 1}/{solutions.length}
+            </span>
           </>
         )}
       </div>
@@ -519,14 +719,18 @@ function W810_NQueensViz() {
                   key={`${row}-${col}`}
                   className="w-[44px] h-[44px] flex items-center justify-center rounded-[6px] text-[22px] transition-all duration-300"
                   style={{
-                    background: isQueen ? `${W810_T.w10}44` : isDark ? W810_T.card : W810_T.surface,
+                    background: isQueen
+                      ? `${W810_T.w10}44`
+                      : isDark
+                        ? W810_T.card
+                        : W810_T.surface,
                     border: `1px solid ${isQueen ? W810_T.w10 : W810_T.border}`,
                   }}
                 >
                   {isQueen ? "♛" : ""}
                 </div>
               );
-            })
+            }),
           )}
         </div>
       )}
@@ -540,12 +744,14 @@ function W810_BitMaskViz() {
   const n = 4;
   const items = ["🍎 사과", "🍌 바나나", "🍇 포도", "🍓 딸기"];
 
-  const toggle = (i) => setMask(m => m ^ (1 << i));
-  const check = (i) => (mask >> i) & 1;
+  const toggle = i => setMask(m => m ^ (1 << i));
+  const check = i => (mask >> i) & 1;
 
   return (
     <div className="bg-[#090612] border border-[#2d2048] rounded-[12px] p-[20px] my-[14px]">
-      <div className="text-[#6272a4] text-[12px] mb-[10px]">클릭해서 비트 ON/OFF</div>
+      <div className="text-[#6272a4] text-[12px] mb-[10px]">
+        클릭해서 비트 ON/OFF
+      </div>
       <div className="flex gap-[8px] mb-[14px] flex-wrap">
         {items.map((item, i) => (
           <button
@@ -584,7 +790,9 @@ function W810_BitMaskViz() {
             <div className="text-[#6272a4] text-[9px]">2^{i}</div>
           </div>
         ))}
-        <span className="text-[#ff79c6] text-[20px] font-bold ml-[4px]">= {mask}</span>
+        <span className="text-[#ff79c6] text-[20px] font-bold ml-[4px]">
+          = {mask}
+        </span>
       </div>
       <div className="flex gap-[16px] text-[13px] font-mono flex-wrap">
         {[
@@ -594,8 +802,13 @@ function W810_BitMaskViz() {
           ["(mask>>i) & 1", "비트 확인", W810_T.cyan],
           ["mask & (mask-1)", "최하위 비트 제거", W810_T.orange],
         ].map(([op, desc, color]) => (
-          <div key={op} className="px-[10px] py-[6px] bg-[#1e1530] rounded-[6px]">
-            <div className="text-[12px]" style={{ color }}>{op}</div>
+          <div
+            key={op}
+            className="px-[10px] py-[6px] bg-[#1e1530] rounded-[6px]"
+          >
+            <div className="text-[12px]" style={{ color }}>
+              {op}
+            </div>
             <div className="text-[#6272a4] text-[11px]">{desc}</div>
           </div>
         ))}
@@ -606,4 +819,13 @@ function W810_BitMaskViz() {
 
 /* ══════════════════════════════ SECTIONS ══════════════════════════════ */
 
-export { W810_DPTableViz, W810_DP1463Viz, W810_LISViz, W810_KnapsackViz, W810_LCSViz, W810_GreedyActivityViz, W810_NQueensViz, W810_BitMaskViz };
+export {
+  W810_DPTableViz,
+  W810_DP1463Viz,
+  W810_LISViz,
+  W810_KnapsackViz,
+  W810_LCSViz,
+  W810_GreedyActivityViz,
+  W810_NQueensViz,
+  W810_BitMaskViz,
+};

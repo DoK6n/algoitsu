@@ -12,4 +12,3 @@ export const W2_COLORS = {
   muted: "#64748b",
   highlight: "#fbbf24",
 };
-
