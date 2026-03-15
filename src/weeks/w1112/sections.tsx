@@ -429,6 +429,59 @@ def solve():
         else:
             print("YES" if uf.connected(a, b) else "NO")`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          유니온 파인드의 두 최적화: 경로 압축 &amp; 랭크 합치기
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              parent[x] = self.find(parent[x])
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 경로 압축: find 도중 만나는 모든 노드를 루트에 직접 연결. 다음
+              번 find가 O(1)에 가까워짐
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              rank[rx] vs rank[ry]
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 랭크 합치기: 높이가 작은 트리를 큰 트리 아래에 붙임. 트리가
+              깊어지는 것 방지
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">rank[rx] += 1</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 두 트리의 높이가 같을 때만 랭크 증가. 한쪽이 크면 높이가 변하지
+              않음
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">find(x) == find(y)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 같은 집합인지 확인: 루트가 같으면 연결됨. 사이클 감지에도 활용
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">경로 압축 전: 1→2→3→4(루트)</div>
+          <div className="text-[#64748b]">
+            find(1) 호출 → 1→4 직접 연결 →{" "}
+            <span className="text-[#10b981]">다음 find(1): O(1)</span>
+          </div>
+          <div className="text-[#64748b]">
+            두 최적화 합치면 O(α(N)) ≈ 사실상 O(1)
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -618,6 +671,58 @@ def acm_craft():
 
         print(dp[target])`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          위상 정렬의 진입 차수(in_degree) 메커니즘
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">in_degree[v] += 1</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — v를 향하는 간선 하나 추가. in_degree = "이 노드를 처리하기 전에
+              먼저 끝내야 할 선행 작업 수"
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              in_degree[i] == 0 → 큐에 추가
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 선행 작업이 없는 노드부터 시작. 초기에 진입 차수 0인 것을 모두
+              큐에 넣음
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              in_degree[neighbor] -= 1
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 노드 처리 완료 → 이웃의 선행 작업 하나 제거. 0이 되면 큐에
+              추가
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">len(result) != n</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 모든 노드를 처리 못했다 = 사이클 존재. 사이클 내 노드는
+              in_degree가 0이 되지 않아 큐에 안 들어옴
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">의존성: A→C, B→C, C→D</div>
+          <div className="text-[#64748b]">in_degree: A=0, B=0, C=2, D=1</div>
+          <div className="text-[#64748b]">
+            큐 시작: [A, B] → A,B 처리 → C in_degree=0 → 큐에 C
+          </div>
+          <div className="text-[#10b981]">결과: [A, B, C, D] ✓</div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -712,6 +817,59 @@ class W1112_BIT:
     def range_query(self, l, r):
         return self.query(r) - self.query(l - 1)`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          세그먼트 트리: <code className="text-[#ffd166]">2*node</code> /{" "}
+          <code className="text-[#ffd166]">2*node+1</code> 인덱싱 &amp; BIT:{" "}
+          <code className="text-[#ffd166]">i &amp; (-i)</code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">2*node (왼쪽 자식)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 배열로 이진 트리를 표현. 노드 i의 왼쪽/오른쪽 자식은 2i, 2i+1.
+              루트=1
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">4 * n 크기 할당</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 완전 이진 트리의 최대 노드 수 = 4n이면 충분. 안전한 크기 공식
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">i &amp; (-i) (BIT)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — i의 최하위 비트(LSB)를 구함. update는 더하고, query는 빼며 이동.
+              이를 통해 구간 합을 O(log n)에 관리
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              query(r) - query(l-1)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — BIT는 1~i까지의 prefix sum만 계산. 구간 합 = 오른쪽 prefix -
+              왼쪽 prefix
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">BIT i & (-i) 예시 (i=6 = 0b0110)</div>
+          <div className="text-[#64748b]">-6 = 0b...11111010 (2의 보수)</div>
+          <div className="text-[#64748b]">
+            6 &amp; (-6) = 0b0010 = 2 → 2칸 담당
+          </div>
+          <div className="text-[#64748b]">
+            update(6): i=6→8→16→... / query(6): i=6→4→0
+          </div>
+        </div>
+      </div>
     </div>
   ),
 

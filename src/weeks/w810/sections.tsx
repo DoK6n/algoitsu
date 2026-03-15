@@ -502,6 +502,52 @@ weights = [2, 3, 4, 5]
 values  = [3, 4, 5, 6]
 print(knapsack(weights, values, 8))  # 10`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          0/1 배낭:{" "}
+          <code className="text-[#ffd166]">range(W, weights[i]-1, -1)</code> —
+          왜 역방향?
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">역방향 순회 (W→0)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 같은 물건을 두 번 쓰지 않으려면. dp[w]를 갱신할 때
+              dp[w-weight]는 이번 물건을 아직 안 쓴 상태여야 함
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">정방향 순회 (0→W)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 무한 배낭용. dp[w-weight]가 이미 갱신되어 있어 같은 물건을 여러
+              번 쓸 수 있음
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">weights[i]-1까지</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 용량이 물건 무게보다 작으면 넣을 수 없으므로 그 아래는 생략
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            물건(무게=2, 가치=3)을 정방향으로 처리하면:
+          </div>
+          <div className="text-[#64748b]">
+            dp[2]=3 → dp[4]=dp[2]+3=
+            <span className="text-[#ef4444]">6</span> ← 같은 물건 두 번 사용!
+          </div>
+          <div className="text-[#64748b]">
+            역방향이면: dp[4] 갱신 시 dp[2]는 아직 이 물건 전 값 →{" "}
+            <span className="text-[#10b981]">올바름</span>
+          </div>
+        </div>
+      </div>
       <W810_Callout color={W810_T.w9} icon="🔑" title="배낭 변형 패턴">
         <ul className="m-0 pl-[20px] leading-[2]">
           <li>
@@ -557,6 +603,62 @@ print(lis(nums))  # 4`}
 
 print(lcs("ABCBDAB", "BDCAB"))  # 4`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          LIS O(n log n) 핵심:{" "}
+          <code className="text-[#ffd166]">bisect_left(tails, num)</code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">tails 배열</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 각 길이의 LIS에서 가능한 가장 작은 마지막 원소를 저장. 항상 정렬
+              상태 유지
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              bisect_left(tails, num)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — num이 들어갈 위치(index)를 이진탐색으로 O(log n)에 찾음
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">pos == len(tails)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 num이 tails의 모든 원소보다 크다 = LIS 길이 1 증가 →
+              tails.append
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">tails[pos] = num</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 중간 값 교체: 같은 길이의 LIS를 더 작은 값으로 갱신 → 이후 확장
+              가능성 증가
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            nums = [10, 9, 2, 5, 3, 7, 101, 18]
+          </div>
+          <div className="text-[#64748b]">10: tails=[10]</div>
+          <div className="text-[#64748b]">9: pos=0 → tails=[9]</div>
+          <div className="text-[#64748b]">2: pos=0 → tails=[2]</div>
+          <div className="text-[#64748b]">5: pos=1 → tails=[2,5]</div>
+          <div className="text-[#64748b]">3: pos=1 → tails=[2,3]</div>
+          <div className="text-[#64748b]">7: pos=2 → tails=[2,3,7]</div>
+          <div className="text-[#10b981]">
+            101,18: tails=[2,3,7,18] → LIS 길이 = 4 ✓
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -593,6 +695,63 @@ def tsp(dist):
     full = (1<<n)-1
     return min(dp[full][i]+dist[i][0] for i in range(1,n))`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          비트마스크 핵심 연산 4가지
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">1 &lt;&lt; n</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 2ⁿ. n개 원소의 모든 부분집합 수. range(1&lt;&lt;n)으로 전체 상태
+              열거
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              mask &amp; (1 &lt;&lt; i)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — i번째 비트가 1인지 확인 (= i번째 원소가 집합에 포함됐는지)
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              mask | (1 &lt;&lt; v)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — v번째 비트를 1로 세팅 (= v번째 원소를 집합에 추가)
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">(1 &lt;&lt; n) - 1</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — n비트가 모두 1 (= 모든 원소를 방문한 상태). TSP 종료 조건
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            n=3일 때 mask=0b101 (1번,3번 포함)
+          </div>
+          <div className="text-[#64748b]">
+            mask &amp; (1&lt;&lt;0) = 1 → 0번 원소 포함{" "}
+            <span className="text-[#10b981]">✓</span>
+          </div>
+          <div className="text-[#64748b]">
+            mask &amp; (1&lt;&lt;1) = 0 → 1번 원소 미포함{" "}
+            <span className="text-[#ef4444]">✗</span>
+          </div>
+          <div className="text-[#64748b]">
+            mask | (1&lt;&lt;1) = 0b111 → 1번도 추가 완료
+          </div>
+        </div>
+      </div>
       <W810_Callout color={W810_T.w9} icon="💡" title="적용 조건">
         원소 수 n ≤ 20 (보통 n ≤ 15) · 부분집합 방문 여부가 상태인 문제
       </W810_Callout>
@@ -730,6 +889,57 @@ def permutations(arr):             # 순열
                 curr.pop(); used[i] = False
     bt([], [False]*len(arr)); return result`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          백트래킹의 핵심: 상태 추가 → 재귀 → 상태 복원
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              cols.add(col) / diag1.add(row-col)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 선택을 기록. 이후 재귀에서 같은 열/대각선 방향을 막음
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">bt(row+1, path)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 다음 행으로 재귀. 현재 선택이 유효하다는 가정하에 계속 탐색
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              cols.discard(col) / path.pop()
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 복원(Backtrack): 재귀 후 이전 상태로 되돌림. 다음 선택지를
+              시도하기 위해
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">row-col / row+col</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 같은 대각선의 모든 칸은 row-col(또는 row+col)이 같음. set으로
+              O(1) 충돌 체크
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            add → 재귀 → discard = "임시 선택 후 취소"
+          </div>
+          <div className="text-[#64748b]">
+            discard(col) 대신 remove(col)를 쓰면 KeyError 위험 →{" "}
+            <span className="text-[#10b981]">discard가 안전</span>
+          </div>
+        </div>
+      </div>
     </div>
   ),
 

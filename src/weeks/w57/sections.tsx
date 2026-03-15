@@ -539,6 +539,64 @@ def count_clusters():
     for s in clusters:
         print(s)`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          DFS의 방문 처리 타이밍 &amp; 그리드 경계 조건
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">visited.add(node)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 재귀에서는 방문 즉시 표시. 반복 스택은 pop 후 표시 (중복 방문
+              주의)
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              r &lt; 0 or r &gt;= len(grid)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 그리드 경계 이탈 체크. 항상 첫 번째 조건으로 두어야 IndexError
+              방지
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              c &lt; 0 or c &gt;= len(grid[0])
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 열(column) 범위 체크. len(grid)는 행 수, len(grid[0])는 열 수
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              1 + dfs(r+1,c) + dfs(r-1,c) + ...
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 칸(1) + 4방향 재귀 결과 합산 = 연결된 섬의 전체 크기
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">경계 조건 체크 순서가 중요!</div>
+          <div className="text-[#64748b]">
+            if r&lt;0 or r&gt;=n: <span className="text-[#10b981]">return</span>{" "}
+            ← 먼저!
+          </div>
+          <div className="text-[#64748b]">
+            if visited[r][c]: <span className="text-[#10b981]">return</span> ←
+            그 다음
+          </div>
+          <div className="text-[#64748b]">
+            순서 바꾸면 visited[r][c] 접근 시 IndexError 발생
+          </div>
+        </div>
+      </div>
       <W57_Callout color={W57_T.danger} icon="⚠️" title="재귀 깊이 제한 주의!">
         파이썬 기본 재귀 깊이는 <strong>1000</strong>입니다.
         <br />
@@ -630,6 +688,64 @@ def tomato():
 
 # 핵심: 여러 시작점에서 동시 BFS = "멀티 소스 BFS"`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          BFS가 최단 거리를 보장하는 이유 &amp; 멀티 소스 BFS 패턴
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              queue.append((node, dist + 1))
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 거리를 노드와 함께 저장. 레벨(거리)이 같은 노드를 먼저 모두
+              처리하므로 최단 거리 보장
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              visited.add(neighbor) 큐에 넣기 전에!
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 꺼낼 때 체크하면 같은 노드가 큐에 여러 번 들어가 비효율. 넣기
+              전에 처리해야 O(V+E) 보장
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">멀티 소스 BFS</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 여러 시작점을 동시에 큐에 넣으면 모든 출발점에서 동시에
+              퍼져나감. 토마토 문제의 핵심!
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              queue.append((nr, nc, day+1))
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 새 좌표에 거리+1을 함께 저장. grid[nr][nc] = 1로 방문 표시도
+              동시에
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            BFS는 거리 순으로 처리하므로 처음 도달 = 최단 거리
+          </div>
+          <div className="text-[#64748b]">
+            DFS는 깊게 먼저 가므로 최단 거리 보장{" "}
+            <span className="text-[#ef4444]">안 됨</span>
+          </div>
+          <div className="text-[#10b981]">
+            가중치 없는 최단거리 → BFS / 가중치 있으면 → 다익스트라
+          </div>
+        </div>
+      </div>
       <W57_Callout color={W57_T.green} icon="✅" title="DFS vs BFS 선택 기준">
         <strong className="text-[#52d68a]">BFS 선택:</strong> 최단 거리/최소
         이동횟수, 레벨 단위 탐색
@@ -699,6 +815,64 @@ dist = dijkstra(graph, start, n)
 for i in range(1, n+1):
     print(dist[i] if dist[i] != float('inf') else "INF")`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          다익스트라의 핵심:{" "}
+          <code className="text-[#ffd166]">if d &gt; dist[u]: continue</code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              d, u = heapq.heappop(heap)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 힙에서 현재까지 가장 짧은 경로의 (거리, 노드)를 꺼냄
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              if d &gt; dist[u]: continue
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 이미 더 짧은 경로가 확정됐으면 스킵. 힙에 같은 노드가 여러 번
+              들어갈 수 있기 때문
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              (new_dist, v) 힙에 push
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 더 짧은 경로 발견 시마다 힙에 추가. 기존 항목은 삭제 안 하고 위
+              조건으로 무시
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              왜 (거리, 노드) 순서?
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 튜플 비교 시 첫 번째 원소(거리) 기준 정렬. 거리가 작은 것이 먼저
+              나옴
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            예: 노드 3에 (5, 3) (7, 3) 두 항목이 힙에 있을 때
+          </div>
+          <div className="text-[#64748b]">(5, 3) 먼저 pop → dist[3]=5 확정</div>
+          <div className="text-[#64748b]">
+            (7, 3) pop → d=7 &gt; dist[3]=5 →{" "}
+            <span className="text-[#10b981]">continue (스킵!)</span>
+          </div>
+        </div>
+      </div>
       <W57_Callout color={W57_T.w6} icon="🔑" title="다익스트라 핵심 패턴">
         <code className="text-[#ffd166]">if d &gt; dist[u]: continue</code> —
         이미 확정된 노드 스킵
@@ -852,6 +1026,59 @@ def solution(n, results):
             count += 1
     return count`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          플로이드-워셜: 왜 <code className="text-[#ffd166]">k</code>가 가장
+          바깥 루프여야 하나?
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">k = 경유 노드</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — "1번 노드만 경유", "1,2번 경유", ... 순으로 경로를 점진적으로
+              확장
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">k가 안쪽이면 문제!</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — i→j를 갱신할 때 dist[i][k]와 dist[k][j]가 아직 최적값이 아닐 수
+              있음 → 잘못된 결과
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — k를 경유하는 경로가 더 짧으면 갱신. 이 한 줄이 플로이드의 전부!
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">dist[i][i] &lt; 0</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 자기 자신으로 돌아오는 경로가 음수 = 음수 사이클 존재
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            직관: 경유 가능한 노드를 하나씩 추가
+          </div>
+          <div className="text-[#64748b]">k=1: 노드1 경유 허용 → dist 갱신</div>
+          <div className="text-[#64748b]">
+            k=2: 노드1,2 경유 허용 → dist 갱신
+          </div>
+          <div className="text-[#10b981]">
+            k=n: 모든 노드 경유 허용 → 모든 쌍 최단경로 완성!
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -1118,6 +1345,63 @@ def phone_check(phone_book):
         node['#'] = True
     return True`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          트라이 삽입/탐색 로직 한 줄씩 분해
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">node = self.root</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 항상 루트에서 시작. 문자 하나씩 내려가며 탐색
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              if c not in node.children: node.children[c] = W57_TrieNode()
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 해당 문자로 가는 경로가 없으면 새 노드 생성. 있으면 기존 경로
+              재사용
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              node = node.children[c]
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 해당 문자의 자식 노드로 이동. 단어의 각 문자만큼 반복
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">node.is_end = True</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 마지막 문자 노드에 "여기서 단어가 끝남" 표시. search는 이걸 확인
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            "app" 삽입: root→a→p→p (is_end=True)
+          </div>
+          <div className="text-[#64748b]">
+            "apple" 삽입: root→a→p→p→l→e (is_end=True)
+          </div>
+          <div className="text-[#64748b]">
+            search("app") → a→p→p 이동 후 is_end=
+            <span className="text-[#10b981]">True</span> ✓
+          </div>
+          <div className="text-[#64748b]">
+            search("ap") → a→p 이동 후 is_end=
+            <span className="text-[#ef4444]">False</span> ✗ (단어 아님)
+          </div>
+        </div>
+      </div>
     </div>
   ),
 

@@ -178,6 +178,61 @@ def stock_price(prices):
 
 print(stock_price([1, 2, 3, 2, 3]))  # [4, 3, 1, 1, 0]`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          단조 스택의 조건:{" "}
+          <code className="text-[#ffd166]">
+            while stack and prices[stack[-1]] &gt; prices[i]
+          </code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">stack</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 비어있으면 비교할 게 없음. 먼저 체크해서 IndexError 방지
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              prices[stack[-1]] &gt; prices[i]
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 스택 맨 위(이전 날) 가격 &gt; 현재 가격 → 가격이 떨어진 시점
+              발견!
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">answer[j] = i - j</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — j일부터 i일 직전까지 가격 유지 → 유지 기간 = i - j
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              answer[j] = n - 1 - j
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 스택에 남은 것 = 끝까지 안 떨어진 주식 → 마지막 날까지 유지
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">prices = [1, 2, 3, 2, 3]</div>
+          <div className="text-[#64748b]">
+            i=3, prices[3]=2 &lt; prices[2]=3 → pop(2), answer[2] = 3-2 ={" "}
+            <span className="text-[#f59e0b]">1</span>
+          </div>
+          <div className="text-[#64748b]">
+            남은 스택 [0, 1] → 끝까지 안 떨어짐 → n-1-j 계산
+          </div>
+          <div className="text-[#10b981]">결과: [4, 3, 1, 1, 0] ✓</div>
+        </div>
+      </div>
       <W34_Callout color={W34_T.accent} icon="🎯" title="스택이 유용한 패턴">
         <strong>괄호 검사</strong>, <strong>함수 호출 스택</strong>,{" "}
         <strong>DFS 반복 구현</strong>,<strong>히스토그램 최대 넓이</strong>,{" "}
@@ -254,6 +309,52 @@ def card_game(n):
 print(card_game(6))   # 4
 print(card_game(10))  # 4`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          왜 <code className="text-[#ffd166]">list.pop(0)</code> 대신{" "}
+          <code className="text-[#7eff6a]">deque.popleft()</code>를 써야 하나?
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#ef4444] font-bold">list.pop(0)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — O(n): 맨 앞 원소를 빼면 나머지 원소를 전부 앞으로 한 칸씩 당겨야
+              함
+            </span>
+          </div>
+          <div>
+            <span className="text-[#10b981] font-bold">deque.popleft()</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — O(1): 양쪽 끝에 포인터를 두는 구조라 그냥 포인터만 이동
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">queue.popleft()</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — BFS에서 수만 번 호출됨 → O(n)이면 전체가 O(n²)으로 폭발!
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">
+            n=10000인 BFS에서 popleft() 10000번 호출 시:
+          </div>
+          <div>
+            <span className="text-[#ef4444]">list.pop(0)</span>
+            <span className="text-[#64748b]"> → 10000 × 10000 = </span>
+            <span className="text-[#ef4444]">100,000,000 번 연산</span>
+          </div>
+          <div>
+            <span className="text-[#10b981]">deque.popleft()</span>
+            <span className="text-[#64748b]"> → 10000 × 1 = </span>
+            <span className="text-[#10b981]">10,000 번 연산</span>
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -311,6 +412,63 @@ def max_sliding_window(nums, k):
 print(max_sliding_window([1,3,-1,-3,5,3,6,7], 3))
 # [3, 3, 5, 5, 6, 7]`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          단조 덱의 윈도우 관리:{" "}
+          <code className="text-[#ffd166]">
+            while dq and dq[0] &lt; i - k + 1
+          </code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">dq[0]</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 덱의 맨 앞 = 현재 윈도우에서 가장 큰 값의 인덱스
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">i - k + 1</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 윈도우의 시작 인덱스 (i가 오른쪽 끝일 때, k 크기 윈도우)
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              dq[0] &lt; i - k + 1
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 덱 앞의 인덱스가 현재 윈도우 범위 밖 → 만료된 값이므로 제거
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">
+              nums[dq[-1]] &lt; v → dq.pop()
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 현재 값보다 작은 뒤쪽 값들은 어차피 최대가 못 됨 → 미리 제거
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">nums=[1,3,-1,-3,5,3,6,7], k=3</div>
+          <div className="text-[#64748b]">i=0: dq=[0]</div>
+          <div className="text-[#64748b]">
+            i=1: 3&gt;1이므로 0 제거 → dq=[1]
+          </div>
+          <div className="text-[#64748b]">
+            i=2: -1&lt;3이므로 그냥 추가 → dq=[1,2], result=[3]
+          </div>
+          <div className="text-[#64748b]">
+            i=3: dq[0]=1 &gt;= 3-3+1=1 이므로 유지, result=[3,3]
+          </div>
+          <div className="text-[#10b981]">최종: [3, 3, 5, 5, 6, 7] ✓</div>
+        </div>
+      </div>
       <W34_Callout color={W34_T.accent3} icon="💡" title="덱 활용 패턴 요약">
         <strong>스택 + 큐 동시</strong> 필요할 때 /{" "}
         <strong>슬라이딩 윈도우 최솟값/최댓값</strong> (단조 덱) / 회전 연산 /
@@ -389,6 +547,57 @@ def absolute_heap():
             else:
                 print(0)`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          힙의 두 가지 핵심 트릭
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">최대 힙: -v 트릭</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 파이썬 heapq는 최소 힙만 지원. 값을 음수로 넣으면 작은 음수(=큰
+              양수)가 먼저 나옴
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              heappush(heap, -v) / -heappop(heap)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 넣을 때 부호 반전, 꺼낼 때 다시 반전 → 최대 힙처럼 동작
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              튜플 우선순위: (abs(x), x)
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 튜플은 첫 번째 원소로 먼저 비교. 절댓값이 같으면 두 번째(실제값)
+              비교
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">heappop(heap)[1]</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 튜플에서 실제값만 꺼냄. [0]은 우선순위용이라 버림
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">절댓값 힙 예시: [-1, 1] 입력</div>
+          <div className="text-[#64748b]">push(abs(-1), -1) = (1, -1)</div>
+          <div className="text-[#64748b]">push(abs(1), 1) = (1, 1)</div>
+          <div className="text-[#64748b]">
+            pop() → (1, -1) → [1] = <span className="text-[#10b981]">-1</span>{" "}
+            (절댓값 같으면 더 작은 값 먼저)
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -656,6 +865,58 @@ def three_sum(arr, target):
             else: right -= 1
     return result`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          양 끝 투 포인터: 언제 left를 올리고, 언제 right를 내리나?
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              while left &lt; right
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 두 포인터가 만나면 같은 원소를 두 번 쓰는 것. 교차 전까지만 탐색
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              s &lt; target → left += 1
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 합이 작음 = 더 큰 값이 필요 → 왼쪽(작은 쪽) 포인터를 오른쪽으로
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">
+              s &gt; target → right -= 1
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 합이 큼 = 더 작은 값이 필요 → 오른쪽(큰 쪽) 포인터를 왼쪽으로
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">정렬이 필수인 이유</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 정렬돼야 "left 이동 = 합 증가, right 이동 = 합 감소"가 보장됨
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">arr=[1,2,3,4,6,8,9], target=10</div>
+          <div className="text-[#64748b]">
+            left=0(1), right=6(9): 1+9=10 →{" "}
+            <span className="text-[#10b981]">정답!</span>
+          </div>
+          <div className="text-[#64748b]">
+            만약 1+9=11이면 right-- → right=5(8): 1+8=9 &lt; 10 → left++
+          </div>
+        </div>
+      </div>
     </div>
   ),
 
@@ -756,6 +1017,66 @@ def truck_bridge(bridge_length, weight, truck_weights):
 
 print(truck_bridge(2, 10, [7, 4, 5, 6]))  # 8`}
       />
+      <div className="bg-[#0d1f2d] rounded-[10px] p-4 border-l-[3px] border-l-[#00d4ff] mb-3">
+        <div className="text-[#00d4ff] font-bold mb-3">🔍 핵심 로직 해설</div>
+        <div className="text-[#94a3b8] text-[13px] mb-3">
+          고정 윈도우의 핵심:{" "}
+          <code className="text-[#ffd166]">
+            window_sum += arr[i]; window_sum -= arr[i - k]
+          </code>
+        </div>
+        <div className="space-y-2 text-[13px]">
+          <div>
+            <span className="text-[#10b981] font-bold">
+              window_sum += arr[i]
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 윈도우 오른쪽으로 한 칸 이동 → 새로 들어온 원소 더함
+            </span>
+          </div>
+          <div>
+            <span className="text-[#f59e0b] font-bold">
+              window_sum -= arr[i - k]
+            </span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 윈도우 왼쪽 끝이 한 칸 밀림 → 빠져나간 원소 뺌. i-k가 이전
+              윈도우의 첫 번째 원소
+            </span>
+          </div>
+          <div>
+            <span className="text-[#ef4444] font-bold">O(n) 이유</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 전체 합을 매번 다시 계산하면 O(nk). 빼고 더하기만 하면 O(n)으로
+              단축
+            </span>
+          </div>
+          <div>
+            <span className="text-[#7c3aed] font-bold">range(k, n)</span>
+            <span className="text-[#e2e8f0]">
+              {" "}
+              — 첫 윈도우(0~k-1)는 미리 sum()으로 계산. 이후 k번 인덱스부터
+              슬라이딩
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-[#1e2d45] pt-2 mt-3 font-mono text-[12px] space-y-1">
+          <div className="text-[#64748b]">arr=[2,1,5,1,3,2], k=3</div>
+          <div className="text-[#64748b]">
+            초기: sum([2,1,5]) = <span className="text-[#f59e0b]">8</span>
+          </div>
+          <div className="text-[#64748b]">
+            i=3: 8 + arr[3](1) - arr[0](2) ={" "}
+            <span className="text-[#f59e0b]">7</span> (윈도우: [1,5,1])
+          </div>
+          <div className="text-[#64748b]">
+            i=4: 7 + arr[4](3) - arr[1](1) ={" "}
+            <span className="text-[#10b981]">9</span> (윈도우: [5,1,3]) ← 최대
+          </div>
+        </div>
+      </div>
       <W34_Callout
         color={W34_T.accent2}
         icon="🧠"

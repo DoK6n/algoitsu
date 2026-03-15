@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { W1112_T } from "./theme";
 
 function W1112_UnionFindViz() {
