@@ -391,7 +391,7 @@ print(selection_sort(arr))  # [11, 12, 22, 25, 64]`}
     <div>
       <h2 className="text-[#00d4ff]">🃏 삽입 정렬 (Insertion Sort)</h2>
       <div className="text-[#64748b] mb-4">
-        카드를 하나씩 뽑아 적절한 위치에 삽입하는 방식입니다.
+        배열의 모든 요소를 앞에서부터 차례대로 이미 정렬된 배열 부분과 비교하여, 자신의 위치를 찾아 삽입함으로써 정렬하는 방식입니다.
       </div>
       <W2_ComplexityBadge time="O(n²) / O(n) 최선" space="O(1)" />
       <W2_SortVisualizer algorithm="insertion" />
